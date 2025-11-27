@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 
 const modalOverlay = {
   position: "fixed",
@@ -66,79 +67,93 @@ const smallLink = {
   cursor: "pointer",
 };
 
+
 const JoinModal = ({ onClose, onOpenLogin }) => {
+  const [form, setForm] = useState({
+    id: "",
+    pw: "",
+    pw2: "",
+    email: "",
+    name: "",
+    birth: "",
+    gender: "",
+  });
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async () => {
+    if (form.pw !== form.pw2) {
+      alert("비밀번호가 일치하지 않습니다.");
+      return;
+    }
+
+    try {
+      const res = await axios.post("http://localhost:8080/join", {
+        id: form.id,
+        pw: form.pw,
+        email: form.email,
+        name: form.name,
+        birth: form.birth,
+        gender: form.gender,
+      });
+
+      if (res.data.success) {
+        alert("회원가입 완료!");
+        onClose();
+        onOpenLogin();
+      } else {
+        alert(res.data.message || "회원가입 실패");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("서버 오류: 회원가입 실패");
+    }
+  };
+
   return (
     <div style={modalOverlay}>
       <div style={modalBox}>
         <div style={modalHeader}>
           <h2>회원가입</h2>
-          <button style={closeBtn} onClick={onClose}>
-            ✕
-          </button>
+          <button style={closeBtn} onClick={onClose}>✕</button>
         </div>
 
         <p style={{ marginBottom: "18px", fontSize: "14px" }}>
           새로운 계정을 만들어 MindCare를 시작하세요.
         </p>
 
-        <label style={{ fontSize: "14px" }}>아이디</label>
-        <input
-          type="text"
-          placeholder="아이디를 입력하세요"
-          style={inputStyle}
-        />
+        <label>아이디</label>
+        <input name="id" style={inputStyle} onChange={handleChange} />
 
-        <label style={{ fontSize: "14px" }}>비밀번호</label>
-        <input
-          type="password"
-          placeholder="비밀번호"
-          style={inputStyle}
-        />
+        <label>비밀번호</label>
+        <input type="password" name="pw" style={inputStyle} onChange={handleChange} />
 
-        <label style={{ fontSize: "14px" }}>비밀번호 확인</label>
-        <input
-          type="password"
-          placeholder="비밀번호 확인"
-          style={inputStyle}
-        />
+        <label>비밀번호 확인</label>
+        <input type="password" name="pw2" style={inputStyle} onChange={handleChange} />
 
-        <label style={{ fontSize: "14px" }}>이메일</label>
-        <input
-          type="email"
-          placeholder="example@email.com"
-          style={inputStyle}
-        />
+        <label>이메일</label>
+        <input name="email" style={inputStyle} onChange={handleChange} />
 
-        <label style={{ fontSize: "14px" }}>이름</label>
-        <input
-          type="text"
-          placeholder="이름을 입력하세요"
-          style={inputStyle}
-        />
+        <label>이름</label>
+        <input name="name" style={inputStyle} onChange={handleChange} />
 
-        <label style={{ fontSize: "14px" }}>생년월일</label>
-        <input type="date" style={inputStyle} />
+        <label>생년월일</label>
+        <input type="date" name="birth" style={inputStyle} onChange={handleChange} />
 
-        <label style={{ fontSize: "14px" }}>성별</label>
-        <select style={inputStyle}>
-          <option>성별 선택</option>
-          <option>남성</option>
-          <option>여성</option>
+        <label>성별</label>
+        <select name="gender" style={inputStyle} onChange={handleChange}>
+          <option value="">성별 선택</option>
+          <option value="남성">남성</option>
+          <option value="여성">여성</option>
         </select>
 
-        <button style={actionBtn}>회원가입</button>
+        <button style={actionBtn} onClick={handleSubmit}>회원가입</button>
 
-        <p
-          style={{
-            marginTop: "16px",
-            fontSize: "13px",
-            textAlign: "center",
-          }}
-        >
+        <p style={{ marginTop: "16px", textAlign: "center" }}>
           이미 계정이 있으신가요?{" "}
-          <span style={smallLink} onClick={onOpenLogin}>
-            로그인
-          </span>
+          <span style={smallLink} onClick={onOpenLogin}>로그인</span>
         </p>
       </div>
     </div>

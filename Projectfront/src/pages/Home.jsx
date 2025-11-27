@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import TodayTodo from "../components/TodayTodo";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const Home = () => {
             padding: "20px",
           }}
         >
-          <h2 style={{ color: "#2c5cd3" }}>📊 스트레스 체크</h2>
+          <h2 style={{ color: "#2c5cd3" }}>스트레스 체크</h2>
           <p style={{ fontSize: "14px" }}>
             검증된 설문을 통해 우울, 불안, 스트레스 수준을 측정해보세요.
           </p>
@@ -56,7 +57,7 @@ const Home = () => {
             padding: "20px",
           }}
         >
-          <h2 style={{ color: "#1ea75f" }}>✍ 마음 일기</h2>
+          <h2 style={{ color: "#1ea75f" }}>마음 일기</h2>
           <p style={{ fontSize: "14px" }}>
             매일의 감정과 생각을 기록하며 마음 패턴을 발견해보세요.
           </p>
@@ -87,7 +88,7 @@ const Home = () => {
 
       {/* ====== 2행 : 체크 결과 / 오늘의 할 일 ====== */}
       <div style={{ display: "flex", gap: "20px" }}>
-        
+
         {/* 체크 결과 */}
         <div
           style={{
@@ -97,7 +98,7 @@ const Home = () => {
             padding: "20px",
           }}
         >
-          <h2 style={{ color: "#8e44ad" }}>📈 체크 결과 분석</h2>
+          <h2 style={{ color: "#8e44ad" }}>체크 결과 분석</h2>
           <p style={{ fontSize: "14px" }}>
             전체 체크 이력을 확인할 수 있어요.
           </p>
@@ -145,10 +146,16 @@ const Home = () => {
             padding: "20px",
           }}
         >
-          <h2 style={{ color: "#d35400" }}>📅 오늘의 할 일</h2>
+          <h2 style={{ color: "#d35400" }}>오늘의 할 일</h2>
           <p style={{ fontSize: "14px" }}>
             목표를 체크하며 성취감을 느껴보세요.
           </p>
+
+          {/*  TodayTodo 기능 삽입 */}
+          <div style={{ marginTop: "15px" }}>
+            <TodayTodo userId="testUser01" /> 
+            {/* userId는 실제 로그인 유저로 변경 */}
+          </div>
 
           <button
             onClick={() => navigate("/todo/list")}
@@ -164,14 +171,14 @@ const Home = () => {
               fontWeight: 600,
             }}
           >
-            할 일 목록 보러가기
+            전체 할 일 목록 보러가기
           </button>
         </div>
       </div>
 
-        {/* ====== 오른쪽 아래 AI 상담사 버튼 ====== */}
+      {/* ====== 오른쪽 아래 AI 상담사 버튼 ====== */}
       <button
-        onClick={() => navigate("/chat/bot")}
+        onClick={() => navigate("/chatbot")}
         style={{
           position: "fixed",
           bottom: "30px",
@@ -179,18 +186,14 @@ const Home = () => {
           width: "70px",
           height: "70px",
           borderRadius: "50%",
-
           background: "#7b47ff",
           color: "white",
           border: "none",
           cursor: "pointer",
           fontSize: "28px",
-
-          // ★ 아이콘을 완전 중앙 정렬하는 부분
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-
           boxShadow: "0 4px 12px rgba(0,0,0,0.25)",
         }}
       >

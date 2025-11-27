@@ -23,7 +23,9 @@ import SurveyResult from "./pages/SurveyResult.jsx";
 import SurveyStart from "./pages/SurveyStart.jsx";
 import SymptomCategory from "./pages/SymptomCategory.jsx";
 import TodoList from "./pages/TodoList.jsx";
-import TodoRoutine from "./pages/TodoRoutine.jsx";
+import ImprovementGuide from "./pages/ImprovementGuide.jsx";
+import SurveyRecord from "./pages/SurveyRecord.jsx";
+
 
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
@@ -36,7 +38,7 @@ createRoot(document.getElementById("root")).render(
         <Route path="/home" element={<Home />} />
 
         {/* 기능 페이지 */}
-        <Route path="/chat/bot" element={<ChatBot />} />
+        <Route path="/chatbot" element={<ChatBot />} />
         <Route path="/diary/history" element={<DiaryHistory />} />
         <Route path="/diary/text" element={<DiaryText />} />
         <Route path="/emotion/stats" element={<EmotionStats />} />
@@ -52,7 +54,10 @@ createRoot(document.getElementById("root")).render(
         <Route path="/survey/start" element={<SurveyStart />} />
         <Route path="/symptom/category" element={<SymptomCategory />} />
         <Route path="/todo/list" element={<TodoList />} />
-        <Route path="/todo/routine" element={<TodoRoutine />} />
+        <Route path="/improvement/guide" element={<ImprovementGuide />} />
+        <Route path="/survey/record" element={<SurveyRecord />} />
+
+       
 
     </Routes>
   </BrowserRouter>
