@@ -1,5 +1,5 @@
 import React from "react";
-
+import axios from "axios";
 const modalOverlay = {
   position: "fixed",
   top: 0,
@@ -67,6 +67,13 @@ const smallLink = {
 };
 
 const LoginModal = ({ onClose, onOpenJoin }) => {
+  // const res = await fetch("http://localhost:3000/user/login",{
+  //   method: "POST",
+  //   headers: { "Content-Type": "application/json" },
+  //   body: JSON.stringify({ id, pw }),
+  // })
+  // const data = await res.json()
+
   return (
     <div style={modalOverlay}>
       <div style={modalBox}>

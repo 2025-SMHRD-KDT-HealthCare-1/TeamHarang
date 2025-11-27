@@ -24,30 +24,27 @@ const bcrypt = require("bcrypt");
 
 // 로그인 요청
 router.post("/login", (req, res) => {
-    const { id, pw } = req.body;
-    if (!id || !pw) {
+    const { account_id, user_pw } = req.body;
+
+    if (!account_id || !user_pw) {
         return res.status(400).json({ result: "fail", message: "ID와 PW를 입력하세요" });
     }
-    const sql = `SELECT * FROM members WHERE id = ?`;
-    conn.query(sql, [id], async (err, rows) => {
-        if (err) return res.status(500).json({ message: "DB ERROR" });
 
-        if (rows.length === 0) {// 만약 아이디에 해당하는 계정이 없다면 
-            return res.status(200).json({ result: "fail", message: "ID Fail" });
+    const sql = `SELECT * FROM users WHERE account_id = ?`;
+    conn.query(sql, [account_id], async (err, rows) => {
+        if (err) return res.status(500).json({ result: "fail", message: "DB ERROR" });
+
+        if (rows.length === 0) {
+            return res.json({ result: "fail", message: "account_id Fail" });
         }
-        const match = await bcrypt.compare(pw, rows[0].pw);// 해시되 암호 비교
-        if (!match) {
-            return res.status(200).json({ result: "fail", message: "PW Fail" });
-        }
-        // 토큰 발급 필요 수정 필요
 
+        const match = await bcrypt.compare(user_pw, rows[0].user_pw);
+        if (!match) return res.json({ result: "fail", message: "PW Fail" });
 
-
-        const userNick = rows[0].nick;
         res.json({
             result: "success",
             user: {
-                nick: userNick
+                user_name: rows[0].user_name
             }
         });
     });
@@ -55,142 +52,149 @@ router.post("/login", (req, res) => {
 
 // 회원가입 요청
 router.post("/join", async (req, res) => {
-    const { id, pw, nick, mail, birth, gen } = req.body;
+    const { account_id, user_pw, user_name, user_email, birth, gender } = req.body;
 
-    if (!id || !pw || !nick || !mail || !birth || !gen) {
+    if (!account_id || !user_pw || !user_name || !user_email || !birth || !gender) {
         return res.status(400).json({ result: "fail", message: "모든 필드를 입력하세요" });
     }
 
-    // 아이디 중복 확인
-    const checkSql = `SELECT id FROM members WHERE id = ?`;
-    conn.query(checkSql, [id], (err, rows) => {
+    // ID 중복 확인
+    const checkSql = `SELECT account_id FROM users WHERE account_id = ?`;
+    conn.query(checkSql, [account_id], (err, rows) => {
         if (err) return res.status(500).json({ result: "fail", message: "DB ERROR" });
 
         if (rows.length > 0) {
-            return res.status(200).json({ result: "fail", message: "이미 존재하는 ID입니다" });
+            return res.json({ result: "fail", message: "이미 존재하는 ID입니다" });
         }
 
         // 이메일 중복 확인
-        const checkMailSql = `SELECT mail FROM members WHERE mail = ?`;
-        conn.query(checkMailSql, [mail], async (err, mailRows) => {
+        const checkMailSql = `SELECT user_email FROM users WHERE user_email = ?`;
+        conn.query(checkMailSql, [user_email], async (err, mailRows) => {
             if (err) return res.status(500).json({ result: "fail", message: "DB ERROR" });
 
             if (mailRows.length > 0) {
-                return res.status(200).json({ result: "fail", message: "이미 등록된 이메일입니다" });
+                return res.json({ result: "fail", message: "이미 등록된 이메일입니다" });
             }
 
-            // 비밀번호 해싱
-            const hashedPW = await bcrypt.hash(pw, 10);
+            const hashedPW = await bcrypt.hash(user_pw, 10);
 
-            const sql = `INSERT INTO members (id, pw, nick, mail, birth, gender,roles) VALUES (?, ?, ?, ?, ?, ? , ?)`;
-            conn.query(sql, [id, hashedPW, nick, mail, birth, gen,"USER"], (err, result) => {
-                if (err) return res.status(500).json({ result: "fail", message: "회원가입 실패" });
+            const sql = `
+                INSERT INTO users 
+                (account_id, user_pw, user_name, user_email, birth, gender, roles)
+                VALUES (?, ?, ?, ?, ?, ?, 'USER')
+            `;
 
-                return res.status(201).json({ result: "success", message: "회원가입 성공" });
+            conn.query(sql, [account_id, hashedPW, user_name, user_email, birth, gender], (err) => {
+                if (err) {
+                    return res.status(500).json({ 
+                        result: "fail", 
+                        message: "회원가입 실패",
+                        error: err
+                    });
+                }
+
+                return res.json({ result: "success", message: "회원가입 성공" });
             });
         });
     });
 });
 
+// 준회원 가입(이름만)
+router.post("/semijoin", (req, res) => {
+    const { user_name } = req.body;
 
-//비회원(준회원) 진행 요청
-router.post("/semijoin",(req, res) => {
-    const {nick} = req.body;
-
-    if (!nick) {
+    if (!user_name)
         return res.status(400).send("이름을 입력하세요");
-    }
 
-        const sql = `INSERT INTO members (nick,roles) VALUES (?,?)`;
-        conn.query(sql, [nick,"GUEST"], (err, result) => {
-            if (err) return res.status(500).send("준회원 기능 실패");
+    const sql = `INSERT INTO users (user_name, roles) VALUES (?, 'GUEST')`;
+    conn.query(sql, [user_name], (err) => {
+        if (err) return res.status(500).send("준회원 기능 실패");
 
-            return res.status(201).send("준회원 기능 성공");
-        });
+        return res.status(201).send("준회원 기능 성공");
     });
+});
 
-// 준회원 → 정회원 전환 요청
+// 준회원 → 정회원 전환
 router.patch("/upgrade", async (req, res) => {
-    const { uid, id, pw, mail, birth, gender } = req.body;
+    const { uid, account_id, user_pw, user_email, birth, gender } = req.body;
 
-    if (!uid || !id || !pw || !mail || !birth || !gender) {
+    if (!uid || !account_id || !user_pw || !user_email || !birth || !gender) {
         return res.status(400).json({
             result: "fail",
-            message: "필수 정보를 모두 입력하세요 (uid, id, pw, mail, birth, gender)"
+            message: "필수 정보를 모두 입력하세요"
         });
     }
 
     try {
         // ID & 이메일 중복 확인
         const checkSql = `
-            SELECT id, mail FROM members 
-            WHERE id = ? OR mail = ?
+            SELECT account_id, user_email 
+            FROM users
+            WHERE account_id = ? OR user_email = ?
         `;
-        const [exists] = await conn.promise().query(checkSql, [id, mail]);
+        const [exists] = await conn.promise().query(checkSql, [account_id, user_email]);
 
         if (exists.length > 0) {
-            if (exists[0].id === id) {
-                return res.status(409).json({ result: "fail", message: "이미 존재하는 ID입니다" });
+            if (exists[0].account_id === account_id) {
+                return res.json({ result: "fail", message: "이미 존재하는 ID입니다" });
             }
-            if (exists[0].mail === mail) {
-                return res.status(409).json({ result: "fail", message: "이미 등록된 이메일입니다" });
+            if (exists[0].user_email === user_email) {
+                return res.json({ result: "fail", message: "이미 등록된 이메일입니다" });
             }
         }
 
-        // 비밀번호 암호화
-        const hashedPW = await bcrypt.hash(pw, 10);
+        const hashedPW = await bcrypt.hash(user_pw, 10);
 
         const updateSql = `
-            UPDATE members
-            SET id = ?, pw = ?, mail = ?, birth = ?, gender = ?, roles = "USER"
-            WHERE uid = ?
+            UPDATE users
+            SET account_id = ?, user_pw = ?, user_email = ?, birth = ?, gender = ?, roles = 'USER'
+            WHERE user_id = ?
         `;
 
         const [result] = await conn.promise().query(updateSql, [
-            id, hashedPW, mail, birth, gender, uid
+            account_id,
+            hashedPW,
+            user_email,
+            birth,
+            gender,
+            uid
         ]);
 
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ result: "fail", message: "존재하지 않는 UID입니다" });
-        }
+        if (result.affectedRows === 0)
+            return res.json({ result: "fail", message: "존재하지 않는 UID입니다" });
 
-        return res.status(200).json({ result: "success", message: "정회원 전환 완료" });
+        return res.json({ result: "success", message: "정회원 전환 완료" });
 
     } catch (err) {
-        console.error(err);
         return res.status(500).json({ result: "fail", message: "서버 오류 발생" });
     }
 });
 
-// 회원 탈퇴 요청
+// 회원 탈퇴
 router.delete("/withdraw", async (req, res) => {
-    const { id, pw } = req.body;
+    const { account_id, user_pw } = req.body;
 
-    if (!id || !pw) {
+    if (!account_id || !user_pw) {
         return res.status(400).json({ result: "fail", message: "ID와 PW를 입력하세요" });
     }
 
     try {
-        // DB에서 회원 조회
-        const sql = `SELECT * FROM members WHERE id = ?`;
-        const [rows] = await conn.promise().query(sql, [id]);
+        const sql = `SELECT * FROM users WHERE account_id = ?`;
+        const [rows] = await conn.promise().query(sql, [account_id]);
 
-        if (rows.length === 0) {
-            return res.status(200).json({ result: "fail", message: "ID Fail" });
-        }
+        if (rows.length === 0)
+            return res.json({ result: "fail", message: "account_id Fail" });
 
-        const match = await bcrypt.compare(pw, rows[0].pw);
-        if (!match) {
-            return res.status(200).json({ result: "fail", message: "PW Fail" });
-        }
+        const match = await bcrypt.compare(user_pw, rows[0].user_pw);
+        if (!match)
+            return res.json({ result: "fail", message: "PW Fail" });
 
-        // 회원 삭제
-        const deleteSql = `DELETE FROM members WHERE id = ?`;
-        await conn.promise().query(deleteSql, [id]);
+        const deleteSql = `DELETE FROM users WHERE account_id = ?`;
+        await conn.promise().query(deleteSql, [account_id]);
 
-        return res.status(200).json({ result: "success", message: "회원 탈퇴 완료" });
+        return res.json({ result: "success", message: "회원 탈퇴 완료" });
+
     } catch (err) {
-        console.error(err);
         return res.status(500).json({ result: "fail", message: "서버 오류 발생" });
     }
 });
