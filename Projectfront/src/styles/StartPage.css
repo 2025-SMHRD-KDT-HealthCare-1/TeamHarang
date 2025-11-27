@@ -1,0 +1,327 @@
+/* ======================== StartPage Container ======================== */
+
+.startpage-wrapper .startpage-container {
+  width: 100%;
+  height: auto;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  background-color: #fff;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+/* ======================== Common Slide Style ======================== */
+
+.startpage-wrapper .slide {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.startpage-wrapper .slide-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/* ======================== Indicators ======================== */
+
+.startpage-wrapper .indicator-wrapper {
+  position: absolute;
+  right: 25px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 10;
+}
+
+.startpage-wrapper .indicator-dot-active {
+  width: 12px;
+  height: 12px;
+  background: #1e90ff;
+  border-radius: 50%;
+}
+
+.startpage-wrapper .indicator-dot-inactive {
+  width: 12px;
+  height: 12px;
+  background: white;
+  opacity: 0.5;
+  border-radius: 50%;
+}
+
+/* ======================== Buttons ======================== */
+
+.startpage-wrapper .btn-primary {
+  padding: 10px 22px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  background: white;
+  color: #0066ff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.startpage-wrapper .btn-group {
+  margin-top: 30px;
+  display: flex;
+  gap: 15px;
+}
+
+/* ======================== Slide 1 ======================== */
+
+.startpage-wrapper .slide1 {
+  background-image: url("/start-bg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: white;
+}
+
+.startpage-wrapper .slide1-title {
+  font-size: 40px;
+  font-weight: bold;
+}
+
+.startpage-wrapper .slide1-subtitle {
+  font-size: 18px;
+  margin-top: 10px;
+}
+
+/* ======================== Slide 2 ======================== */
+
+.startpage-wrapper .slide2 {
+  padding-top: 100px;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.startpage-wrapper .section-title {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.startpage-wrapper .section-subtitle {
+  font-size: 18px;
+  opacity: 0.7;
+  margin-bottom: 40px;
+}
+
+.startpage-wrapper .service-container {
+  display: flex;
+  gap: 60px;
+}
+
+.startpage-wrapper .service-box {
+  width: 220px;
+  text-align: center;
+}
+
+.startpage-wrapper .service-icon-wrapper {
+  width: 90px;
+  height: 90px;
+  border-radius: 20px;
+  background: rgba(0, 120, 255, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 15px auto;
+}
+
+.startpage-wrapper .service-icon {
+  width: 45px;
+}
+
+.startpage-wrapper .service-title {
+  color: #0066ff;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.startpage-wrapper .service-desc {
+  font-size: 14px;
+  opacity: 0.75;
+  line-height: 1.4;
+}
+
+/* ======================== Slide 3 ======================== */
+
+.startpage-wrapper .slide3 {
+  padding-top: 100px;
+  background: linear-gradient(to bottom, #fdeeff, #ffeef4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.startpage-wrapper .survey-main-icon {
+  width: 80px;
+  margin-bottom: 20px;
+}
+
+.startpage-wrapper .survey-container {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+  width: 80%;
+  justify-content: center;
+}
+
+.startpage-wrapper .survey-card {
+  width: 350px;
+  padding: 30px;
+  border-radius: 20px;
+  background: white;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  text-align: left;
+}
+
+.startpage-wrapper .survey-number {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  color: white;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.startpage-wrapper .survey-card ul {
+  padding-left: 20px;
+}
+
+.startpage-wrapper .survey-card li {
+  margin-bottom: 8px;
+  opacity: 0.75;
+  font-size: 14px;
+}
+
+/* ======================== Slide 4 ======================== */
+
+.startpage-wrapper .slide4 {
+  padding-top: 70px;
+  background-color: #f3f8ff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.startpage-wrapper .todo-top-icon {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #b47bff, #7d4dff);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 25px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.startpage-wrapper .todo-top-icon img {
+  width: 45px;
+}
+
+.startpage-wrapper .todo-card-container {
+  display: flex;
+  gap: 40px;
+  margin-bottom: 50px;
+}
+
+.startpage-wrapper .todo-card {
+  width: 260px;
+  padding: 30px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  text-align: center;
+}
+
+.startpage-wrapper .todo-card-icon {
+  width: 45px;
+  margin-bottom: 15px;
+}
+
+.startpage-wrapper .todo-card-title {
+  margin-bottom: 10px;
+  color: #2f73ff;
+  font-weight: 600;
+}
+
+.startpage-wrapper .todo-card-desc {
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+/* ======================== Modal ======================== */
+
+.startpage-wrapper .modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.startpage-wrapper .modal-box {
+  width: 420px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: white;
+  border-radius: 12px;
+  padding: 24px 28px 30px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  position: relative;
+}
+
+.startpage-wrapper .modal-input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  margin-top: 6px;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.startpage-wrapper .modal-action-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  background: #2f73ff;
+  color: white;
+  font-weight: 600;
+  font-size: 15px;
+  margin-top: 8px;
+  cursor: pointer;
+}
+
+.startpage-wrapper .modal-link {
+  color: #2f73ff;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.startpage-wrapper .modal-footer-text {
+  margin-top: 16px;
+  font-size: 13px;
+  text-align: center;
+}
