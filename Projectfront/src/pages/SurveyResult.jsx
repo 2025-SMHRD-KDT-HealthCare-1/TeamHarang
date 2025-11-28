@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const SurveyResult = () => {
@@ -8,22 +8,28 @@ const SurveyResult = () => {
   // 설문 종류 + 사용자 답변
   const { type, answers } = location.state || {};
 
-  // 백엔드에서 받은 결과 저장
-  const [result, setResult] = useState({
+  // ---------------------- ref 데이터 ----------------------
+  const resultRef = useRef({
     score: null,
     level: "",
     message: "",
   });
 
+  // 강제 렌더링용 (ref만으로는 화면이 안 바뀌므로)
+  const refreshRef = useRef(0);
+
   // 첫 로드 시 백엔드 호출(임시)
   useEffect(() => {
     if (!answers || !type) return;
 
-    setResult({
+    resultRef.current = {
       score: 0,
       level: "백엔드 결과 대기",
       message: "백엔드 연결 전 임시 메시지입니다.",
-    });
+    };
+
+    // 화면 한 번 업데이트
+    refreshRef.current++;
   }, [answers, type]);
 
   // 예외 처리
@@ -54,121 +60,52 @@ const SurveyResult = () => {
       {/* ---------------- 점수 카드 ---------------- */}
       <div style={card}>
         <h1 style={{ fontSize: "42px", marginBottom: "10px" }}>
-          {result.score !== null ? result.score : "-"}
+          {resultRef.current.score !== null ? resultRef.current.score : "-"}
         </h1>
+
         <p style={{ fontWeight: 600, marginBottom: "10px" }}>
-          {result.level}
+          {resultRef.current.level}
         </p>
-        <p style={{ opacity: 0.75 }}>{result.message}</p>
+
+        <p style={{ opacity: 0.75 }}>{resultRef.current.message}</p>
       </div>
 
-      {/* ---------------- 추후 제목 추가예정 ---------------- */}
+      {/* ---------------- 개선 방안 제목 ---------------- */}
       <div style={categoryContainer}>
         <h2 style={{ margin: 0 }}>사용자 맞춤 개선방안 제시</h2>
         <p style={{ opacity: 0.8, marginBottom: "20px" }}>
           도와드릴게요!
         </p>
 
-        <div style={categoryGrid}>
+        {/*  여기만 수정됨 — 정서적 / 신체적 반응 개선 “틀만” */}
+        <div style={improveGrid}>
 
-          {/* ---------------- 1) .. ---------------- */}
-          <div style={categoryCard}>
-            <div style={categoryLeft}>
-              <div style={iconBox("#7146cec0")}></div>
+          {/* 정서적 반응 개선 */}
+          <div style={improveCard}>
+            <div style={improveHeader}>
+              <div style={iconCircle("#b28bff")}>💜</div>
               <div>
-                <h3 style={{ margin: 0 }}>추후 넣을 예정</h3>
-                <p style={{ margin: 0, opacity: 0.7 }}>추후 넣을 예정</p>
+                <h3 style={{ margin: 0 }}>정서적 반응 개선</h3>
+                <p style={{ margin: 0, opacity: 0.7 }}>
+                  마음에서 느껴지는 감정들을 다루는 방법
+                </p>
               </div>
             </div>
-
-            <div style={{ marginTop: "15px" }}>
-              <p style={levelText()}>
-                증상 수준{" "}
-                <span style={{ color: "#d32f2f", fontWeight: 700 }}>
-                  추후 넣을 예정
-                </span>
-                <span style={{ float: "right" }}>0</span>
-              </p>
-
-              <div style={progressWrapper}>
-                <div style={progressBar(0)}></div>
-              </div>
-            </div>
+            {/* 내용은 넣지 않음 (요청한 틀만) */}
           </div>
 
-          {/* ---------------- 2) ---------------- */}
-          <div style={categoryCard}>
-            <div style={categoryLeft}>
-              <div style={iconBox("#547ceb88")}></div>
+          {/* 신체적 반응 개선 */}
+          <div style={improveCard}>
+            <div style={improveHeader}>
+              <div style={iconCircle("#8ae3c7")}>💚</div>
               <div>
-                <h3 style={{ margin: 0 }}>추후 넣을 예정</h3>
-                <p style={{ margin: 0, opacity: 0.7 }}>추후 넣을 예정</p>
+                <h3 style={{ margin: 0 }}>신체적 반응 개선</h3>
+                <p style={{ margin: 0, opacity: 0.7 }}>
+                  몸에서 느껴지는 증상들을 완화하는 방법
+                </p>
               </div>
             </div>
-
-            <div style={{ marginTop: "15px" }}>
-              <p style={levelText()}>
-                증상 수준{": "}
-                <span style={{ color: "#d32f2f", fontWeight: 700 }}>
-                  추후 넣을 예정
-                </span>
-                <span style={{ float: "right" }}>0</span>
-              </p>
-
-              <div style={progressWrapper}>
-                <div style={progressBar(0)}></div>
-              </div>
-            </div>
-          </div>
-
-          {/* ---------------- 3) ---------------- */}
-          <div style={categoryCard}>
-            <div style={categoryLeft}>
-              <div style={iconBox("#e1e9ff")}></div>
-              <div>
-                <h3 style={{ margin: 0 }}>추후 넣을 예정</h3>
-                <p style={{ margin: 0, opacity: 0.7 }}>추후 넣을 예정</p>
-              </div>
-            </div>
-
-            <div style={{ marginTop: "15px" }}>
-              <p style={levelText()}>
-                증상 수준{": "}
-                <span style={{ color: "#d32f2f", fontWeight: 700 }}>
-                  추후 넣을 예정
-                </span>
-                <span style={{ float: "right" }}>..</span>
-              </p>
-
-              <div style={progressWrapper}>
-                <div style={progressBar(0)}></div>
-              </div>
-            </div>
-          </div>
-
-          {/* ---------------- 4) ---------------- */}
-          <div style={categoryCard}>
-            <div style={categoryLeft}>
-              <div style={iconBox("#e1f0ff")}></div>
-              <div>
-                <h3 style={{ margin: 0 }}>추후 넣을 예정</h3>
-                <p style={{ margin: 0, opacity: 0.7 }}>추후 넣을 예정</p>
-              </div>
-            </div>
-
-            <div style={{ marginTop: "15px" }}>
-              <p style={levelText()}>
-                증상 수준 {": "}
-                <span style={{ color: "#e57300", fontWeight: 700 }}>
-                  추후 넣을 예정
-                </span>
-                <span style={{ float: "right" }}>0</span>
-              </p>
-
-              <div style={progressWrapper}>
-                <div style={progressBar(0)}></div>
-              </div>
-            </div>
+            {/* 내용 없음 */}
           </div>
 
         </div>
@@ -218,8 +155,6 @@ const card = {
   marginBottom: "25px",
 };
 
-/* ---------------- 카테고리 분석 UI ---------------- */
-
 const categoryContainer = {
   background: "white",
   padding: "25px",
@@ -228,55 +163,36 @@ const categoryContainer = {
   marginBottom: "30px",
 };
 
-const categoryGrid = {
+const improveGrid = {
   display: "grid",
   gridTemplateColumns: "1fr 1fr",
   gap: "20px",
+  marginTop: "20px",
 };
 
-const categoryCard = {
-  padding: "20px",
-  background: "white",
+const improveCard = {
+  background: "#fafafa",
+  border: "1px solid #eaeaea",
   borderRadius: "15px",
-  border: "1px solid #eeeeee",
+  padding: "20px",
 };
 
-const categoryLeft = {
+const improveHeader = {
   display: "flex",
   alignItems: "center",
   gap: "15px",
 };
 
-const iconBox = (bg) => ({
-  width: "60px",
-  height: "60px",
-  borderRadius: "15px",
+const iconCircle = (bg) => ({
+  width: "55px",
+  height: "55px",
+  borderRadius: "50%",
   background: bg,
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
+  fontSize: "24px",
 });
-
-const levelText = () => ({
-  margin: "0 0 6px 0",
-  fontSize: "14px",
-  color: "#333",
-});
-
-const progressWrapper = {
-  background: "#e6e6e6",
-  height: "8px",
-  borderRadius: "5px",
-};
-
-const progressBar = (percent) => ({
-  height: "100%",
-  width: `${percent}%`,
-  background: "#333",
-  borderRadius: "5px",
-});
-
-/* ---------------- 버튼 스타일 ---------------- */
 
 const btnWrap = {
   display: "flex",
