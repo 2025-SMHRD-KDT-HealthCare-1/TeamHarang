@@ -1,6 +1,5 @@
 import React, { useRef } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 const modalOverlay = {
   position: "fixed",
@@ -68,9 +67,6 @@ const smallLink = {
   cursor: "pointer",
 };
 
-// -----------------------------------------------------------
-// JoinModal COMPONENT (최종 완성본)
-// -----------------------------------------------------------
 const JoinModal = ({ onClose, onOpenLogin }) => {
   const inputId = useRef();
   const inputPw = useRef();
@@ -80,28 +76,15 @@ const JoinModal = ({ onClose, onOpenLogin }) => {
   const inputBirth = useRef();
   const inputGender = useRef();
 
-  const navigate = useNavigate();
-
   const tryJoin = async () => {
     const account_id = inputId.current.value.trim();
     const user_pw = inputPw.current.value.trim();
     const pwCheck = inputPwCheck.current.value.trim();
     const user_email = inputEmail.current.value.trim();
     const user_name = inputName.current.value.trim();
-    const birth = inputBirth.current.value; // date는 value 자체 확인
+    const birth = inputBirth.current.value;
     const gender = inputGender.current.value;
 
-    // 🔥 콘솔에 전송값 출력 (문제 파악용 / 나중에 제거해도 됨)
-    console.log("보내는 값:", {
-      account_id,
-      user_pw,
-      user_name,
-      user_email,
-      birth,
-      gender: gender === "남성" ? "M" : "F"
-    });
-
-    // 🔥 빈 값 검사 (핵심)
     if (
       !account_id ||
       !user_pw ||
@@ -116,7 +99,7 @@ const JoinModal = ({ onClose, onOpenLogin }) => {
     }
 
     if (user_pw !== pwCheck) {
-      alert("비밀번호가 서로 일치하지 않습니다.");
+      alert("비밀번호가 일치하지 않습니다.");
       return;
     }
 
@@ -134,7 +117,7 @@ const JoinModal = ({ onClose, onOpenLogin }) => {
         alert("회원가입 성공! 로그인해주세요.");
         onOpenLogin();
       } else {
-        alert(res.data.message);
+        alert(res.data.message || "회원가입 실패");
       }
     } catch (err) {
       console.error("JOIN ERROR:", err);

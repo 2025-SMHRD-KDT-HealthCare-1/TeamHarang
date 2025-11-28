@@ -1,3 +1,32 @@
+/* 🔥 전역 다크모드 변수 - 맨 위 추천 */
+:root {
+  --bg-main: #f7f8fc;
+  --card-bg: #fff;
+  --text-primary: #222;
+  --text-secondary: #666;
+  --border-color: #e5e5e5;
+
+  --gradient-main: linear-gradient(to right, #4e6cff, #8254ff);
+  --gradient-result: linear-gradient(to right, #c471f5, #fa71cd);
+}
+
+body.dark {
+  --bg-main: #1b1c1f;
+  --card-bg: #2a2c2f;
+  --text-primary: #f5f5f5;
+  --text-secondary: #b7b7b7;
+  --border-color: #444;
+
+  --gradient-main: linear-gradient(to right, #2b3cff, #5530ff);
+  --gradient-result: linear-gradient(to right, #8a3ae3, #d94ccc);
+}
+
+body {
+  background: var(--bg-main);
+  color: var(--text-primary);
+  transition: 0.3s ease;
+}
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -329,4 +358,15 @@ button:focus-visible {
   font-size: 13px;
   color: #777;
   line-height: 1.5;
+}
+
+/* 전체 페이지 자동 중앙 정렬 */
+body {
+  display: flex;
+  justify-content: center;
+}
+
+#root {
+  width: 100%;
+  max-width: 1200px;
 }
