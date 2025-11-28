@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom"; 
 
 const modalOverlay = {
   position: "fixed",
@@ -68,6 +69,7 @@ const smallLink = {
 };
 
 const LoginModal = ({ onClose, onOpenJoin }) => {
+  const navigate = useNavigate(); 
   const inputId = useRef();
   const inputPw = useRef();
   const [error, setError] = useState("");
@@ -91,6 +93,7 @@ const LoginModal = ({ onClose, onOpenJoin }) => {
         alert("로그인 성공!");
         localStorage.setItem("user", JSON.stringify(res.data.user));
         onClose();
+        navigate("/home");
       } else {
         setError(res.data.message || "아이디 또는 비밀번호가 잘못되었습니다.");
       }
