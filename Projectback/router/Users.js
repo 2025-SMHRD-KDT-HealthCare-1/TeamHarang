@@ -21,6 +21,7 @@ const express = require('express');
 const router = express.Router();
 const conn = require('../config/database');
 const bcrypt = require("bcrypt");
+const { generateToken } = require("./Token");
 
 // 로그인 요청
 router.post("/login", (req, res) => {
@@ -32,23 +33,37 @@ router.post("/login", (req, res) => {
 
     const sql = `SELECT * FROM users WHERE account_id = ?`;
     conn.query(sql, [account_id], async (err, rows) => {
-        if (err) return res.status(500).json({ result: "fail", message: "DB ERROR" });
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ result: "fail", message: "DB ERROR" });
+        }
 
         if (rows.length === 0) {
             return res.json({ result: "fail", message: "account_id Fail" });
         }
 
-        const match = await bcrypt.compare(user_pw, rows[0].user_pw);
+        const user = rows[0];
+
+        const match = await bcrypt.compare(user_pw, user.user_pw);
         if (!match) return res.json({ result: "fail", message: "PW Fail" });
 
+        
+        const token = generateToken(user);
+
+        
         res.json({
             result: "success",
+            token: token,
             user: {
-                user_name: rows[0].user_name
+                user_id: user.user_id,
+                user_name: user.user_name,
+                roles: user.roles
             }
         });
     });
 });
+
+module.exports = router;
 
 // 회원가입 요청
 router.post("/join", async (req, res) => {
