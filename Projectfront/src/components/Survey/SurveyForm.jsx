@@ -16,7 +16,7 @@ export default function SurveyForm({ type, questions }) {
   ];
 
   // ------------------------------
-  // 🚀 점수 계산 없음 — 데이터만 전달
+  //  점수 계산 없음 — 데이터만 전달
   // ------------------------------
   const onSubmit = (data) => {
     const answers = Object.values(data).map((v) => Number(v));
