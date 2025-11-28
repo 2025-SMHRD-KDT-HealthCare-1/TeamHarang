@@ -1,12 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const OpenAI = require("openai");
+// const OpenAI = require("openai");
 
-require("dotenv").config();
+// require("dotenv").config();
 
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// const client = new OpenAI({
+//   apiKey: process.env.OPENAI_API_KEY,
+// });
 
 // -----------------------------------
 // 🔥 RAG(지식 기반 검색) 추가 준비 (껍데기)
