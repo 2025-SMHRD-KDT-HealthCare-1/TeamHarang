@@ -1,11 +1,6 @@
-<<<<<<< HEAD
-import React from "react";
-import axios from "axios";
-=======
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import axios from "axios";
 
->>>>>>> e05263297b336d0e9b68c5d5cc0bbcbb14cbc2e7
 const modalOverlay = {
   position: "fixed",
   top: 0,
@@ -30,7 +25,6 @@ const modalBox = {
   position: "relative",
 };
 
-/* 🔥 누락된 부분 → 반드시 필요 */
 const modalHeader = {
   display: "flex",
   justifyContent: "space-between",
@@ -74,101 +68,79 @@ const smallLink = {
 };
 
 const LoginModal = ({ onClose, onOpenJoin }) => {
-<<<<<<< HEAD
-  // const res = await fetch("http://localhost:3000/user/login",{
-  //   method: "POST",
-  //   headers: { "Content-Type": "application/json" },
-  //   body: JSON.stringify({ id, pw }),
-  // })
-  // const data = await res.json()
-=======
-  // 입력값
-  const [userId, setUserId] = useState("");
-  const [pw, setPw] = useState("");
+  const inputId = useRef();
+  const inputPw = useRef();
   const [error, setError] = useState("");
 
-  const handleLogin = async () => {
-    if (!userId.trim() || !pw.trim()) {
+  const tryLogin = async () => {
+    const account_id = inputId.current.value.trim();
+    const user_pw = inputPw.current.value.trim();
+
+    if (!account_id || !user_pw) {
       setError("아이디와 비밀번호를 입력해주세요.");
       return;
     }
 
     try {
-      const response = await axios.post("http://localhost:8080/login", {
-        id: userId,
-        pw: pw,
+      const res = await axios.post("http://localhost:3001/user/login", {
+        account_id,
+        user_pw,
       });
 
-      if (response.data.success) {
+      if (res.data.result === "success") {
         alert("로그인 성공!");
-        localStorage.setItem("user", JSON.stringify(response.data.user));
+        localStorage.setItem("user", JSON.stringify(res.data.user));
         onClose();
       } else {
-        setError("아이디 또는 비밀번호가 잘못되었습니다.");
+        setError(res.data.message || "아이디 또는 비밀번호가 잘못되었습니다.");
       }
     } catch (err) {
-      console.error(err);
+      console.error("LOGIN ERROR:", err);
       setError("서버와 통신 중 오류가 발생했습니다.");
     }
   };
->>>>>>> e05263297b336d0e9b68c5d5cc0bbcbb14cbc2e7
 
   return (
     <div style={modalOverlay}>
       <div style={modalBox}>
-        
-        {/* 모달 헤더 */}
         <div style={modalHeader}>
           <h2>로그인</h2>
-          <button style={closeBtn} onClick={onClose}>
-            ✕
-          </button>
+          <button style={closeBtn} onClick={onClose}>✕</button>
         </div>
 
         <p style={{ marginBottom: "18px", fontSize: "14px" }}>
           계정에 로그인하여 서비스를 이용하세요.
         </p>
 
-        <label style={{ fontSize: "14px" }}>아이디</label>
-        <input
-          type="text"
-          placeholder="아이디를 입력하세요"
-          style={inputStyle}
-          value={userId}
-          onChange={(e) => setUserId(e.target.value)}
+        <label>아이디</label>
+        <input 
+          ref={inputId} 
+          type="text" 
+          style={inputStyle} 
+          placeholder="아이디" 
         />
 
-        <label style={{ fontSize: "14px" }}>비밀번호</label>
-        <input
-          type="password"
-          placeholder="비밀번호"
-          style={inputStyle}
-          value={pw}
-          onChange={(e) => setPw(e.target.value)}
+        <label>비밀번호</label>
+        <input 
+          ref={inputPw} 
+          type="password" 
+          style={inputStyle} 
+          placeholder="비밀번호" 
         />
 
-        {/* 에러 메시지 */}
         {error && (
           <p style={{ color: "red", fontSize: "13px", marginTop: "-8px" }}>
             {error}
           </p>
         )}
 
-        <button style={actionBtn} onClick={handleLogin}>
+        <button style={actionBtn} onClick={tryLogin}>
           로그인
         </button>
 
-        <p
-          style={{
-            marginTop: "16px",
-            fontSize: "13px",
-            textAlign: "center",
-          }}
-        >
+        <p style={{ marginTop: "16px", fontSize: "13px", textAlign: "center" }}>
           계정이 없으신가요?{" "}
-          <span style={smallLink} onClick={onOpenJoin}>
-            회원가입
-          </span>
+          <span style={smallLink} onClick={onOpenJoin}>회원가입</span>
         </p>
       </div>
     </div>
