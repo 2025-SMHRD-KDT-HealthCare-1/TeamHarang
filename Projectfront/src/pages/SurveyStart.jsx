@@ -5,7 +5,7 @@ export default function SurveyStart() {
   const navigate = useNavigate();
 
   return (
-    // ★ 화면 전체를 가운데 정렬하는 바깥 래퍼
+    //  화면 전체를 가운데 정렬하는 바깥 래퍼
     <div
       style={{
         width: "100%",
@@ -17,7 +17,7 @@ export default function SurveyStart() {
         boxSizing: "border-box",
       }}
     >
-      {/* ★ 실제 내용 박스: 중앙에 모아서 위아래로 배치 */}
+      {/*  실제 내용 박스: 중앙에 모아서 위아래로 배치 */}
       <div
         style={{
           width: "100%",

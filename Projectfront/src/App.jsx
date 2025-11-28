@@ -17,7 +17,6 @@ import SurveyPHQ from "./pages/SurveyPHQ";
 import SurveyPSS from "./pages/SurveyPSS";
 import SurveyResult from "./pages/SurveyResult";
 import SurveyStart from "./pages/SurveyStart";
-import SymptomCategory from "./pages/SymptomCategory";
 import TodoList from "./pages/TodoList";
 import ImprovementGuide from "./pages/ImprovementGuide";
 import SurveyRecord from "./pages/SurveyRecord";
@@ -50,7 +49,6 @@ function App() {
           <Route path="/survey/pss" element={<SurveyPSS />} />
           <Route path="/survey/result" element={<SurveyResult />} />
           <Route path="/survey/start" element={<SurveyStart />} />
-          <Route path="/symptom/category" element={<SymptomCategory />} />
           <Route path="/todo/list" element={<TodoList />} />
           <Route path="/improvement/guide" element={<ImprovementGuide />} />
           <Route path="/survey/record" element={<SurveyRecord />} />

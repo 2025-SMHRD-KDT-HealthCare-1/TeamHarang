@@ -6,7 +6,7 @@ const TodayTodo = ({ userId }) => {
   const [todos, setTodos] = useState([]);
   const [text, setText] = useState("");
 
-  // ✅ 1) 처음 마운트 시 / userId 바뀔 때 목록 불러오기
+  //  1) 처음 마운트 시 / userId 바뀔 때 목록 불러오기
   useEffect(() => {
     if (!userId) return;
 
@@ -27,7 +27,7 @@ const TodayTodo = ({ userId }) => {
     fetchTodos();
   }, [userId]);
 
-  // ✅ 2) 추가
+  //  2) 추가
   const handleAdd = async () => {
     if (!text.trim()) return;
 
@@ -52,7 +52,7 @@ const TodayTodo = ({ userId }) => {
     }
   };
 
-  // ✅ 3) 완료 토글
+  //  3) 완료 토글
   const handleToggle = async (id, current) => {
     try {
       const newValue = current ? 0 : 1;
@@ -73,7 +73,7 @@ const TodayTodo = ({ userId }) => {
     }
   };
 
-  // ✅ 4) 삭제
+  //  4) 삭제
   const handleDelete = async (id) => {
     try {
       const res = await axios.delete(

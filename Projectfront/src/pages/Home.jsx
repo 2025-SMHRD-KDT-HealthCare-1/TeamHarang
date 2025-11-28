@@ -2,7 +2,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import TodayTodo from "../components/TodayTodo";
-import "../styles/Home.css";   // <-- CSS 불러오기
+import CheckResult from "../components/CheckResult";   //  추가
+import "../styles/Home.css";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -12,11 +13,13 @@ const Home = () => {
 
       {/* ====== 1행 : 스트레스 체크 / 마음 일기 ====== */}
       <div className="row">
-        
+
         {/* 스트레스 체크 */}
         <div className="box box-blue">
           <h2 className="title-blue">스트레스 체크</h2>
-          <p className="desc">검증된 설문을 통해 우울, 불안, 스트레스 수준을 측정해보세요.</p>
+          <p className="desc">
+            검증된 설문을 통해 우울, 불안, 스트레스 수준을 측정해보세요.
+          </p>
 
           <ul className="list">
             <li>각 7~10개 문항, 5분 소요</li>
@@ -24,7 +27,10 @@ const Home = () => {
             <li>맞춤형 개선방안 제공</li>
           </ul>
 
-          <button className="btn btn-blue" onClick={() => navigate("/survey/start")}>
+          <button
+            className="btn btn-blue"
+            onClick={() => navigate("/survey/start")}
+          >
             체크 시작하기
           </button>
         </div>
@@ -32,7 +38,9 @@ const Home = () => {
         {/* 마음 일기 */}
         <div className="box box-green">
           <h2 className="title-green">마음 일기</h2>
-          <p className="desc">매일의 감정과 생각을 기록하며 마음 패턴을 발견해보세요.</p>
+          <p className="desc">
+            매일의 감정과 생각을 기록하며 마음 패턴을 발견해보세요.
+          </p>
 
           <ul className="list">
             <li>감정 표현과 자기 이해 향상</li>
@@ -40,7 +48,10 @@ const Home = () => {
             <li>개인 기록 안전하게 보관</li>
           </ul>
 
-          <button className="btn btn-green" onClick={() => navigate("/diary/text")}>
+          <button
+            className="btn btn-green"
+            onClick={() => navigate("/diary/text")}
+          >
             마음 일기 쓰러 가기
           </button>
         </div>
@@ -55,11 +66,15 @@ const Home = () => {
           <h2 className="title-purple">체크 결과 분석</h2>
           <p className="desc">전체 체크 이력을 확인할 수 있어요.</p>
 
-          <div className="result-empty">체크 결과가 없습니다</div>
-
-          <button className="btn btn-purple" onClick={() => navigate("/survey/result")}>
+          {/*  컴포넌트로 분리됨 */}
+          <CheckResult />
+          {/* 체크 결과 확인 기능 준비중 잠시 주석처리 */}
+          {/* <button
+            className="btn btn-purple"
+            onClick={() => navigate("/survey/result")}
+          >
             체크 결과 확인하기
-          </button>
+          </button> */}
         </div>
 
         {/* 오늘의 할 일 */}
@@ -71,8 +86,11 @@ const Home = () => {
             <TodayTodo userId="testUser01" />
           </div>
 
-          <button className="btn btn-orange" onClick={() => navigate("/todo/list")}>
-            전체 할 일 목록 보러가기
+          <button
+            className="btn btn-orange"
+            onClick={() => navigate("/todo/list")}
+          >
+            내 달성도 확인
           </button>
         </div>
 

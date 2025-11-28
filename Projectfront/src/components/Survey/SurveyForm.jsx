@@ -7,21 +7,29 @@ export default function SurveyForm({ type, questions }) {
 
   const { register, handleSubmit, formState: { errors } } = useForm();
 
-  const labels = [
-    "전혀 그렇지 않다",
-    "그렇지 않다",
-    "보통이다",
-    "그렇다",
-    "매우 그렇다",
-  ];
+  // ------------------------------
+  //  설문 타입별 선택지 텍스트
+  // ------------------------------
+  const options = {
+    PHQ: ["없음", "2~6일", "7~12일", "거의 매일"],
+    GAD: ["전혀 없음", "가끔 있음", "자주 있음", "거의 매일"], // 필요하면 수정
+    PSS: ["전혀 없음", "거의 없음", "때때로 있음", "자주 있음", "매우 자주 있음"],
+  };
 
   // ------------------------------
-  // 🚀 점수 계산 없음 — 데이터만 전달
+  //  각 설문별 점수 개수
+  // ------------------------------
+  const optionCount = {
+    PHQ: 4, // 0~3
+    GAD: 4, // 0~3
+    PSS: 5, // 0~4
+  };
+
+  // ------------------------------
+  //  점수 계산 없음 — UI만 보여줌
   // ------------------------------
   const onSubmit = (data) => {
     const answers = Object.values(data).map((v) => Number(v));
-
-    // 백엔드에서 점수/등급/메시지 모두 계산
     navigate("/survey/result", {
       state: { type, answers },
     });
@@ -52,26 +60,24 @@ export default function SurveyForm({ type, questions }) {
             </p>
 
             {/* 선택지 출력 */}
-            {[0, 1, 2, 3, type === "PSS" ? 4 : null]
-              .filter((v) => v !== null)
-              .map((value) => (
-                <label
-                  key={value}
-                  style={{
-                    display: "block",
-                    marginBottom: "6px",
-                    cursor: "pointer",
-                  }}
-                >
-                  <input
-                    type="radio"
-                    value={value}
-                    {...register(`q${index}`, { required: true })}
-                    style={{ marginRight: "8px" }}
-                  />
-                  {labels[value]}
-                </label>
-              ))}
+            {[...Array(optionCount[type]).keys()].map((value) => (
+              <label
+                key={value}
+                style={{
+                  display: "block",
+                  marginBottom: "6px",
+                  cursor: "pointer",
+                }}
+              >
+                <input
+                  type="radio"
+                  value={value}
+                  {...register(`q${index}`, { required: true })}
+                  style={{ marginRight: "8px" }}
+                />
+                {options[type][value]}
+              </label>
+            ))}
 
             {errors[`q${index}`] && (
               <p style={{ color: "red", fontSize: "12px" }}>
