@@ -1,202 +1,103 @@
+// src/pages/Home.jsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import TodayTodo from "../components/TodayTodo";
+import CheckResult from "../components/CheckResult";   //  추가
+import "../styles/Home.css";
 
 const Home = () => {
   const navigate = useNavigate();
 
   return (
-    <div style={{ padding: "20px", maxWidth: "1200px", margin: "0 auto" }}>
+    <div className="home-container">
 
       {/* ====== 1행 : 스트레스 체크 / 마음 일기 ====== */}
-      <div style={{ display: "flex", gap: "20px", marginBottom: "20px" }}>
-        
+      <div className="row">
+
         {/* 스트레스 체크 */}
-        <div
-          style={{
-            flex: 1,
-            background: "#dceaff",
-            borderRadius: "15px",
-            padding: "20px",
-          }}
-        >
-          <h2 style={{ color: "#2c5cd3" }}>스트레스 체크</h2>
-          <p style={{ fontSize: "14px" }}>
+        <div className="box box-blue">
+          <h2 className="title-blue">스트레스 체크</h2>
+          <p className="desc">
             검증된 설문을 통해 우울, 불안, 스트레스 수준을 측정해보세요.
           </p>
-          <ul style={{ fontSize: "13px", marginTop: "10px" }}>
+
+          <ul className="list">
             <li>각 7~10개 문항, 5분 소요</li>
             <li>즉시 결과 확인 가능</li>
             <li>맞춤형 개선방안 제공</li>
           </ul>
 
           <button
+            className="btn btn-blue"
             onClick={() => navigate("/survey/start")}
-            style={{
-              marginTop: "20px",
-              width: "100%",
-              padding: "12px",
-              background: "#2c5cd3",
-              color: "white",
-              borderRadius: "10px",
-              border: "none",
-              cursor: "pointer",
-              fontWeight: 600,
-            }}
           >
             체크 시작하기
           </button>
         </div>
 
         {/* 마음 일기 */}
-        <div
-          style={{
-            flex: 1,
-            background: "#cdfadc",
-            borderRadius: "15px",
-            padding: "20px",
-          }}
-        >
-          <h2 style={{ color: "#1ea75f" }}>마음 일기</h2>
-          <p style={{ fontSize: "14px" }}>
+        <div className="box box-green">
+          <h2 className="title-green">마음 일기</h2>
+          <p className="desc">
             매일의 감정과 생각을 기록하며 마음 패턴을 발견해보세요.
           </p>
-          <ul style={{ fontSize: "13px", marginTop: "10px" }}>
+
+          <ul className="list">
             <li>감정 표현과 자기 이해 향상</li>
             <li>스트레스 해소 및 마음 정리</li>
             <li>개인 기록 안전하게 보관</li>
           </ul>
 
           <button
+            className="btn btn-green"
             onClick={() => navigate("/diary/text")}
-            style={{
-              marginTop: "20px",
-              width: "100%",
-              padding: "12px",
-              background: "#1ea75f",
-              color: "white",
-              borderRadius: "10px",
-              border: "none",
-              cursor: "pointer",
-              fontWeight: 600,
-            }}
           >
             마음 일기 쓰러 가기
           </button>
         </div>
+
       </div>
 
       {/* ====== 2행 : 체크 결과 / 오늘의 할 일 ====== */}
-      <div style={{ display: "flex", gap: "20px" }}>
+      <div className="row">
 
         {/* 체크 결과 */}
-        <div
-          style={{
-            flex: 1,
-            background: "#f0dfff",
-            borderRadius: "15px",
-            padding: "20px",
-          }}
-        >
-          <h2 style={{ color: "#8e44ad" }}>체크 결과 분석</h2>
-          <p style={{ fontSize: "14px" }}>
-            전체 체크 이력을 확인할 수 있어요.
-          </p>
+        <div className="box box-purple">
+          <h2 className="title-purple">체크 결과 분석</h2>
+          <p className="desc">전체 체크 이력을 확인할 수 있어요.</p>
 
-          <div
-            style={{
-              height: "160px",
-              background: "white",
-              borderRadius: "10px",
-              marginTop: "15px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              fontSize: "15px",
-              color: "#666",
-            }}
-          >
-            체크 결과가 없습니다
-          </div>
-
-          <button
+          {/*  컴포넌트로 분리됨 */}
+          <CheckResult />
+          {/* 체크 결과 확인 기능 준비중 잠시 주석처리 */}
+          {/* <button
+            className="btn btn-purple"
             onClick={() => navigate("/survey/result")}
-            style={{
-              marginTop: "20px",
-              width: "100%",
-              padding: "12px",
-              background: "#8e44ad",
-              color: "white",
-              borderRadius: "10px",
-              border: "none",
-              cursor: "pointer",
-              fontWeight: 600,
-            }}
           >
             체크 결과 확인하기
-          </button>
+          </button> */}
         </div>
 
         {/* 오늘의 할 일 */}
-        <div
-          style={{
-            flex: 1,
-            background: "#ffe2c2",
-            borderRadius: "15px",
-            padding: "20px",
-          }}
-        >
-          <h2 style={{ color: "#d35400" }}>오늘의 할 일</h2>
-          <p style={{ fontSize: "14px" }}>
-            목표를 체크하며 성취감을 느껴보세요.
-          </p>
+        <div className="box box-orange">
+          <h2 className="title-orange">오늘의 할 일</h2>
+          <p className="desc">목표를 체크하며 성취감을 느껴보세요.</p>
 
-          {/*  TodayTodo 기능 삽입 */}
-          <div style={{ marginTop: "15px" }}>
-            <TodayTodo userId="testUser01" /> 
-            {/* userId는 실제 로그인 유저로 변경 */}
+          <div className="todo-wrapper">
+            <TodayTodo userId="testUser01" />
           </div>
 
           <button
+            className="btn btn-orange"
             onClick={() => navigate("/todo/list")}
-            style={{
-              marginTop: "20px",
-              width: "100%",
-              padding: "12px",
-              background: "#d35400",
-              color: "white",
-              borderRadius: "10px",
-              border: "none",
-              cursor: "pointer",
-              fontWeight: 600,
-            }}
           >
-            전체 할 일 목록 보러가기
+            내 달성도 확인
           </button>
         </div>
+
       </div>
 
       {/* ====== 오른쪽 아래 AI 상담사 버튼 ====== */}
-      <button
-        onClick={() => navigate("/chatbot")}
-        style={{
-          position: "fixed",
-          bottom: "30px",
-          right: "30px",
-          width: "70px",
-          height: "70px",
-          borderRadius: "50%",
-          background: "#7b47ff",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-          fontSize: "28px",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          boxShadow: "0 4px 12px rgba(0,0,0,0.25)",
-        }}
-      >
+      <button className="ai-button" onClick={() => navigate("/chatbot")}>
         🤖
       </button>
 
