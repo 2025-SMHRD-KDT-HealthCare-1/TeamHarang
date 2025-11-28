@@ -7,6 +7,7 @@ const Slide1 = ({ onLogin, onJoin }) => {
       style={{
         width: "100vw",
         height: "100vh",
+        marginLeft: "calc(50% - 50vw)",
         backgroundImage: "url('/start-bg.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
@@ -18,7 +19,7 @@ const Slide1 = ({ onLogin, onJoin }) => {
         alignItems: "center",
       }}
     >
-      {/* 🔥 오버레이 레이어(배경 위 검정 반투명)*/}
+      {/* 오버레이 레이어(배경 위 검정 반투명)*/}
       <div
         style={{
           position: "absolute",

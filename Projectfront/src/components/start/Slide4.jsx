@@ -8,6 +8,7 @@ const Slide4 = () => {
       style={{
         width: "100vw",
         height: "100vh",
+         marginLeft: "calc(50% - 50vw)",
         paddingTop: "70px",
         backgroundColor: "#f3f8ff",
         textAlign: "center",

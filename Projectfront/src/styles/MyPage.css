@@ -1,62 +1,242 @@
-/* 전체를 완전히 독립된 공간으로 만들어 StartPage.css 영향 제거 */
-.mypage-wrapper {
-  width: 100%;
-  height: 100vh;
-  background: #f7f9fc;
+/* =========================
+   공통 색상 변수
+   ========================= */
 
+:root {
+  --page-bg: #f3f4f8;
+  --card-bg: #ffffff;
+  --card-border: rgba(0, 0, 0, 0.04);
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --accent: #4e7cff;
+  --danger: #ef4444;
+  --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.07);
+  --chip-bg: rgba(78, 124, 255, 0.08);
+}
+
+/* body에 .dark-mode 클래스가 붙었을 때 적용할 팔레트 */
+body.dark-mode {
+  --page-bg: #050816;
+  --card-bg: #0b1120;
+  --card-border: rgba(148, 163, 184, 0.35);
+  --text-primary: #e5e7eb;
+  --text-secondary: #9ca3af;
+  --accent: #7dd3fc;
+  --danger: #fb7185;
+  --shadow-soft: 0 22px 55px rgba(15, 23, 42, 0.9);
+  --chip-bg: rgba(125, 211, 252, 0.08);
+}
+
+/* =========================
+   레이아웃
+   ========================= */
+
+.mypage-wrapper {
+  min-height: 100vh;
+  width: 100%;
+  background: radial-gradient(circle at top left, rgba(129, 140, 248, 0.14), transparent 55%),
+              radial-gradient(circle at bottom right, rgba(56, 189, 248, 0.12), transparent 55%),
+              var(--page-bg);
   display: flex;
   justify-content: center;
-  align-items: center;
-
-  position: relative;
-  isolation: isolate; /* ★ 핵심: 외부 CSS 영향을 차단 */
+  padding: 56px 16px 40px;
+  box-sizing: border-box;
+  transition: background 0.25s ease;
 }
 
-/* 카드 */
-.mypage-card {
-  width: 650px;
-  padding: 30px;
-  background: white;
-  border-radius: 16px;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  border-left: 6px solid #3b82f6;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+.mypage-container {
+  width: 100%;
+  max-width: 900px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.94));
+  border-radius: 24px;
+  padding: 28px 24px 30px;
+  box-shadow: var(--shadow-soft);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(14px);
+  box-sizing: border-box;
 }
 
-/* 텍스트 영역 */
-.mypage-text {
-  text-align: left;
-  max-width: 450px;
+/* 다크모드일 때 카드 배경 조금 더 톤 다운 */
+body.dark-mode .mypage-container {
+  background: radial-gradient(circle at top, rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.98));
+  border-color: rgba(148, 163, 184, 0.45);
 }
 
-.mypage-text h2 {
-  margin: 0;
-  font-size: 22px;
-  color: #1e3a8a;
+/* =========================
+   타이틀 영역
+   ========================= */
+
+.mypage-title {
+  margin: 0 0 4px;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
 }
 
-.mypage-text p {
-  margin-top: 8px;
+.mypage-subtitle {
+  margin: 0 0 24px;
   font-size: 14px;
-  color: #555;
-  line-height: 1.4;
+  color: var(--text-secondary);
 }
 
-/* 버튼 */
-.mypage-btn {
-  padding: 10px 20px;
-  background: #3b82f6;
-  color: white;
+/* =========================
+   카드 공통 스타일
+   ========================= */
+
+.mypage-card {
+  margin-top: 20px;
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  box-shadow: 0 8px 25px rgba(15, 23, 42, 0.06);
+  box-sizing: border-box;
+}
+
+.mypage-card h3 {
+  margin: 0 0 6px;
+  font-size: 16px;
+  color: var(--text-primary);
+}
+
+.mypage-card p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* 탈퇴 카드 왼쪽 정보 */
+.card-info {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 버튼 오른쪽 정렬 상태에서 모바일 깨지지 않게 */
+@media (max-width: 640px) {
+  .mypage-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* =========================
+   버튼 스타일
+   ========================= */
+
+.blue-btn {
+  padding: 10px 18px;
+  border-radius: 999px;
   border: none;
-  border-radius: 10px;
+  outline: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--accent), #6366f1);
+  box-shadow: 0 10px 25px rgba(79, 70, 229, 0.45);
+  white-space: nowrap;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+}
+
+.blue-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 35px rgba(79, 70, 229, 0.55);
+}
+
+.blue-btn:active {
+  transform: translateY(0px) scale(0.98);
+  box-shadow: 0 6px 18px rgba(79, 70, 229, 0.4);
+  opacity: 0.9;
+}
+
+/* =========================
+   모달 (회원탈퇴 확인)
+   ========================= */
+
+.mypage-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.68);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  backdrop-filter: blur(4px);
+}
+
+.mypage-modal-box {
+  width: 360px;
+  max-width: calc(100% - 32px);
+  padding: 22px 22px 20px;
+  border-radius: 18px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.65);
+  box-sizing: border-box;
+}
+
+.mypage-modal-box h3 {
+  margin: 0 0 6px;
+  font-size: 17px;
+  color: var(--text-primary);
+}
+
+.mypage-modal-box p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.mypage-modal-buttons {
+  margin-top: 18px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* 취소 버튼 */
+.cancel-btn {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.cancel-btn:hover {
+  background: rgba(148, 163, 184, 0.12);
+}
+
+/* 탈퇴 버튼 */
+.delete-btn {
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, var(--danger), #f97373);
+  color: #ffffff;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
+  box-shadow: 0 10px 25px rgba(248, 113, 113, 0.45);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
 }
 
-.mypage-btn:hover {
-  background: #2563eb;
+.delete-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 35px rgba(248, 113, 113, 0.6);
+}
+
+.delete-btn:active {
+  transform: translateY(0px) scale(0.97);
+  opacity: 0.9;
 }

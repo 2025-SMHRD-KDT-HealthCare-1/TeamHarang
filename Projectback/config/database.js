@@ -1,14 +1,14 @@
 // 개요 :  DB 연결을 위한 정보 
-
+const express = require('express')
 const mysql = require("mysql2");
 
 // MySQL 연결 설정
 const conn = mysql.createConnection({
-    host : "",
-    user : "",
-    password : "",
-    port : "",
-    database : ""
+    host : "project-db-campus.smhrd.com",
+    user : "campus_25KDT_HC1_p2_3",
+    password : "smhrd3",
+    port : "3307",
+    database : "campus_25KDT_HC1_p2_3"
 });
 
 // 연결 확인 

@@ -13,38 +13,47 @@ const StartPage = () => {
   const [showJoin, setShowJoin] = useState(false);
 
   return (
-    <>
-      <Slide1
-        onLogin={() => setShowLogin(true)}
-        onJoin={() => setShowJoin(true)}
-      />
+   
+    <div className="startpage-wrapper" style={{ width: "100%", position: "relative" }}>
 
-      <Slide2 />
-      <Slide3 />
-      <Slide4 />
+    
+      <div className="startpage-container">
 
-      {/* 로그인 모달 */}
-      {showLogin && (
-        <LoginModal
-          onClose={() => setShowLogin(false)}
-          onOpenJoin={() => {
-            setShowLogin(false);
-            setShowJoin(true);
-          }}
+        {/* 슬라이드 1: 로그인/회원가입 버튼 */}
+        <Slide1
+          onLogin={() => setShowLogin(true)}
+          onJoin={() => setShowJoin(true)}
         />
-      )}
 
-      {/* 회원가입 모달 */}
-      {showJoin && (
-        <JoinModal
-          onClose={() => setShowJoin(false)}
-          onOpenLogin={() => {
-            setShowJoin(false);
-            setShowLogin(true);
-          }}
-        />
-      )}
-    </>
+        {/* 슬라이드 2~4 */}
+        <Slide2 />
+        <Slide3 />
+        <Slide4 />
+
+        {/* 로그인 모달 */}
+        {showLogin && (
+          <LoginModal
+            onClose={() => setShowLogin(false)}
+            onOpenJoin={() => {
+              setShowLogin(false);
+              setShowJoin(true);
+            }}
+          />
+        )}
+
+        {/* 회원가입 모달 */}
+        {showJoin && (
+          <JoinModal
+            onClose={() => setShowJoin(false)}
+            onOpenLogin={() => {
+              setShowJoin(false);
+              setShowLogin(true);
+            }}
+          />
+        )}
+
+      </div>
+    </div>
   );
 };
 
