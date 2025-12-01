@@ -1,38 +1,64 @@
-﻿import React from "react";
+// ========================
+//  SurveyForm.jsx (최종본)
+//  - 설문 데이터 백엔드로 전송
+//  - totalScore / emotionalScore / physicalScore 받아서 SurveyResult로 이동
+// ========================
+
+import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function SurveyForm({ type, questions }) {
   const navigate = useNavigate();
 
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
-  // ------------------------------
-  //  설문 타입별 선택지 텍스트
-  // ------------------------------
+  // 설문 선택지 텍스트
   const options = {
     PHQ: ["없음", "2~6일", "7~12일", "거의 매일"],
-    GAD: ["전혀 없음", "가끔 있음", "자주 있음", "거의 매일"], // 필요하면 수정
+    GAD: ["전혀 없음", "가끔 있음", "자주 있음", "거의 매일"],
     PSS: ["전혀 없음", "거의 없음", "때때로 있음", "자주 있음", "매우 자주 있음"],
   };
 
-  // ------------------------------
-  //  각 설문별 점수 개수
-  // ------------------------------
+  // 설문 타입별 점수 개수
   const optionCount = {
     PHQ: 4, // 0~3
     GAD: 4, // 0~3
     PSS: 5, // 0~4
   };
 
-  // ------------------------------
-  //  점수 계산 없음 — UI만 보여줌
-  // ------------------------------
-  const onSubmit = (data) => {
-    const answers = Object.values(data).map((v) => Number(v));
-    navigate("/survey/result", {
-      state: { type, answers },
-    });
+  // 제출
+  const onSubmit = async (data) => {
+    const body = {
+      user_id: 1, // 로그인 유저 ID (지금은 임시)
+      ...data,
+    };
+
+    let url = "";
+    if (type === "PHQ") url = "http://localhost:3001/survey/phq9";
+    if (type === "GAD") url = "http://localhost:3001/survey/gad7";
+    if (type === "PSS") url = "http://localhost:3001/survey/pss10";
+
+    try {
+      const response = await axios.post(url, body);
+
+      navigate("/survey/result", {
+        state: {
+          type,
+          totalScore: response.data.totalScore,
+          emotionalScore: response.data.emotionalScore,
+          physicalScore: response.data.physicalScore,
+        },
+      });
+    } catch (err) {
+      console.error(err);
+      alert("서버 요청 중 오류가 발생했습니다.");
+    }
   };
 
   return (

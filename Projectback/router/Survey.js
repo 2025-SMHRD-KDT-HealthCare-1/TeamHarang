@@ -15,88 +15,35 @@ router.post("/", (req, res) => {
 // -----------------------------
 router.post("/phq9", (req, res) => {
     const data = req.body;
+    const user_id = data.user_id;
 
-    const keys = ["q1","q2","q3","q4","q5","q6","q7","q8","q9"];
+    const keys = ["q0","q1","q2","q3","q4","q5","q6","q7","q8"];
 
     // 각 문항의 E/P 구분
     const categoryMap = {
-        q1: "E",
-        q2: "E",
-        q3: "P",
-        q4: "P",
-        q5: "P",
-        q6: "P",
-        q7: "E",
-        q8: "P",
-        q9: "E"
-    };
-
-    // 필수 문항 체크 + 유효성 검사
-    for (const key of keys) {
-        if (data[key] === undefined) {
-            return res.status(400).json({
-                result: "fail",
-                message: `필수 문항(${key})이 누락되었습니다`
-            });
-        }
-        if (![0,1,2,3].includes(data[key])) {
-            return res.status(400).json({
-                result: "fail",
-                message: `문항(${key})은 0~3 중 하나여야 합니다`
-            });
-        }
-    }
-
-    // 총점 & E/P 점수 계산
-    let totalScore = 0;
-    let emotionalScore = 0; // E
-    let physicalScore = 0;  // P
-
-    keys.forEach(key => {
-        const score = data[key];
-        totalScore += score;
-
-        if (categoryMap[key] === "E") emotionalScore += score;
-        else if (categoryMap[key] === "P") physicalScore += score;
-    });
-
-    return res.json({
-        result: "success",
-        totalScore: totalScore,
-        emotionalScore: emotionalScore,
-        physicalScore: physicalScore
-    });
-});
-
-
-// -----------------------------
-// GAD-7 (7문항)
-// -----------------------------
-router.post("/gad7", (req, res) => {
-    const data = req.body;
-
-    const keys = ["q1","q2","q3","q4","q5","q6","q7"];
-
-    // 각 문항별 E / P 분류
-    const categoryMap = {
+        q0: "E",
         q1: "E",
         q2: "P",
         q3: "P",
         q4: "P",
         q5: "P",
         q6: "E",
-        q7: "E"
+        q7: "P",
+        q8: "E"
     };
 
     // 필수 문항 체크 + 유효성 검사
     for (const key of keys) {
-        if (data[key] === undefined) {
+        const val = Number(data[key]);
+
+        if (isNaN(val)) {
             return res.status(400).json({
                 result: "fail",
-                message: `필수 문항(${key})이 누락되었습니다`
+                message: `필수 문항(${key})이 누락되었거나 값이 잘못되었습니다`
             });
         }
-        if (![0,1,2,3].includes(data[key])) {
+
+        if (![0,1,2,3].includes(val)) {
             return res.status(400).json({
                 result: "fail",
                 message: `문항(${key})은 0~3 중 하나여야 합니다`
@@ -106,63 +53,152 @@ router.post("/gad7", (req, res) => {
 
     // 총점 & E/P 계산
     let totalScore = 0;
-    let emotionalScore = 0; // E
-    let physicalScore = 0;  // P
+    let emotionalScore = 0; 
+    let physicalScore = 0;  
 
     keys.forEach(key => {
-        const score = data[key];
+        const score = Number(data[key]);
         totalScore += score;
 
         if (categoryMap[key] === "E") emotionalScore += score;
-        else if (categoryMap[key] === "P") physicalScore += score;
+        else physicalScore += score;
     });
 
-    return res.json({
-        result: "success",
-        totalScore: totalScore,
-        emotionalScore: emotionalScore,
-        physicalScore: physicalScore
+    const sql = `
+        INSERT INTO SURVEYRESULT
+        (user_id, survey_type,total_score, survey_date, physical_point, emotional_point)
+        VALUES (?, ?,?, CURRENT_DATE, ?, ?)
+    `;
+
+    const params = [user_id, "PHQ9", totalScore,physicalScore, emotionalScore];
+
+    conn.query(sql, params, (err, result) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).json({ result: "fail", message: "DB 저장 실패" });
+        }
+
+        return res.json({
+            result: "success",
+            totalScore,
+            emotionalScore,
+            physicalScore
+        });
     });
 });
 
 
 // -----------------------------
-// PSS (10문항, 선택지 0~4, 일부 문항 역채점)
+// GAD-7 (7문항)
+// -----------------------------
+router.post("/gad7", (req, res) => {
+    const data = req.body;
+    const user_id = data.user_id;
+
+    const keys = ["q0","q1","q2","q3","q4","q5","q6"];
+
+    const categoryMap = {
+        q0: "E",
+        q1: "P",
+        q2: "P",
+        q3: "P",
+        q4: "P",
+        q5: "E",
+        q6: "E"
+    };
+
+    for (const key of keys) {
+        const val = Number(data[key]);
+
+        if (isNaN(val)) {
+            return res.status(400).json({
+                result: "fail",
+                message: `필수 문항(${key})이 누락되었거나 값이 잘못되었습니다`
+            });
+        }
+
+        if (![0,1,2,3].includes(val)) {
+            return res.status(400).json({
+                result: "fail",
+                message: `문항(${key})은 0~3 중 하나여야 합니다`
+            });
+        }
+    }
+
+    let totalScore = 0;
+    let emotionalScore = 0;
+    let physicalScore = 0;
+
+    keys.forEach(key => {
+        const score = Number(data[key]);
+        totalScore += score;
+
+        if (categoryMap[key] === "E") emotionalScore += score;
+        else physicalScore += score;
+    });
+
+    const sql = `
+        INSERT INTO SURVEYRESULT
+        (user_id, survey_type,total_score, survey_date, physical_point, emotional_point)
+        VALUES (?, ?,?, CURRENT_DATE, ?, ?)
+    `;
+
+    const params = [user_id, "GAD7",totalScore,physicalScore, emotionalScore];
+
+    conn.query(sql, params, (err, result) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).json({ result: "fail", message: "DB 저장 실패" });
+        }
+
+        return res.json({
+            result: "success",
+            totalScore,
+            emotionalScore,
+            physicalScore
+        });
+    });
+});
+
+
+// -----------------------------
+// PSS-10 (10문항, 일부 역문항)
 // -----------------------------
 router.post("/pss10", (req, res) => {
     const data = req.body;
+    const user_id = data.user_id;
 
     const keys = [
-        "q1","q2","q3","q4","q5",
-        "q6","q7","q8","q9","q10"
+        "q0","q1","q2","q3","q4",
+        "q5","q6","q7","q8","q9"
     ];
 
-    // E = 정서적 / P = 신체적
     const categoryMap = {
-        q1: "E",
-        q2: "P",
-        q3: "E",
-        q4: "P", // 역문항
-        q5: "P", // 역문항
-        q6: "P",
-        q7: "E", // 역문항
-        q8: "P", // 역문항
-        q9: "E",
-        q10: "P"
+        q0: "E",
+        q1: "P",
+        q2: "E",
+        q3: "P",
+        q4: "P",
+        q5: "P",
+        q6: "E",
+        q7: "P",
+        q8: "E",
+        q9: "P"
     };
 
-    // 역문항 리스트
-    const reverseItems = ["q4", "q5", "q7", "q8"];
+    const reverseItems = ["q3", "q4", "q6", "q7"];
 
-    // 필수 문항 체크 + 유효성 검사
     for (const key of keys) {
-        if (data[key] === undefined) {
+        const val = Number(data[key]);
+
+        if (isNaN(val)) {
             return res.status(400).json({
                 result: "fail",
-                message: `필수 문항(${key})이 누락되었습니다`
+                message: `필수 문항(${key})이 누락되었거나 값이 잘못되었습니다`
             });
         }
-        if (![0,1,2,3,4].includes(data[key])) {
+
+        if (![0,1,2,3,4].includes(val)) {
             return res.status(400).json({
                 result: "fail",
                 message: `문항(${key})은 0~4 중 하나여야 합니다`
@@ -170,32 +206,42 @@ router.post("/pss10", (req, res) => {
         }
     }
 
-    // 총점 + E/P 계산
     let totalScore = 0;
-    let emotionalScore = 0; // E 정서적
-    let physicalScore = 0;  // P 신체적
+    let emotionalScore = 0;
+    let physicalScore = 0;
 
     keys.forEach(key => {
-        let score = data[key];
+        let score = Number(data[key]);
 
-        // 역문항 처리
-        if (reverseItems.includes(key)) {
-            score = 4 - score; // 반전 점수
-        }
+        if (reverseItems.includes(key)) score = 4 - score;
 
         totalScore += score;
 
         if (categoryMap[key] === "E") emotionalScore += score;
-        else if (categoryMap[key] === "P") physicalScore += score;
+        else physicalScore += score;
     });
 
-    return res.json({
-        result: "success",
-        totalScore: totalScore,
-        emotionalScore: emotionalScore,
-        physicalScore: physicalScore
+    const sql = `
+        INSERT INTO SURVEYRESULT
+        (user_id, survey_type,total_score,survey_date, physical_point, emotional_point)
+        VALUES (?, ?,?,CURRENT_DATE, ?, ?)
+    `;
+
+    const params = [user_id, "PSS10", totalScore,physicalScore, emotionalScore];
+
+    conn.query(sql, params, (err, result) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).json({ result: "fail", message: "DB 저장 실패" });
+        }
+
+        return res.json({
+            result: "success",
+            totalScore,
+            emotionalScore,
+            physicalScore
+        });
     });
 });
-
 
 module.exports = router;

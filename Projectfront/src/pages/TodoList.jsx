@@ -19,8 +19,8 @@ const TodoList = () => {
   const monthDone = useRef(0);
   const monthTotal = useRef(0);
 
-  // 리렌더용
-  const [refresh, setRefresh] = useState(0);
+  // 리렌더용 (값을 직접 사용하지 않으므로 첫 요소는 생략)
+  const [, setRefresh] = useState(0);
 
   // 로그인된 유저 ID (우선 하드코딩, 나중에 AuthContext 쓰면 됨)
   const userId = "testUser01";
