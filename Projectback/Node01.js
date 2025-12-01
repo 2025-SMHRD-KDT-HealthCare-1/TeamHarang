@@ -7,6 +7,8 @@ const homeRouter = require("./router/Home");
 // const APIRouter = require("./router/API");
 const SurveyRouter = require("./router/Survey");
 const TodoRouter = require("./router/Todo");
+const DiaryRouter = require("./router/Diary");
+
 
 const app = express();
 
@@ -19,8 +21,10 @@ app.use("/home", verifyAccessToken, homeRouter);// 홈화면
 app.use("/user", userRouter);// 회원관련 
 // app.use("/api", APIRouter); //API 관련 
 app.use("/survey", verifyAccessToken, SurveyRouter);// 설문관련
-app.use("/todo", verifyAccessToken, TodoRouter); // todo관련
+app.use("/todo", verifyAccessToken, TodoRouter);
+app.use("/diary", verifyAccessToken, DiaryRouter);
 const APIRouter = require("./router/API");//chat관련
+
 
 
 app.get("/", (req, res) => {
