@@ -1,7 +1,12 @@
-import React, { useEffect, useRef } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+// ========================
+//  SurveyResult.jsx (정서·신체 카드 가로 정렬 버전)
+// ========================
 
-/* ---------------- 스타일 (위로 이동하여 오류 제거) ---------------- */
+import React, { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
+
+/* ---------------- 스타일 ---------------- */
 
 const container = {
   padding: "30px",
@@ -35,14 +40,15 @@ const categoryContainer = {
   marginBottom: "30px",
 };
 
-const improveGrid = {
-  display: "grid",
-  gridTemplateColumns: "1fr 1fr",
+/*  가로 정렬 박스 */
+const improveRow = {
+  display: "flex",
   gap: "20px",
-  marginTop: "20px",
+  marginBottom: "20px",
 };
 
 const improveCard = {
+  flex: 1,
   background: "#fafafa",
   border: "1px solid #eaeaea",
   borderRadius: "15px",
@@ -110,33 +116,44 @@ const SurveyResult = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // 설문 종류 + 사용자 답변
   const { type, answers } = location.state || {};
 
-  // ---------------------- ref 데이터 ----------------------
   const resultRef = useRef({
     score: null,
     level: "",
     message: "",
   });
 
-  // 강제 렌더 트리거용
+  const [improvements, setImprovements] = useState([]);
   const refreshRef = useRef(0);
 
-  // 첫 로드 시 임시 데이터 설정
   useEffect(() => {
     if (!answers || !type) return;
 
-    resultRef.current = {
-      score: 0,
-      level: "백엔드 결과 대기",
-      message: "백엔드 연결 전 임시 메시지입니다.",
-    };
+    axios
+      .post("http://localhost:3000/survey/result", { type, answers })
+      .then((res) => {
+        resultRef.current = {
+          score: res.data.score ?? null,
+          level: res.data.level ?? "",
+          message: res.data.message ?? "",
+        };
 
-    refreshRef.current++;
-  }, [answers, type]);
+        setImprovements(Array.isArray(res.data.improvements) ? res.data.improvements : []);
 
-  // 예외 처리
+        refreshRef.current++;
+      })
+      .catch(() => {
+        resultRef.current = {
+          score: 0,
+          level: "결과 준비 중",
+          message: "백엔드 연동 시 실제 결과가 표시됩니다.",
+        };
+        setImprovements([]);
+        refreshRef.current++;
+      });
+  }, [type, answers]);
+
   if (!answers || !type) {
     return (
       <div style={{ padding: "20px", textAlign: "center" }}>
@@ -163,7 +180,7 @@ const SurveyResult = () => {
       {/* ---------------- 점수 카드 ---------------- */}
       <div style={card}>
         <h1 style={{ fontSize: "42px", marginBottom: "10px" }}>
-          {resultRef.current.score !== null ? resultRef.current.score : "-"}
+          {resultRef.current.score ?? "-"}
         </h1>
 
         <p style={{ fontWeight: 600, marginBottom: "10px" }}>
@@ -173,38 +190,43 @@ const SurveyResult = () => {
         <p style={{ opacity: 0.75 }}>{resultRef.current.message}</p>
       </div>
 
-      {/* ---------------- 개선 방안 ---------------- */}
-      <div style={categoryContainer}>
-        <h2 style={{ margin: 0 }}>사용자 맞춤 개선방안 제시</h2>
-        <p style={{ opacity: 0.8, marginBottom: "20px" }}>도와드릴게요!</p>
-
-        <div style={improveGrid}>
-          {/* 정서적 반응 개선 */}
-          <div style={improveCard}>
-            <div style={improveHeader}>
-              <div style={iconCircle("#b28bff")}>💜</div>
-              <div>
-                <h3 style={{ margin: 0 }}>정서적 반응 개선</h3>
-                <p style={{ margin: 0, opacity: 0.7 }}>
-                  마음에서 느껴지는 감정을 정리하는 방법
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* 신체적 반응 개선 */}
-          <div style={improveCard}>
-            <div style={improveHeader}>
-              <div style={iconCircle("#8ae3c7")}>💚</div>
-              <div>
-                <h3 style={{ margin: 0 }}>신체적 반응 개선</h3>
-                <p style={{ margin: 0, opacity: 0.7 }}>
-                  몸에서 나타나는 스트레스 반응 완화
-                </p>
-              </div>
+      {/* ---------------- 정서적/신체적 개선 카드 (가로) ---------------- */}
+      <div style={improveRow}>
+        {/* 정서적 */}
+        <div style={improveCard}>
+          <div style={improveHeader}>
+            <div style={iconCircle("#b28bff")}>💜</div>
+            <div>
+              <h3 style={{ margin: 0 }}>정서적 반응 개선</h3>
+              <p style={{ margin: 0, opacity: 0.7 }}>감정 정리 · 인지 전환 도움</p>
             </div>
           </div>
         </div>
+
+        {/* 신체적 */}
+        <div style={improveCard}>
+          <div style={improveHeader}>
+            <div style={iconCircle("#8ae3c7")}>💚</div>
+            <div>
+              <h3 style={{ margin: 0 }}>신체적 반응 개선</h3>
+              <p style={{ margin: 0, opacity: 0.7 }}>호흡 · 이완 · 명상 중심</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ---------------- 백엔드 개선방안 리스트 ---------------- */}
+      <div style={categoryContainer}>
+        <h2 style={{ margin: 0 }}>개선방안</h2>
+        <p style={{ opacity: 0.8, marginBottom: "20px" }}>아래 내용을 실천해보세요.</p>
+
+        <ul>
+          {improvements.length > 0 ? (
+            improvements.map((item, i) => <li key={i}>{item}</li>)
+          ) : (
+            <li>개선방안 데이터를 받지 못했습니다.</li>
+          )}
+        </ul>
       </div>
 
       {/* ---------------- 버튼 ---------------- */}
