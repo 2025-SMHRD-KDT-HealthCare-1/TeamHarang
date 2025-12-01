@@ -1,6 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function SurveyForm({ type, questions }) {
   const navigate = useNavigate();
@@ -28,12 +29,35 @@ export default function SurveyForm({ type, questions }) {
   // ------------------------------
   //  점수 계산 없음 — UI만 보여줌
   // ------------------------------
-  const onSubmit = (data) => {
-    const answers = Object.values(data).map((v) => Number(v));
-    navigate("/survey/result", {
-      state: { type, answers },
-    });
+const onSubmit = async (data) => {
+  const body = {
+    user_id: 1, // 로그인 유저 ID
+    ...data,     // q1~q9 등 설문 데이터
   };
+
+  let url = "";
+
+  if (type === "PHQ") url = "http://localhost:3001/survey/phq9";
+  if (type === "GAD") url = "http://localhost:3001/survey/gad7";
+  if (type === "PSS") url = "http://localhost:3001/survey/pss10";
+
+  try {
+    const response = await axios.post(url, body);
+
+    navigate("/survey/result", {
+      state: {
+        type,
+        totalScore: response.data.totalScore,
+        emotionalScore: response.data.emotionalScore,
+        physicalScore: response.data.physicalScore,
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    alert("서버 요청 중 오류가 발생했습니다.");
+  }
+};
+
 
   return (
     <div style={{ padding: "20px", maxWidth: "700px", margin: "0 auto" }}>
