@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"; 
+import { useAuthStore } from "../../store/authstore"; 
 
 const modalOverlay = {
   position: "fixed",
@@ -73,6 +74,7 @@ const LoginModal = ({ onClose, onOpenJoin }) => {
   const inputId = useRef();
   const inputPw = useRef();
   const [error, setError] = useState("");
+  const { setAuth } = useAuthStore();
 
   const tryLogin = async () => {
     const account_id = inputId.current.value.trim();
@@ -90,6 +92,15 @@ const LoginModal = ({ onClose, onOpenJoin }) => {
       });
 
       if (res.data.result === "success") {
+
+        // 토큰 관련
+        const { accessToken, refreshToken, user } = res.data;
+        // 상태 관리 스토어에 토큰과 사용자 정보 저장
+        setAuth({ accessToken, refreshToken, user });
+        // 로컬 스토리지에 리프레시 토큰 저장
+        localStorage.setItem("refreshToken", refreshToken);
+        // 추가로 사용자 정보를 로컬 스토리지에 저장 (필요시)
+
         alert("로그인 성공!");
         localStorage.setItem("user", JSON.stringify(res.data.user));
         onClose();

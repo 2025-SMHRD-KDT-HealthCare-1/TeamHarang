@@ -21,7 +21,7 @@ const express = require('express');
 const router = express.Router();
 const conn = require('../config/database');
 const bcrypt = require("bcrypt");
-const { generateToken } = require("./Token");
+const { generateTokens, verifyRefreshToken } = require('./Token');
 
 // 로그인 요청
 router.post("/login", (req, res) => {
@@ -48,12 +48,13 @@ router.post("/login", (req, res) => {
         if (!match) return res.json({ result: "fail", message: "PW Fail" });
 
         
-        const token = generateToken(user);
+        const { accessToken, refreshToken } = generateTokens(user);
 
         
         res.json({
             result: "success",
-            token: token,
+            accessToken,      // 클라이언트에서 메모리 등에 저장
+            refreshToken,   // 클라이언트에서 로컬 스토리지 등에 저장
             user: {
                 user_id: user.user_id,
                 user_name: user.user_name,
