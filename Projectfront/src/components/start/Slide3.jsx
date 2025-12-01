@@ -8,6 +8,7 @@ const Slide3 = () => {
       style={{
         width: "100vw",
         height: "100vh",
+        marginLeft: "calc(50% - 50vw)",
         backgroundImage: "url('/slide3-bg.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
@@ -15,7 +16,7 @@ const Slide3 = () => {
         paddingTop: "100px",
       }}
     >
-      {/* 🔥 오버레이 */}
+      {/* 오버레이 */}
       <div
         style={{
           position: "absolute",

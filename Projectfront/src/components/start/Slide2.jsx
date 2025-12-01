@@ -8,6 +8,7 @@ const Slide2 = () => {
       style={{
         width: "100vw",
         height: "100vh",
+        marginLeft: "calc(50% - 50vw)",
         backgroundColor: "#ffffff",
         backgroundImage: "url('/slide2-bg.jpg')",
         backgroundSize: "cover",
@@ -20,7 +21,7 @@ const Slide2 = () => {
         textAlign: "center",
       }}
     >
-      {/* 🔥 오버레이 */}
+      {/* 오버레이 */}
       <div
         style={{
           position: "absolute",
