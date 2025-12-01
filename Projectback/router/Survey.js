@@ -66,11 +66,11 @@ router.post("/phq9", (req, res) => {
 
     const sql = `
         INSERT INTO SURVEYRESULT
-        (user_id, survey_type, survey_date, physical_point, emotional_point)
-        VALUES (?, ?, CURRENT_DATE, ?, ?)
+        (user_id, survey_type,total_score, survey_date, physical_point, emotional_point)
+        VALUES (?, ?,?, CURRENT_DATE, ?, ?)
     `;
 
-    const params = [user_id, "PHQ9", physicalScore, emotionalScore];
+    const params = [user_id, "PHQ9", totalScore,physicalScore, emotionalScore];
 
     conn.query(sql, params, (err, result) => {
         if (err) {
@@ -139,11 +139,11 @@ router.post("/gad7", (req, res) => {
 
     const sql = `
         INSERT INTO SURVEYRESULT
-        (user_id, survey_type, survey_date, physical_point, emotional_point)
-        VALUES (?, ?, CURRENT_DATE, ?, ?)
+        (user_id, survey_type,total_score, survey_date, physical_point, emotional_point)
+        VALUES (?, ?,?, CURRENT_DATE, ?, ?)
     `;
 
-    const params = [user_id, "GAD7", physicalScore, emotionalScore];
+    const params = [user_id, "GAD7",totalScore,physicalScore, emotionalScore];
 
     conn.query(sql, params, (err, result) => {
         if (err) {
@@ -223,11 +223,11 @@ router.post("/pss10", (req, res) => {
 
     const sql = `
         INSERT INTO SURVEYRESULT
-        (user_id, survey_type, survey_date, physical_point, emotional_point)
-        VALUES (?, ?, CURRENT_DATE, ?, ?)
+        (user_id, survey_type,total_score,survey_date, physical_point, emotional_point)
+        VALUES (?, ?,?,CURRENT_DATE, ?, ?)
     `;
 
-    const params = [user_id, "PSS10", physicalScore, emotionalScore];
+    const params = [user_id, "PSS10", totalScore,physicalScore, emotionalScore];
 
     conn.query(sql, params, (err, result) => {
         if (err) {
