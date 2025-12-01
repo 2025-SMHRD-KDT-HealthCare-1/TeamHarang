@@ -8,18 +8,17 @@ import Slide4 from "../components/start/Slide4";
 import LoginModal from "../components/modal/LoginModal";
 import JoinModal from "../components/modal/JoinModal";
 
+import styles from "./StartPage.module.css";
+
 const StartPage = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [showJoin, setShowJoin] = useState(false);
 
   return (
-   
-    <div className="startpage-wrapper" style={{ width: "100%", position: "relative" }}>
+    <div className={styles.wrapper}>
+      <div className={styles.container}>
 
-    
-      <div className="startpage-container">
-
-        {/* 슬라이드 1: 로그인/회원가입 버튼 */}
+        {/* 슬라이드 1 */}
         <Slide1
           onLogin={() => setShowLogin(true)}
           onJoin={() => setShowJoin(true)}

@@ -1,20 +1,18 @@
 import React, { useState } from "react";
-import "../styles/MyPage.css";
+import styles from "./MyPage.module.css";
 import axios from "axios";
 
 const MyPage = () => {
   const [showModal, setShowModal] = useState(false);
 
-  // ------------------------------
-  //   탈퇴 요청 (백엔드로 요청만 보냄)
-  // ------------------------------
+  // 회원탈퇴 처리 (임시)
   const handleDelete = async () => {
     try {
-      // TODO: 백엔드 API 완성되면 경로 맞춰야 함
+      // 실제 API 완성 시 교체
       // await axios.delete("http://localhost:8080/api/member/delete");
 
       alert("회원 탈퇴가 완료되었습니다.");
-      window.location.href = "/login";
+      window.location.href = "/";
     } catch (err) {
       console.error(err);
       alert("탈퇴 처리 중 오류가 발생했습니다.");
@@ -22,55 +20,50 @@ const MyPage = () => {
   };
 
   return (
-    <div className="mypage-wrapper">
-      <div className="mypage-container">
-
-        <h1 className="mypage-title">마이페이지</h1>
-        <p className="mypage-subtitle">
+    <div className={styles.wrapper}>
+      <div className={styles.container}>
+        <h1 className={styles.title}>마이페이지</h1>
+        <p className={styles.subtitle}>
           계정 정보와 개인정보를 안전하게 관리하세요
         </p>
 
-        {/* 회원 탈퇴 카드 */}
-        <div className="mypage-card">
-          <div className="card-info">
+        {/* 탈퇴 카드 */}
+        <div className={styles.card}>
+          <div className={styles.cardInfo}>
             <h3>회원 탈퇴</h3>
             <p>탈퇴 시 모든 데이터가 영구적으로 삭제되며 복구할 수 없습니다.</p>
           </div>
 
-          <button 
-            className="blue-btn"
+          <button
+            className={styles.blueBtn}
             onClick={() => setShowModal(true)}
           >
             회원 탈퇴하기
           </button>
         </div>
 
-        {/* ------------------ 탈퇴 확인 모달 ------------------ */}
+        {/* 모달 */}
         {showModal && (
-          <div className="mypage-modal-overlay">
-            <div className="mypage-modal-box">
-
+          <div className={styles.modalOverlay}>
+            <div className={styles.modalBox}>
               <h3>정말 탈퇴하시겠습니까?</h3>
-              <p style={{ marginTop: "6px", opacity: 0.8 }}>
-                탈퇴 후에는 모든 데이터가 삭제되며 되돌릴 수 없습니다.
-              </p>
+              <p>탈퇴 후에는 모든 데이터가 삭제되며 되돌릴 수 없습니다.</p>
 
-              <div className="mypage-modal-buttons">
-                <button 
-                  className="cancel-btn" 
+              <div className={styles.modalButtons}>
+                <button
+                  className={styles.cancelBtn}
                   onClick={() => setShowModal(false)}
                 >
                   취소
                 </button>
 
-                <button 
-                  className="delete-btn" 
+                <button
+                  className={styles.deleteBtn}
                   onClick={handleDelete}
                 >
                   탈퇴하기
                 </button>
               </div>
-
             </div>
           </div>
         )}

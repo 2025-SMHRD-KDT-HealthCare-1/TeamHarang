@@ -1,42 +1,27 @@
 import React from "react";
 import { indicatorWrapper, activeDot, inactiveDot } from "./indicatorStyle";
 import TodoCard from "./TodoCard";
+import styles from "./Slide4.module.css";
 
 const Slide4 = () => {
   return (
-    <div
-      style={{
-        width: "100vw",
-        height: "100vh",
-         marginLeft: "calc(50% - 50vw)",
-        paddingTop: "70px",
-        backgroundColor: "#f3f8ff",
-        textAlign: "center",
-        position: "relative",
-      }}
-    >
-      <div
-        style={{
-          width: "90px",
-          height: "90px",
-          borderRadius: "50%",
-          background: "linear-gradient(180deg, #b47bff, #7d4dff)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          margin: "0 auto 25px",
-        }}
-      >
-        <img src="/todo-icon.png" style={{ width: "45px" }} />
+    <div className={styles.slideWrapper}>
+      
+      {/* 아이콘 원형 */}
+      <div className={styles.iconCircle}>
+        <img src="/todo-icon.png" className={styles.icon} />
       </div>
 
-      <h1 style={{ fontSize: "36px", marginBottom: "10px" }}>TODO 리스트</h1>
+      {/* 제목 */}
+      <h1 className={styles.title}>TODO 리스트</h1>
 
-      <p style={{ fontSize: "18px", opacity: 0.7, marginBottom: "50px" }}>
+      {/* 설명 */}
+      <p className={styles.subtitle}>
         매일의 작은 성취를 기록하고 습관을 만들어가세요
       </p>
 
-      <div style={{ display: "flex", gap: "40px", justifyContent: "center" }}>
+      {/* 카드 영역 */}
+      <div className={styles.cardRow}>
         <TodoCard
           icon="/todo1.png"
           title="일일 목표 설정"
@@ -54,6 +39,7 @@ const Slide4 = () => {
         />
       </div>
 
+      {/* 인디케이터 */}
       <div style={indicatorWrapper}>
         <div style={inactiveDot}></div>
         <div style={inactiveDot}></div>

@@ -195,7 +195,7 @@ const DiaryText = () => {
           borderRadius: "10px",
           border: "1px solid #cccccc",
           resize: "vertical",
-          minHeight: "200px", // 크기 증가
+          minHeight: "200px", 
         }}
         placeholder="오늘 하루는 어땠나요? 자유롭게 기록해보세요."
         value={values.text}

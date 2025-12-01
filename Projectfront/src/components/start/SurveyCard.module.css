@@ -1,0 +1,33 @@
+.card {
+  width: 350px;
+  padding: 30px;
+  border-radius: 20px;
+  background: white;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  text-align: left;
+}
+
+.numBox {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.title {
+  margin-bottom: 10px;
+}
+
+.list {
+  padding-left: 20px;
+}
+
+.listItem {
+  margin-bottom: 8px;
+  opacity: 0.75;
+}
