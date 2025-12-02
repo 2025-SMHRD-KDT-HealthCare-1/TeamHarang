@@ -1,72 +1,24 @@
 import React from "react";
 import { indicatorWrapper, activeDot, inactiveDot } from "./indicatorStyle";
 import ServiceBox from "./ServiceBox";
+import styles from "./Slide2.module.css";
 
 const Slide2 = () => {
   return (
-    <div
-      style={{
-        width: "100vw",
-        height: "100vh",
-        marginLeft: "calc(50% - 50vw)",
-        backgroundColor: "#ffffff",
-        backgroundImage: "url('/slide2-bg.jpg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        position: "relative",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        paddingTop: "100px",
-        textAlign: "center",
-      }}
-    >
+    <div className={styles.slideWrapper}>
+
       {/* 오버레이 */}
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          background: "rgba(0,0,0,0.25)",
-          zIndex: 1,
-        }}
-      />
+      <div className={styles.overlay}></div>
 
       {/* 콘텐츠 */}
-      <div style={{ position: "relative", zIndex: 2 }}>
-        <h1
-          style={{
-            fontSize: "36px",
-            marginBottom: "10px",
-            textShadow: "0 2px 6px rgba(0,0,0,0.55)",
-            color: "#fff",
-          }}
-        >
-          MindCare 주요 서비스
-        </h1>
+      <div className={styles.content}>
+        <h1 className={styles.title}>MindCare 주요 서비스</h1>
 
-        <p
-          style={{
-            fontSize: "18px",
-            opacity: 0.9,
-            marginBottom: "45px",
-            textShadow: "0 2px 6px rgba(0,0,0,0.55)",
-            color: "#fff",
-          }}
-        >
+        <p className={styles.subtitle}>
           과학적인 치료와 관리 시스템을 당신에게 제공합니다
         </p>
 
-        <div
-          style={{
-            display: "flex",
-            gap: "60px",
-            justifyContent: "center",
-            flexWrap: "wrap",
-          }}
-        >
+        <div className={styles.serviceRow}>
           <ServiceBox
             icon="/icon1.png"
             title="검사 하러 가기"

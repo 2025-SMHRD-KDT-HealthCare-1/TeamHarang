@@ -1,57 +1,19 @@
-﻿import React from "react";
+// src/pages/SurveyStart.jsx
+import React from "react";
 import { useNavigate } from "react-router-dom";
+import styles from "./SurveyStart.module.css";
 
 export default function SurveyStart() {
   const navigate = useNavigate();
 
   return (
-    // ★ 화면 전체를 가운데 정렬하는 바깥 래퍼
-    <div
-      style={{
-        width: "100%",
-        minHeight: "100vh",
-        display: "flex",
-        justifyContent: "center",   // 가로 중앙
-        alignItems: "center",       // 세로 중앙
-        background: "#f6f8ff",
-        boxSizing: "border-box",
-      }}
-    >
-      {/* ★ 실제 내용 박스: 중앙에 모아서 위아래로 배치 */}
-      <div
-        style={{
-          width: "100%",
-          maxWidth: "1400px",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        {/* 제목 */}
-        <h1 style={{ fontSize: "36px", marginBottom: "10px" }}>
-          정신건강 체크 선택
-        </h1>
-        <p
-          style={{
-            opacity: 0.7,
-            marginBottom: "40px",
-            fontSize: "18px",
-            textAlign: "center",
-          }}
-        >
-          당신에게 필요한 체크를 선택해주세요
-        </p>
+    <div className={styles.wrapper}>
+      <div className={styles.inner}>
 
-        {/* 카드 3개 묶음 */}
-        <div
-          style={{
-            display: "flex",
-            gap: "35px",
-            justifyContent: "center", // ★ 가로 중앙
-            alignItems: "stretch",
-          }}
-        >
-          {/* 우울 체크 카드 */}
+        <h1 className={styles.title}>정신건강 체크 선택</h1>
+        <p className={styles.subtitle}>당신에게 필요한 체크를 선택해주세요</p>
+
+        <div className={styles.cardRow}>
           <SurveyCard
             color="#3d7eff"
             icon="🧠"
@@ -68,7 +30,6 @@ export default function SurveyStart() {
             onClick={() => navigate("/survey/phq")}
           />
 
-          {/* 불안 체크 */}
           <SurveyCard
             color="#b04bff"
             icon="💜"
@@ -85,7 +46,6 @@ export default function SurveyStart() {
             onClick={() => navigate("/survey/gad")}
           />
 
-          {/* 스트레스 체크 */}
           <SurveyCard
             color="#ff7b3d"
             icon="⚡"
@@ -103,19 +63,7 @@ export default function SurveyStart() {
           />
         </div>
 
-        {/* 홈으로 돌아가기 버튼 */}
-        <button
-          onClick={() => navigate("/home")}
-          style={{
-            marginTop: "40px",
-            padding: "10px 24px",
-            borderRadius: "10px",
-            background: "#333",
-            color: "white",
-            border: "none",
-            cursor: "pointer",
-          }}
-        >
+        <button className={styles.homeBtn} onClick={() => navigate("/home")}>
           홈으로 돌아가기
         </button>
       </div>
@@ -124,59 +72,29 @@ export default function SurveyStart() {
 }
 
 /* ---------------------------------------------------
-   SurveyCard 컴포넌트 (기능 그대로)
+   SurveyCard 컴포넌트
 --------------------------------------------------- */
 function SurveyCard({ color, icon, title, descList, notice, btnColor, onClick }) {
   return (
-    <div
-      style={{
-        width: "380px",
-        background: "white",
-        borderRadius: "16px",
-        padding: "30px",
-        boxShadow: "0 6px 20px rgba(0, 0, 0, 0.12)",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <div style={{ fontSize: "40px", marginBottom: "15px" }}>{icon}</div>
+    <div className={styles.card}>
+      <div className={styles.cardIcon}>{icon}</div>
 
-      <h2 style={{ color, marginBottom: "15px" }}>{title}</h2>
+      <h2 className={styles.cardTitle} style={{ color }}>{title}</h2>
 
-      <ul style={{ paddingLeft: "18px", lineHeight: "1.6", flexGrow: 1 }}>
+      <ul className={styles.descList}>
         {descList.map((text, idx) => (
-          <li key={idx} style={{ fontSize: "15px", opacity: 0.8 }}>
+          <li key={idx} className={styles.descItem}>
             {text}
           </li>
         ))}
       </ul>
 
-      <div
-        style={{
-          marginTop: "20px",
-          background: "#fff7d5",
-          padding: "12px",
-          borderRadius: "8px",
-          fontSize: "13px",
-          opacity: 0.9,
-        }}
-      >
-        {notice}
-      </div>
+      <div className={styles.noticeBox}>{notice}</div>
 
       <button
+        className={styles.startBtn}
         onClick={onClick}
-        style={{
-          marginTop: "20px",
-          width: "100%",
-          padding: "12px 0",
-          background: btnColor,
-          color: "white",
-          borderRadius: "10px",
-          border: "none",
-          cursor: "pointer",
-          fontWeight: "600",
-        }}
+        style={{ background: btnColor }}
       >
         체크 시작하기
       </button>

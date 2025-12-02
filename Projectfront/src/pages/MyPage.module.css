@@ -14,8 +14,8 @@
   --chip-bg: rgba(78, 124, 255, 0.08);
 }
 
-/* body에 .dark-mode 클래스가 붙었을 때 적용할 팔레트 */
-body.dark-mode {
+/* 다크모드 */
+:global(body.dark-mode) {
   --page-bg: #050816;
   --card-bg: #0b1120;
   --card-border: rgba(148, 163, 184, 0.35);
@@ -31,7 +31,7 @@ body.dark-mode {
    레이아웃
    ========================= */
 
-.mypage-wrapper {
+.wrapper {
   min-height: 100vh;
   width: 100%;
   background: radial-gradient(circle at top left, rgba(129, 140, 248, 0.14), transparent 55%),
@@ -41,10 +41,9 @@ body.dark-mode {
   justify-content: center;
   padding: 56px 16px 40px;
   box-sizing: border-box;
-  transition: background 0.25s ease;
 }
 
-.mypage-container {
+.container {
   width: 100%;
   max-width: 900px;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.94));
@@ -56,8 +55,7 @@ body.dark-mode {
   box-sizing: border-box;
 }
 
-/* 다크모드일 때 카드 배경 조금 더 톤 다운 */
-body.dark-mode .mypage-container {
+:global(body.dark-mode) .container {
   background: radial-gradient(circle at top, rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.98));
   border-color: rgba(148, 163, 184, 0.45);
 }
@@ -66,7 +64,7 @@ body.dark-mode .mypage-container {
    타이틀 영역
    ========================= */
 
-.mypage-title {
+.title {
   margin: 0 0 4px;
   font-size: 28px;
   font-weight: 700;
@@ -74,17 +72,17 @@ body.dark-mode .mypage-container {
   color: var(--text-primary);
 }
 
-.mypage-subtitle {
+.subtitle {
   margin: 0 0 24px;
   font-size: 14px;
   color: var(--text-secondary);
 }
 
 /* =========================
-   카드 공통 스타일
+   카드
    ========================= */
 
-.mypage-card {
+.card {
   margin-top: 20px;
   padding: 18px 20px;
   border-radius: 18px;
@@ -98,68 +96,61 @@ body.dark-mode .mypage-container {
   box-sizing: border-box;
 }
 
-.mypage-card h3 {
+.cardInfo h3 {
   margin: 0 0 6px;
   font-size: 16px;
   color: var(--text-primary);
 }
 
-.mypage-card p {
+.cardInfo p {
   margin: 0;
   font-size: 13px;
   color: var(--text-secondary);
 }
 
-/* 탈퇴 카드 왼쪽 정보 */
-.card-info {
+.cardInfo {
   display: flex;
   flex-direction: column;
 }
 
-/* 버튼 오른쪽 정렬 상태에서 모바일 깨지지 않게 */
+/* 반응형 */
 @media (max-width: 640px) {
-  .mypage-card {
+  .card {
     flex-direction: column;
     align-items: flex-start;
   }
 }
 
 /* =========================
-   버튼 스타일
+   버튼
    ========================= */
 
-.blue-btn {
+.blueBtn {
   padding: 10px 18px;
   border-radius: 999px;
   border: none;
-  outline: none;
   cursor: pointer;
   font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.02em;
-  color: #ffffff;
+  color: #fff;
   background: linear-gradient(135deg, var(--accent), #6366f1);
-  box-shadow: 0 10px 25px rgba(79, 70, 229, 0.45);
   white-space: nowrap;
-  transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+  transition: 0.12s ease;
 }
 
-.blue-btn:hover {
+.blueBtn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 14px 35px rgba(79, 70, 229, 0.55);
 }
 
-.blue-btn:active {
-  transform: translateY(0px) scale(0.98);
-  box-shadow: 0 6px 18px rgba(79, 70, 229, 0.4);
-  opacity: 0.9;
+.blueBtn:active {
+  transform: scale(0.97);
 }
 
 /* =========================
-   모달 (회원탈퇴 확인)
+   모달
    ========================= */
 
-.mypage-modal-overlay {
+.modalOverlay {
   position: fixed;
   inset: 0;
   background: rgba(15, 23, 42, 0.68);
@@ -170,7 +161,7 @@ body.dark-mode .mypage-container {
   backdrop-filter: blur(4px);
 }
 
-.mypage-modal-box {
+.modalBox {
   width: 360px;
   max-width: calc(100% - 32px);
   padding: 22px 22px 20px;
@@ -181,62 +172,36 @@ body.dark-mode .mypage-container {
   box-sizing: border-box;
 }
 
-.mypage-modal-box h3 {
-  margin: 0 0 6px;
-  font-size: 17px;
-  color: var(--text-primary);
-}
-
-.mypage-modal-box p {
-  margin: 0;
-  font-size: 13px;
-  color: var(--text-secondary);
-}
-
-.mypage-modal-buttons {
+.modalButtons {
   margin-top: 18px;
   display: flex;
   justify-content: flex-end;
   gap: 10px;
 }
 
-/* 취소 버튼 */
-.cancel-btn {
+.cancelBtn {
   padding: 8px 16px;
   border-radius: 999px;
   border: 1px solid rgba(148, 163, 184, 0.7);
   background: transparent;
   color: var(--text-secondary);
-  font-size: 13px;
-  font-weight: 500;
   cursor: pointer;
-  transition: background 0.12s ease, color 0.12s ease;
 }
 
-.cancel-btn:hover {
+.cancelBtn:hover {
   background: rgba(148, 163, 184, 0.12);
 }
 
-/* 탈퇴 버튼 */
-.delete-btn {
+.deleteBtn {
   padding: 8px 18px;
   border-radius: 999px;
   border: none;
   background: linear-gradient(135deg, var(--danger), #f97373);
-  color: #ffffff;
-  font-size: 13px;
+  color: #fff;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 10px 25px rgba(248, 113, 113, 0.45);
-  transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
 }
 
-.delete-btn:hover {
+.deleteBtn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 16px 35px rgba(248, 113, 113, 0.6);
-}
-
-.delete-btn:active {
-  transform: translateY(0px) scale(0.97);
-  opacity: 0.9;
 }
