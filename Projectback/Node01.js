@@ -12,10 +12,15 @@ const DiaryRouter = require("./router/Diary");
 
 const app = express();
 
-app.use(cors())
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"]
+}));
 
 app.use("/home", verifyAccessToken, homeRouter);// 홈화면 
 app.use("/user", userRouter);// 회원관련 

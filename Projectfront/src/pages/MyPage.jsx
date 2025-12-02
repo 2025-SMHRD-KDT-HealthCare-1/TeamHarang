@@ -11,8 +11,12 @@ const MyPage = () => {
   const handleDelete = async () => {
     try {
       // TODO: 백엔드 API 완성되면 경로 맞춰야 함
-      // await axios.delete("http://localhost:8080/api/member/delete");
+    const account_id = localStorage.getItem("account_id");
+    const user_pw = prompt("비밀번호를 입력하세요");
 
+      const res = await axios.delete("http://localhost:3001/user/withdraw", {
+      data: { account_id, user_pw }
+    });
       alert("회원 탈퇴가 완료되었습니다.");
       window.location.href = "/";
     } catch (err) {
