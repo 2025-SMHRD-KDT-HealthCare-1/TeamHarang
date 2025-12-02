@@ -1,25 +1,52 @@
 // src/components/CheckResult.jsx
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../styles/CheckResult.css";
+import axios from "axios";
 
 const CheckResult = () => {
-  // 지금은 UI만 — 백엔드 연동되면 실제 데이터 들어갈 자리
+  const [results, setResults] = useState([]);
+
+  const token = localStorage.getItem("accessToken");
+
+  useEffect(() => {
+    const fetchRecent = async () => {
+      try {
+        const res = await axios.post(
+          "http://localhost:3001/survey/recent",
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (res.data.results) {
+          setResults(res.data.results);
+        }
+      } catch (err) {
+        console.error("최근 체크 결과 불러오기 실패", err);
+      }
+    };
+
+    fetchRecent();
+  }, [token]);
 
   return (
     <div className="check-result-box">
       <h3 className="check-title">최근 체크 결과</h3>
 
-      {/* 결과가 없을 때 */}
-      <div className="check-empty">체크 결과가 없습니다</div>
-
-      {/*
-        나중에 데이터가 있을 경우 이런 형태
-        <div className="check-item">
-          <span className="check-type">PHQ-9 우울</span>
-          <span className="check-score">12점 (중간 수준)</span>
-          <span className="check-date">2025-11-27</span>
-        </div>
-      */}
+      {results.length === 0 ? (
+        <div className="check-empty">체크 결과가 없습니다</div>
+      ) : (
+        results.map((item, idx) => (
+          <div className="check-item" key={idx}>
+            <span className="check-type">{item.type}</span>
+            <span className="check-score">{item.score}점</span>
+            <span className="check-date">{item.date}</span>
+          </div>
+        ))
+      )}
     </div>
   );
 };
