@@ -1,5 +1,5 @@
 const express = require("express")
-const router = express.Router()
+const router = express.Router();
 const conn = require("../config/database")  // DB 쓰게 되면 이 형태로 사용
 
 let todo = [

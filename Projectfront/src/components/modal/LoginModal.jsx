@@ -33,12 +33,18 @@ const LoginModal = ({ onClose, onOpenJoin }) => {
         const { accessToken, refreshToken, user } = res.data;
         // 상태 관리 스토어에 토큰과 사용자 정보 저장
         setAuth({ accessToken, refreshToken, user });
+        // 로컬 스토리지에 액세스 토큰 저장
+        localStorage.setItem("accessToken", accessToken);
         // 로컬 스토리지에 리프레시 토큰 저장
         localStorage.setItem("refreshToken", refreshToken);
         // 추가로 사용자 정보를 로컬 스토리지에 저장 (필요시)
+        localStorage.setItem("account_id", user.account_id);   // ⭐ 추가 1
+        // 로컬스토리지에 account추가
+        localStorage.setItem("user_id", user.user_id);         // ⭐ 추가 2
+        // 로컬스토리지에 user추가
+        localStorage.setItem("user", JSON.stringify(user));
 
         alert("로그인 성공!");
-        localStorage.setItem("user", JSON.stringify(res.data.user));
         onClose();
         navigate("/home");
       } else {

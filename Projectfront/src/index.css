@@ -370,3 +370,18 @@ body {
   width: 100%;
   max-width: 1200px;
 }
+
+/* StartPage 전용 (전체 화면) */
+.full-screen {
+  width: 100%;
+  max-width: none !important;
+  margin: 0;
+  padding: 0;
+}
+
+/* 일반 페이지 (기존처럼 중앙 1200px) */
+.default-screen {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}

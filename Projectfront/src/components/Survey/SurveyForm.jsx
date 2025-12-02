@@ -34,8 +34,16 @@ export default function SurveyForm({ type, questions }) {
 
   // 제출
   const onSubmit = async (data) => {
+
+    // 토큰이 없을 때 방어 코드
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      alert("로그인이 필요합니다.");
+      navigate("/");
+      return;
+    }
+
     const body = {
-      user_id: 1, // 로그인 유저 ID (지금은 임시)
       ...data,
     };
 
@@ -45,7 +53,13 @@ export default function SurveyForm({ type, questions }) {
     if (type === "PSS") url = "http://localhost:3001/survey/pss10";
 
     try {
-      const response = await axios.post(url, body);
+      const token = localStorage.getItem("accessToken"); // 엑세스 토큰 가져오기
+      
+      const response = await axios.post(url, body,{
+        headers: {
+          Authorization: `Bearer ${token}`, // 중요
+        },
+      });
 
       navigate("/survey/result", {
         state: {

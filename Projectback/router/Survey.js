@@ -15,7 +15,8 @@ router.post("/", (req, res) => {
 // -----------------------------
 router.post("/phq9", (req, res) => {
     const data = req.body;
-    const user_id = data.user_id;
+    const user_id = req.user.user_id;
+    if (!user_id) return res.status(401).json({ result: "fail", message: "No token user_id" });
 
     const keys = ["q0","q1","q2","q3","q4","q5","q6","q7","q8"];
 
@@ -93,7 +94,8 @@ router.post("/phq9", (req, res) => {
 // -----------------------------
 router.post("/gad7", (req, res) => {
     const data = req.body;
-    const user_id = data.user_id;
+    const user_id = req.user.user_id;
+    if (!user_id) return res.status(401).json({ result: "fail", message: "No token user_id" });
 
     const keys = ["q0","q1","q2","q3","q4","q5","q6"];
 
@@ -166,7 +168,8 @@ router.post("/gad7", (req, res) => {
 // -----------------------------
 router.post("/pss10", (req, res) => {
     const data = req.body;
-    const user_id = data.user_id;
+    const user_id = req.user.user_id;
+    if (!user_id) return res.status(401).json({ result: "fail", message: "No token user_id" });
 
     const keys = [
         "q0","q1","q2","q3","q4",
