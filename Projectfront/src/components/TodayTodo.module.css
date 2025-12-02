@@ -1,14 +1,16 @@
-/* TodayTodo.module.css */
+/* src/components/TodayTodo.module.css */
 
 .container {
   font-size: 14px;
+  width: 100%;
 }
 
-/* 입력 행 */
+/* 입력 영역 */
 .inputRow {
   display: flex;
   gap: 8px;
   margin-bottom: 10px;
+  width: 100%;
 }
 
 .input {
@@ -16,6 +18,7 @@
   padding: 8px 10px;
   border-radius: 8px;
   border: 1px solid #ccc;
+  background: white;
 }
 
 .addBtn {
@@ -27,6 +30,13 @@
   font-weight: 600;
   cursor: pointer;
   font-size: 13px;
+  white-space: nowrap; /* 줄바꿈 방지 */
+}
+
+/* 빈 리스트 문구 */
+.empty {
+  color: #666;
+  margin-top: 6px;
 }
 
 /* 리스트 */
@@ -67,8 +77,4 @@
   color: #c0392b;
   cursor: pointer;
   font-size: 12px;
-}
-
-.empty {
-  color: #666;
 }
