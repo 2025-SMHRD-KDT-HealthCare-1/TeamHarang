@@ -84,6 +84,8 @@ const Home = () => {
 
           <div className="todo-wrapper">
             <TodayTodo userId="testUser01" />
+            {/* <TodayTodo userId={localStorage.getItem("user_id")} />      */}
+            {/*  나중에 testUser01 지우고 아래 주석처리 제거 */}
           </div>
 
           <button

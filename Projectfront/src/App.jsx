@@ -3,8 +3,6 @@ import Layout from "./components/Layout/Layout";
 
 import StartPage from "./pages/StartPage";
 import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Join from "./pages/Join";
 import MyPage from "./pages/MyPage";
 
 /* 그룹 페이지들 */
@@ -26,7 +24,6 @@ import SurveyStart from "./pages/SurveyStart";
 import SurveyRecord from "./pages/SurveyRecord";
 
 /* Relax / Stress */
-import RelaxationProgram from "./pages/RelaxationProgram";
 import StressManage from "./pages/StressManage";
 
 /* Todo */
@@ -46,8 +43,6 @@ function App() {
           {/* 기본 */}
           <Route index element={<StartPage />} />
           <Route path="home" element={<Home />} />
-          <Route path="login" element={<Login />} />
-          <Route path="join" element={<Join />} />
           <Route path="mypage" element={<MyPage />} />
           <Route path="chatbot" element={<ChatBot />} />
 
@@ -72,10 +67,7 @@ function App() {
             <Route path="record" element={<SurveyRecord />} />
           </Route>
 
-          {/* Stress / Relax */}
-          <Route path="relaxation">
-            <Route path="program" element={<RelaxationProgram />} />
-          </Route>
+          {/* Stress */}
 
           <Route path="stress">
             <Route path="manage" element={<StressManage />} />

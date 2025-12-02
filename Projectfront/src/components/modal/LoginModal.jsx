@@ -43,6 +43,9 @@ const LoginModal = ({ onClose, onOpenJoin }) => {
         localStorage.setItem("user_id", user.user_id);         // ⭐ 추가 2
         // 로컬스토리지에 user추가
         localStorage.setItem("user", JSON.stringify(user));
+        // Diary / Survey 저장용 UID 추가
+        localStorage.setItem("uid", user.user_id);
+        
 
         alert("로그인 성공!");
         onClose();
