@@ -2,21 +2,34 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const TodayTodo = ({ userId }) => {
+const TodayTodo = () => {
   const [todos, setTodos] = useState([]);
   const [text, setText] = useState("");
 
-  // 1) 처음 마운트 시 / userId 바뀔 때 목록 불러오기
+  // 🔥 localStorage에서 user_id, 토큰 직접 가져오기
+  const userId = Number(localStorage.getItem("user_id"));
+  const token = localStorage.getItem("accessToken");
+
+  // 공통 axios 옵션 (헤더 포함)
+  const axiosConfig = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  // 1) 목록 가져오기
   useEffect(() => {
-    if (!userId) return;
+    if (!userId || !token) return;
 
     const fetchTodos = async () => {
       try {
-        const res = await axios.get("http://localhost:8080/api/todos/today", {
-          params: { userId },
-        });
+        const res = await axios.post(
+          "http://localhost:3001/todo/GetTodos",
+          { uid: userId },
+          axiosConfig
+        );
 
-        if (res.data.success) {
+        if (res.data.todos) {
           setTodos(res.data.todos);
         }
       } catch (err) {
@@ -25,22 +38,26 @@ const TodayTodo = ({ userId }) => {
     };
 
     fetchTodos();
-  }, [userId]);
+  }, [userId, token]);
 
   // 2) 추가
   const handleAdd = async () => {
     if (!text.trim()) return;
+    if (!userId || !token) return;
 
     try {
-      const res = await axios.post("http://localhost:8080/api/todos/today", {
-        userId,
-        content: text,
-      });
+      const res = await axios.post(
+        "http://localhost:3001/todo/AddTodo",
+        {
+          uid: userId,
+          content: text,
+        },
+        axiosConfig
+      );
 
-      if (res.data.success) {
-        // 새로고침 대신 프론트에서 목록에 바로 추가
+      if (res.data.todo_id) {
         const newTodo = {
-          id: res.data.id,
+          id: res.data.todo_id,
           content: text,
           is_done: 0,
         };
@@ -54,14 +71,18 @@ const TodayTodo = ({ userId }) => {
 
   // 3) 완료 토글
   const handleToggle = async (id, current) => {
+    if (!userId || !token) return;
+
     try {
       const newValue = current ? 0 : 1;
-      const res = await axios.patch(
-        `http://localhost:8080/api/todos/today/${id}`,
-        { isDone: newValue }
+
+      const res = await axios.post(
+        "http://localhost:3001/todo/ToggleTodo",
+        { uid: userId, tid: id },
+        axiosConfig
       );
 
-      if (res.data.success) {
+      if (res.data.message === "Todo 상태 반전 성공") {
         setTodos((prev) =>
           prev.map((t) =>
             t.id === id ? { ...t, is_done: newValue } : t
@@ -75,12 +96,16 @@ const TodayTodo = ({ userId }) => {
 
   // 4) 삭제
   const handleDelete = async (id) => {
+    if (!userId || !token) return;
+
     try {
-      const res = await axios.delete(
-        `http://localhost:8080/api/todos/today/${id}`
+      const res = await axios.post(
+        "http://localhost:3001/todo/DeleteTodo",
+        { uid: userId, tid: id },
+        axiosConfig
       );
 
-      if (res.data.success) {
+      if (res.data.message === "Todo 삭제 성공") {
         setTodos((prev) => prev.filter((t) => t.id !== id));
       }
     } catch (err) {

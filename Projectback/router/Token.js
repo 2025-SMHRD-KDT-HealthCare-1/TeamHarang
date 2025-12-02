@@ -3,7 +3,7 @@ const ACCESS_SECRET = process.env.ACCESS_SECRET || 'ACCESS_SECRET';
 const REFRESH_SECRET = process.env.REFRESH_SECRET || 'REFRESH_SECRET';
 
 function generateTokens(user) {
-  const payload = { user_id: user.user_id, user_name: user.user_name, roles: user.roles };
+  const payload = { user_id: Number(user.user_id), user_name: user.user_name, roles: user.roles };
   return {
     accessToken: jwt.sign(payload, ACCESS_SECRET, { expiresIn: '3h' }),
     refreshToken: jwt.sign(payload, REFRESH_SECRET, { expiresIn: '7d' }),
