@@ -14,7 +14,7 @@ const MyPage = () => {
       // await axios.delete("http://localhost:8080/api/member/delete");
 
       alert("회원 탈퇴가 완료되었습니다.");
-      window.location.href = "/login";
+      window.location.href = "/";
     } catch (err) {
       console.error(err);
       alert("탈퇴 처리 중 오류가 발생했습니다.");
