@@ -2,33 +2,33 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import TodayTodo from "../components/TodayTodo";
-import CheckResult from "../components/CheckResult";   //  추가
-import "../styles/Home.css";
+import CheckResult from "../components/CheckResult";
+import styles from "./Home.module.css";
 
 const Home = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="home-container">
+    <div className={styles.homeContainer}>
 
-      {/* ====== 1행 : 스트레스 체크 / 마음 일기 ====== */}
-      <div className="row">
+      {/* ====== 1행 ====== */}
+      <div className={styles.row}>
 
         {/* 스트레스 체크 */}
-        <div className="box box-blue">
-          <h2 className="title-blue">스트레스 체크</h2>
-          <p className="desc">
+        <div className={`${styles.box} ${styles.boxBlue}`}>
+          <h2 className={styles.titleBlue}>스트레스 체크</h2>
+          <p className={styles.desc}>
             검증된 설문을 통해 우울, 불안, 스트레스 수준을 측정해보세요.
           </p>
 
-          <ul className="list">
+          <ul className={styles.list}>
             <li>각 7~10개 문항, 5분 소요</li>
             <li>즉시 결과 확인 가능</li>
             <li>맞춤형 개선방안 제공</li>
           </ul>
 
           <button
-            className="btn btn-blue"
+            className={`${styles.btn} ${styles.btnBlue}`}
             onClick={() => navigate("/survey/start")}
           >
             체크 시작하기
@@ -36,20 +36,20 @@ const Home = () => {
         </div>
 
         {/* 마음 일기 */}
-        <div className="box box-green">
-          <h2 className="title-green">마음 일기</h2>
-          <p className="desc">
+        <div className={`${styles.box} ${styles.boxGreen}`}>
+          <h2 className={styles.titleGreen}>마음 일기</h2>
+          <p className={styles.desc}>
             매일의 감정과 생각을 기록하며 마음 패턴을 발견해보세요.
           </p>
 
-          <ul className="list">
+          <ul className={styles.list}>
             <li>감정 표현과 자기 이해 향상</li>
             <li>스트레스 해소 및 마음 정리</li>
             <li>개인 기록 안전하게 보관</li>
           </ul>
 
           <button
-            className="btn btn-green"
+            className={`${styles.btn} ${styles.btnGreen}`}
             onClick={() => navigate("/diary/text")}
           >
             마음 일기 쓰러 가기
@@ -58,36 +58,28 @@ const Home = () => {
 
       </div>
 
-      {/* ====== 2행 : 체크 결과 / 오늘의 할 일 ====== */}
-      <div className="row">
+      {/* ====== 2행 ====== */}
+      <div className={styles.row}>
 
         {/* 체크 결과 */}
-        <div className="box box-purple">
-          <h2 className="title-purple">체크 결과 분석</h2>
-          <p className="desc">전체 체크 이력을 확인할 수 있어요.</p>
+        <div className={`${styles.box} ${styles.boxPurple}`}>
+          <h2 className={styles.titlePurple}>체크 결과 분석</h2>
+          <p className={styles.desc}>전체 체크 이력을 확인할 수 있어요.</p>
 
-          {/*  컴포넌트로 분리됨 */}
           <CheckResult />
-          {/* 체크 결과 확인 기능 준비중 잠시 주석처리 */}
-          {/* <button
-            className="btn btn-purple"
-            onClick={() => navigate("/survey/result")}
-          >
-            체크 결과 확인하기
-          </button> */}
         </div>
 
         {/* 오늘의 할 일 */}
-        <div className="box box-orange">
-          <h2 className="title-orange">오늘의 할 일</h2>
-          <p className="desc">목표를 체크하며 성취감을 느껴보세요.</p>
+        <div className={`${styles.box} ${styles.boxOrange}`}>
+          <h2 className={styles.titleOrange}>오늘의 할 일</h2>
+          <p className={styles.desc}>목표를 체크하며 성취감을 느껴보세요.</p>
 
-          <div className="todo-wrapper">
-            <TodayTodo userId="testUser01" />
+          <div className={styles.todoWrapper}>
+            <TodayTodo />
           </div>
 
           <button
-            className="btn btn-orange"
+            className={`${styles.btn} ${styles.btnOrange}`}
             onClick={() => navigate("/todo/list")}
           >
             내 달성도 확인
@@ -96,8 +88,8 @@ const Home = () => {
 
       </div>
 
-      {/* ====== 오른쪽 아래 AI 상담사 버튼 ====== */}
-      <button className="ai-button" onClick={() => navigate("/chatbot")}>
+      {/* AI 버튼 */}
+      <button className={styles.aiButton} onClick={() => navigate("/chatbot")}>
         🤖
       </button>
 

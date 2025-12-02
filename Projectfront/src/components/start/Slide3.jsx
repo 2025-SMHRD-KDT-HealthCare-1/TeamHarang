@@ -1,82 +1,26 @@
 import React from "react";
 import { indicatorWrapper, activeDot, inactiveDot } from "./indicatorStyle";
 import SurveyCard from "./SurveyCard";
+import styles from "./Slide3.module.css";
 
 const Slide3 = () => {
   return (
-    <div
-      style={{
-        width: "100vw",
-        height: "100vh",
-        marginLeft: "calc(50% - 50vw)",
-        backgroundImage: "url('/slide3-bg.jpg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        position: "relative",
-        paddingTop: "100px",
-      }}
-    >
+    <div className={styles.slideWrapper}>
+      
       {/* 오버레이 */}
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          background: "rgba(0,0,0,0.25)",
-          zIndex: 1,
-        }}
-      />
+      <div className={styles.overlay} />
 
-      <div
-        style={{
-          position: "relative",
-          zIndex: 2,
-          textAlign: "center",
-          color: "white",
-        }}
-      >
-        <img
-          src="/survey-icon.png"
-          style={{
-            width: "80px",
-            marginBottom: "20px",
-            filter: "drop-shadow(0 2px 6px rgba(0,0,0,0.5))",
-          }}
-        />
+      {/* 콘텐츠 */}
+      <div className={styles.content}>
+        <img src="/survey-icon.png" className={styles.icon} />
 
-        <h1
-          style={{
-            fontSize: "36px",
-            marginBottom: "10px",
-            textShadow: "0 2px 6px rgba(0,0,0,0.55)",
-          }}
-        >
-          설문 검사
-        </h1>
+        <h1 className={styles.title}>설문 검사</h1>
 
-        <p
-          style={{
-            fontSize: "18px",
-            opacity: 0.9,
-            marginBottom: "40px",
-            textShadow: "0 2px 6px rgba(0,0,0,0.55)",
-          }}
-        >
+        <p className={styles.subtitle}>
           검증된 설문으로 정신 건강 상태를 평가합니다
         </p>
 
-        <div
-          style={{
-            display: "flex",
-            gap: "40px",
-            justifyContent: "center",
-            flexWrap: "wrap",
-            width: "80%",
-            margin: "0 auto",
-          }}
-        >
+        <div className={styles.cardRow}>
           <SurveyCard
             num="1"
             color="#2f7bff"

@@ -1,0 +1,30 @@
+.box {
+  width: 220px;
+  text-align: center;
+}
+
+.iconWrap {
+  width: 90px;
+  height: 90px;
+  border-radius: 20px;
+  background: rgba(0, 120, 255, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 15px;
+}
+
+.icon {
+  width: 45px;
+}
+
+.title {
+  color: #0066ff;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.desc {
+  font-size: 14px;
+  opacity: 0.75;
+}

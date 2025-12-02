@@ -1,0 +1,23 @@
+.card {
+  width: 260px;
+  padding: 30px;
+  background: white;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.icon {
+  width: 45px;
+  margin-bottom: 15px;
+}
+
+.title {
+  margin-bottom: 10px;
+  color: #2f73ff;   /* 이 부분도 props로 받도록 하려면 변경 가능 */
+}
+
+.desc {
+  font-size: 14px;
+  opacity: 0.7;
+}
