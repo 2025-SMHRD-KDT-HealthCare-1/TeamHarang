@@ -39,13 +39,13 @@ router.post("/login", (req, res) => {
         }
 
         if (rows.length === 0) {
-            return res.json({ result: "fail", message: "account_id Fail" });
+            return res.json({ result: "fail", message: "아이디 또는 비밀번호가 틀렸습니다" });
         }
 
         const user = rows[0];
 
         const match = await bcrypt.compare(user_pw, user.user_pw);
-        if (!match) return res.json({ result: "fail", message: "PW Fail" });
+        if (!match) return res.json({ result: "fail", message: "아이디 또는 비밀번호가 틀렸습니다" });
 
         
         const { accessToken, refreshToken } = generateTokens(user);
@@ -57,6 +57,7 @@ router.post("/login", (req, res) => {
             refreshToken,   // 클라이언트에서 로컬 스토리지 등에 저장
             user: {
                 user_id: user.user_id,
+                account_id: user.account_id,
                 user_name: user.user_name,
                 roles: user.roles
             }
@@ -64,7 +65,6 @@ router.post("/login", (req, res) => {
     });
 });
 
-module.exports = router;
 
 // 회원가입 요청
 router.post("/join", async (req, res) => {
@@ -194,23 +194,41 @@ router.delete("/withdraw", async (req, res) => {
         return res.status(400).json({ result: "fail", message: "ID와 PW를 입력하세요" });
     }
 
+
     try {
+        // 1. 유저 조회
         const sql = `SELECT * FROM users WHERE account_id = ?`;
         const [rows] = await conn.promise().query(sql, [account_id]);
 
         if (rows.length === 0)
             return res.json({ result: "fail", message: "account_id Fail" });
 
-        const match = await bcrypt.compare(user_pw, rows[0].user_pw);
+        const user = rows[0];
+
+        // 2. PW 검사
+        const match = await bcrypt.compare(user_pw, user.user_pw);
         if (!match)
             return res.json({ result: "fail", message: "PW Fail" });
 
-        const deleteSql = `DELETE FROM users WHERE account_id = ?`;
-        await conn.promise().query(deleteSql, [account_id]);
+        const uid = user.user_id;
+
+        // =============================
+        // 3. 하위 테이블 전부 삭제
+        // =============================
+        await conn.promise().query(`DELETE FROM todo WHERE user_id = ?`, [uid]);
+        await conn.promise().query(`DELETE FROM diary WHERE user_id = ?`, [uid]);
+        await conn.promise().query(`DELETE FROM SURVEYRESULT WHERE user_id = ?`, [uid]); 
+        // 필요한 테이블 더 있으면 여기 추가
+
+        // =============================
+        // 4. 마지막으로 user 삭제
+        // =============================
+        await conn.promise().query(`DELETE FROM users WHERE user_id = ?`, [uid]);
 
         return res.json({ result: "success", message: "회원 탈퇴 완료" });
 
     } catch (err) {
+        console.error(err); // 에러확인 필수
         return res.status(500).json({ result: "fail", message: "서버 오류 발생" });
     }
 });
