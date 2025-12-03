@@ -42,7 +42,7 @@ export default function DiaryText() {
       if (res.data.diaries?.length > 0) {
         const d = res.data.diaries[0];
         setContent(d.content);
-        setStress(d.strees);
+        setStress(d.stress);
         setAnxiety(d.anxiety);
         setDepression(d.depression);
       } else {
@@ -74,7 +74,7 @@ export default function DiaryText() {
           user_id,
           date,
           content,
-          strees: stress,
+          stress: stress,
           anxiety,
           depression,
         },
