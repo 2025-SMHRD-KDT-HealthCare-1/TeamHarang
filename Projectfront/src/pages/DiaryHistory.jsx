@@ -3,11 +3,13 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import styles from "./DiaryHistory.module.css";
 import { useAuthStore } from "../store/useAuthStore";
+import { useNavigate } from "react-router-dom";
 
 export default function DiaryHistory() {
-  const { user, accessToken } = useAuthStore();   // ★ 토큰 포함
+  const { user, accessToken } = useAuthStore();
   const user_id = user?.user_id;
 
+  const navigate = useNavigate();
   const today = new Date();
 
   const [year, setYear] = useState(today.getFullYear());
@@ -20,9 +22,9 @@ export default function DiaryHistory() {
   const makeDateString = (y, m, d) =>
     `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
 
-  // ============================================
-  //  MonthDiary : 연/월 → 작성 날짜 조회
-  // ============================================
+  // ===========================
+  //   월별 날짜 조회
+  // ===========================
   const loadMonth = async () => {
     if (!user_id || !accessToken) return;
 
@@ -36,17 +38,13 @@ export default function DiaryHistory() {
         },
         {
           headers: {
-            Authorization: `Bearer ${accessToken}`,   // ★ 토큰 포함
+            Authorization: `Bearer ${accessToken}`,
           },
         }
       );
 
       const dates = res.data?.dates || [];
-
-      // 날짜 문자열(d)을 Date로 변환할 때 UTC 기준으로 파싱되어 하루 밀리는 현상 방지
-      // toLocaleDateString("sv-SE")는 타임존은 그대로 두고
-      // 포맷만 YYYY-MM-DD로 바꿔주므로 날짜 오류가 발생 X
-      setDates(dates.map((d) => new Date(d).toLocaleDateString("sv-SE")));  // 변경
+      setDates(dates.map((d) => new Date(d).toLocaleDateString("sv-SE")));
       setDay("");
       setDetail(null);
     } catch (err) {
@@ -58,9 +56,9 @@ export default function DiaryHistory() {
     loadMonth();
   }, [year, month]);
 
-  // ============================================
-  //  일(day) 선택 → 특정 날짜 상세 조회
-  // ============================================
+  // ===========================
+  //   특정 날짜 상세 조회
+  // ===========================
   const loadDetail = async () => {
     if (!day || !user_id || !accessToken) return;
 
@@ -69,13 +67,10 @@ export default function DiaryHistory() {
     try {
       const res = await axios.post(
         "http://localhost:3001/diary/GetDiaryDate",
-        {
-          user_id,
-          date: dateStr,
-        },
+        { user_id, date: dateStr },
         {
           headers: {
-            Authorization: `Bearer ${accessToken}`,   // ★ 토큰 포함
+            Authorization: `Bearer ${accessToken}`,
           },
         }
       );
@@ -91,7 +86,8 @@ export default function DiaryHistory() {
     loadDetail();
   }, [day]);
 
-  const dayList = dates.map((d) => Number(d.split("-")[2]));
+  // 날짜 중복 제거
+  const dayList = [...new Set(dates.map((d) => Number(d.split("-")[2])))];
 
   return (
     <div className={styles.wrapper}>
@@ -154,14 +150,55 @@ export default function DiaryHistory() {
               <div className={styles.scoreRow}>
                 <p>우울: {detail.depression}</p>
                 <p>불안: {detail.anxiety}</p>
-                <p>스트레스: {detail.strees}</p>
+                <p>스트레스: {detail.stress}</p>
               </div>
 
               <p className={styles.content}>{detail.content}</p>
 
               <div className={styles.btnRow}>
-                <button className={styles.editBtn}>수정</button>
-                <button className={styles.deleteBtn}>삭제</button>
+                {/* 수정 버튼 */}
+                <button
+                  className={styles.editBtn}
+                  onClick={() =>
+                    navigate(
+                      `/diary/text?date=${makeDateString(year, month, day)}`
+                    )
+                  }
+                >
+                  수정
+                </button>
+
+                {/* 삭제 버튼 */}
+                <button
+                  className={styles.deleteBtn}
+                  onClick={async () => {
+                    if (!window.confirm("정말 삭제할까요?")) return;
+
+                    try {
+                      await axios.post(
+                        "http://localhost:3001/diary/DeleteDiary",
+                        {
+                          user_id,
+                          date: makeDateString(year, month, day),
+                        },
+                        {
+                          headers: {
+                            Authorization: `Bearer ${accessToken}`,
+                          },
+                        }
+                      );
+
+                      alert("삭제 완료!");
+                      loadMonth(); // 삭제 후 목록 갱신
+                      setDetail(null);
+                      setDay("");
+                    } catch (err) {
+                      console.log("삭제 실패", err);
+                    }
+                  }}
+                >
+                  삭제
+                </button>
               </div>
             </>
           ) : (
