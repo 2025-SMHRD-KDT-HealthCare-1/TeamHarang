@@ -1,5 +1,4 @@
 import React from "react";
-import { indicatorWrapper, activeDot, inactiveDot } from "./indicatorStyle";
 import TodoCard from "./TodoCard";
 import styles from "./Slide4.module.css";
 
@@ -19,18 +18,24 @@ const Slide4 = () => {
         </p>
 
         <div className={styles.cardRow}>
-          <TodoCard icon="/images/slide4/goal.png" title="목표 설정" desc="하루 목표 세우기" />
-          <TodoCard icon="/images/slide4/check.svg" title="진행 체크" desc="완료 기록하기" />
-          <TodoCard icon="/images/slide4/schedule.svg" title="습관 만들기" desc="꾸준한 실천" />
+          <TodoCard 
+            icon="/images/slide4/goal.png" 
+            title="목표 설정" 
+            desc="하루 목표 세우기" 
+          />
+          <TodoCard 
+            icon="/images/slide4/check.svg" 
+            title="진행 체크" 
+            desc="완료 기록하기" 
+          />
+          <TodoCard 
+            icon="/images/slide4/schedule.svg" 
+            title="습관 만들기" 
+            desc="꾸준한 실천" 
+          />
         </div>
       </div>
-
-      <div style={indicatorWrapper}>
-        <div style={inactiveDot}></div>
-        <div style={inactiveDot}></div>
-        <div style={inactiveDot}></div>
-        <div style={activeDot}></div>
-      </div>
+      
     </div>
   );
 };

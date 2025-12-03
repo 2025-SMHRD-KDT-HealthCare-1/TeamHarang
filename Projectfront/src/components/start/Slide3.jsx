@@ -1,5 +1,4 @@
 import React from "react";
-import { indicatorWrapper, activeDot, inactiveDot } from "./indicatorStyle";
 import SurveyCard from "./SurveyCard";
 import styles from "./Slide3.module.css";
 
@@ -36,12 +35,6 @@ const Slide3 = () => {
         </div>
       </div>
 
-      <div style={indicatorWrapper}>
-        <div style={inactiveDot}></div>
-        <div style={inactiveDot}></div>
-        <div style={activeDot}></div>
-        <div style={inactiveDot}></div>
-      </div>
     </div>
   );
 };

@@ -32,6 +32,26 @@ const CheckResult = () => {
     fetchRecent();
   }, []);
 
+  // 설문 코드 → 화면 표시용 이름 매핑
+  const formatName = (type) => {
+    switch (type.toUpperCase()) {
+      case "GAD":
+        return "GAD7";
+      case "PSS":
+        return "PSS10";
+      case "PHQ":
+        return "PHQ9";
+      default:
+        return type;
+    }
+  };
+
+  // 날짜 포맷 변환: YYYY-MM-DD
+  const formatDate = (dateStr) => {
+    if (!dateStr) return "";
+    return new Date(dateStr).toISOString().slice(0, 10);
+  };
+
   return (
     <div className={styles["check-result-box"]}>
       <h3 className={styles["check-title"]}>최근 체크 결과</h3>
@@ -41,9 +61,22 @@ const CheckResult = () => {
       ) : (
         results.map((item, idx) => (
           <div className={styles["check-item"]} key={idx}>
-            <span className={styles["check-type"]}>{item.survey_type}</span>
-            <span className={styles["check-score"]}>{item.total_score}점</span>
-            <span className={styles["check-date"]}>{item.survey_date}</span>
+
+            {/* 왼쪽: 설문명 + 검사일 */}
+            <div className={styles["check-left"]}>
+              <span className={styles["check-type"]}>
+                {formatName(item.survey_type)}
+              </span>
+              <span className={styles["check-date"]}>
+                검사일: {formatDate(item.survey_date)}
+              </span>
+            </div>
+
+            {/* 오른쪽: 점수 */}
+            <span className={styles["check-score"]}>
+              {item.total_score}점
+            </span>
+
           </div>
         ))
       )}
