@@ -91,6 +91,7 @@ router.post("/GetTodos", (req, res) => {
     FROM todo
     WHERE user_id = ? AND todo_date = ?
     ORDER BY todo_id DESC
+    limit 5
   `;
 
   conn.query(sql, [uid, today], (err, result) => {
