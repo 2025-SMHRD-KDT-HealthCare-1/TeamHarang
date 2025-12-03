@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
-import DiaryHistory from "./DiaryHistory";
 import styles from "./DiaryText.module.css";
 
-const DiaryText = () => {
+const Diarycontent = () => {
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().slice(0, 10)
   );
@@ -12,67 +11,80 @@ const DiaryText = () => {
     depression: 0,
     anxiety: 0,
     stress: 0,
-    text: "",
+    content: "",
   });
 
-  const [isEditing, setIsEditing] = useState(false);
-  const [showHistory, setShowHistory] = useState(false);
+  const user_id = localStorage.getItem("user_id");
+  const token = localStorage.getItem("accessToken"); 
 
-  const uid = localStorage.getItem("user_id");
-
-  useEffect(() => {
-    axios
-      .get(`http://localhost:3001/diary/${uid}/${selectedDate}`)
-      .then((res) => {
-        if (res.data) {
-          setValues({
-            depression: res.data.depression,
-            anxiety: res.data.anxiety,
-            stress: res.data.stress,
-            text: res.data.text,
-          });
-          setIsEditing(true);
-        } else {
-          setValues({ depression: 0, anxiety: 0, stress: 0, text: "" });
-          setIsEditing(false);
-        }
-      });
-  }, [selectedDate, uid]);
-
+  // 저장
   const handleSave = () => {
     axios
-      .post("http://localhost:3001/diary", {
-        uid,
-        date: selectedDate,
-        ...values,
-      })
-      .then(() => {
-        alert("일기 저장 완료!");
-        setIsEditing(true);
-      });
+      .post(
+        "http://localhost:3001/diary/AddDiary",
+        {
+          user_id,
+          date: selectedDate,
+          content: values.content,
+          stress: values.stress,
+          anxiety: values.anxiety,
+          depression: values.depression,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then(() => alert("일기 저장 완료!"))
+      .catch((err) => console.log("저장 오류:", err));
   };
 
+  // 수정
   const handleUpdate = () => {
     axios
-      .put("http://localhost:3001/diary", {
-        uid,
-        date: selectedDate,
-        ...values,
-      })
-      .then(() => alert("수정 완료!"));
+      .put(
+        "http://localhost:3001/diary/Diary",
+        {
+          user_id,
+          date: selectedDate,
+          content: values.content,
+          stress: values.stress,
+          anxiety: values.anxiety,
+          depression: values.depression,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then(() => alert("수정 완료!"))
+      .catch((err) => console.log("수정 오류:", err));
   };
 
+  // 삭제
   const handleDelete = () => {
-    if (!window.confirm("정말 삭제할까요?")) return;
+  if (!window.confirm("정말 삭제할까요?")) return;
 
-    axios
-      .delete(`http://localhost:3001/diary/${uid}/${selectedDate}`)
-      .then(() => {
-        alert("삭제 완료!");
-        setValues({ depression: 0, anxiety: 0, stress: 0, text: "" });
-        setIsEditing(false);
-      });
-  };
+  axios.post(
+    "http://localhost:3001/diary/DeleteDiary",
+    {
+      user_id,
+      date: selectedDate,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,  // 🔥 토큰 필수
+      },
+    }
+  )
+  .then(() => {
+    alert("삭제 완료!");
+    setValues({ depression: 0, anxiety: 0, stress: 0, content: "" });
+  })
+  .catch((err) => console.log("삭제 오류:", err));
+};
 
   return (
     <div className={styles.wrapper}>
@@ -85,12 +97,9 @@ const DiaryText = () => {
         className={styles.dateInput}
       />
 
-      {/* 슬라이더 3개 */}
       <div className={styles.sliderRow}>
         <div className={styles.sliderBox}>
-          <p className={styles.sliderLabel}>
-            우울 <strong>{values.depression}/10</strong>
-          </p>
+          <p>우울 {values.depression}/10</p>
           <input
             type="range"
             min="0"
@@ -103,9 +112,7 @@ const DiaryText = () => {
         </div>
 
         <div className={styles.sliderBox}>
-          <p className={styles.sliderLabel}>
-            불안 <strong>{values.anxiety}/10</strong>
-          </p>
+          <p>불안 {values.anxiety}/10</p>
           <input
             type="range"
             min="0"
@@ -118,9 +125,7 @@ const DiaryText = () => {
         </div>
 
         <div className={styles.sliderBox}>
-          <p className={styles.sliderLabel}>
-            스트레스 <strong>{values.stress}/10</strong>
-          </p>
+          <p>스트레스 {values.stress}/10</p>
           <input
             type="range"
             min="0"
@@ -133,48 +138,30 @@ const DiaryText = () => {
         </div>
       </div>
 
-      <h3 style={{ marginTop: "30px", marginBottom: "10px" }}>
-        오늘의 일지 작성
-      </h3>
-
       <textarea
         className={styles.textarea}
         rows="12"
         placeholder="오늘 하루는 어땠나요?"
-        value={values.text}
-        onChange={(e) => setValues({ ...values, text: e.target.value })}
+        value={values.content}
+        onChange={(e) => setValues({ ...values, content: e.target.value })}
       />
 
       <div className={styles.btnRow}>
-        {!isEditing ? (
-          <button className={styles.button} onClick={handleSave}>
-            일기 저장
-          </button>
-        ) : (
-          <>
-            <button className={styles.button} onClick={handleUpdate}>
-              수정하기
-            </button>
-            <button
-              className={`${styles.button} ${styles.deleteBtn}`}
-              onClick={handleDelete}
-            >
-              삭제하기
-            </button>
-          </>
-        )}
-
+        <button className={styles.button} onClick={handleSave}>
+          저장
+        </button>
+        <button className={styles.button} onClick={handleUpdate}>
+          수정
+        </button>
         <button
-          className={`${styles.button} ${styles.historyBtn}`}
-          onClick={() => setShowHistory(!showHistory)}
+          className={`${styles.button} ${styles.deleteBtn}`}
+          onClick={handleDelete}
         >
-          기록 보기
+          삭제
         </button>
       </div>
-
-      {showHistory && <DiaryHistory uid={uid} />}
     </div>
   );
 };
 
-export default DiaryText;
+export default Diarycontent;
