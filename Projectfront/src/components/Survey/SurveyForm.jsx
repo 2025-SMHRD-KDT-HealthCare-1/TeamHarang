@@ -26,7 +26,7 @@ export default function SurveyForm({ type, questions }) {
   const optionCount = { PHQ: 4, GAD: 4, PSS: 5 };
 
   // ========================
-  // 🔥 여기서 user_id 반드시 저장해야 함!!
+  //  여기서 user_id 반드시 저장해야 함!!
   // ========================
   const token = localStorage.getItem("accessToken");
   const user_id = Number(localStorage.getItem("user_id")); // ★ 중요 ★

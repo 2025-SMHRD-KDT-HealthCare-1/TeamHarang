@@ -1,23 +1,31 @@
 .card {
-  width: 260px;
-  padding: 30px;
   background: white;
-  border-radius: 20px;
+  width: 230px;
+  padding: 25px 20px;
+  border-radius: 16px;
+  box-shadow: 0 5px 14px rgba(0,0,0,0.08);
   text-align: center;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  transition: 0.25s;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
 }
 
 .icon {
-  width: 45px;
+  width: 60px;
   margin-bottom: 15px;
 }
 
 .title {
-  margin-bottom: 10px;
-  color: #2f73ff;   /* 이 부분도 props로 받도록 하려면 변경 가능 */
+  font-size: 18px;
+  font-weight: 700;
+  color: #2a355b;
 }
 
 .desc {
   font-size: 14px;
-  opacity: 0.7;
+  color: #4a4f68;
+  margin-top: 6px;
 }
