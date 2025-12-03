@@ -4,10 +4,13 @@ import styles from "./ChatBot.module.css";
 const ChatBot = () => {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
-  const [history, setHistory] = useState([]);
 
   const send = async () => {
+    const token = localStorage.getItem("accessToken"); // 최신 토큰 가져오기
+
     if (!input.trim()) return;
+
+    console.log("TOKEN:", token);
 
     const newMessages = [...messages, { role: "user", content: input }];
     setMessages(newMessages);
@@ -15,23 +18,20 @@ const ChatBot = () => {
     try {
       const res = await fetch("http://localhost:3001/chatbot/chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
         body: JSON.stringify({
-          message: input,
-          history,
+          user_message: input,
         }),
       });
 
       const data = await res.json();
-
       if (!data.reply) throw new Error("응답 없음");
 
-      setMessages([
-        ...newMessages,
-        { role: "assistant", content: data.reply },
-      ]);
-
-      setHistory(data.history);
+      setMessages([...newMessages, { role: "assistant", content: data.reply }]);
       setInput("");
 
     } catch (err) {
@@ -45,7 +45,7 @@ const ChatBot = () => {
       <div className={styles.inner}>
         
         <div className={styles.title}>
-          <span>🧠</span> MindCare 상담봇
+          <span></span> MindCare 상담봇
         </div>
 
         <div className={styles.chatBox}>
