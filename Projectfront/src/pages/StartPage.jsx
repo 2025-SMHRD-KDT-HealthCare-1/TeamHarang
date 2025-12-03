@@ -4,6 +4,7 @@ import Slide1 from "../components/start/Slide1";
 import Slide2 from "../components/start/Slide2";
 import Slide3 from "../components/start/Slide3";
 import Slide4 from "../components/start/Slide4";
+import Slide5 from "../components/start/Slide5";   
 
 import LoginModal from "../components/modal/LoginModal";
 import JoinModal from "../components/modal/JoinModal";
@@ -24,10 +25,11 @@ const StartPage = () => {
           onJoin={() => setShowJoin(true)}
         />
 
-        {/* 슬라이드 2~4 */}
+        {/* 슬라이드 2~5 */}
         <Slide2 />
         <Slide3 />
         <Slide4 />
+        <Slide5 />   
 
         {/* 로그인 모달 */}
         {showLogin && (

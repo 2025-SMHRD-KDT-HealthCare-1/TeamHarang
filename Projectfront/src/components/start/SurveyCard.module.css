@@ -1,33 +1,40 @@
 .card {
-  width: 350px;
-  padding: 30px;
-  border-radius: 20px;
+  width: 200px;
+  padding: 25px 18px;
+  border-radius: 16px;
   background: white;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
   text-align: left;
 }
 
 .numBox {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 12px;
   color: white;
   display: flex;
-  justify-content: center;
   align-items: center;
-  font-weight: bold;
+  justify-content: center;
   margin-bottom: 12px;
+  font-weight: 700;
+  font-size: 18px;
 }
 
 .title {
-  margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 12px;
 }
 
 .list {
-  padding-left: 20px;
+  list-style: disc;
+  padding-left: 18px;
+  margin-top: 10px;
 }
 
 .listItem {
-  margin-bottom: 8px;
-  opacity: 0.75;
+  margin-bottom: 6px;
+  color: #444;
+  font-size: 15px;
+  line-height: 1.5;
 }

@@ -6,11 +6,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
-  text-align: center;
 }
 
-/* 상단 아이콘 영역 */
+/* 상단 아이콘 */
 .iconCircle {
   width: 110px;
   height: 110px;
@@ -32,7 +30,6 @@
   font-size: 42px;
   font-weight: 800;
   color: #2a355b;
-  text-align: center;     /* 중앙 정렬 */
   margin-bottom: 12px;
 }
 
@@ -40,34 +37,33 @@
 .subtitle {
   color: #4a4f68;
   margin-bottom: 35px;
-  text-align: center;     /* 중앙 정렬 */
+  font-size: 18px;
 }
 
-/* 카드 묶음 */
+/* 카드 전체 행 */
 .cardRow {
   display: flex;
   gap: 30px;
 }
 
-/*  카드 내부를 완전 가운데 정렬 */
+/* 카드 박스 */
 .card {
-  width: 240px;
+  width: 230px;
   height: 220px;
   background: #ffffff;
   border-radius: 18px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-
   display: flex;
   flex-direction: column;
-  align-items: center;        /* 아이콘/제목/내용 수평 중앙 */
-  justify-content: center;    /* 수직 중앙 */
-  text-align: center;         /* 텍스트 중앙 */
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 /* 카드 아이콘 */
 .cardIcon {
   width: 55px;
-  margin-bottom: 15px;
+  margin-bottom: 14px;
 }
 
 /* 카드 제목 */
@@ -83,15 +79,3 @@
   font-size: 14px;
   color: #4a4f68;
 }
-
-.content {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;     /*  수평 중앙 */
-  justify-content: center; /*  수직 중앙 */
-  text-align: center;      /* 텍스트 중앙 */
-  position: relative;      /* overlay와 겹치지 않도록 */
-  z-index: 2;              /* overlay보다 위 */
-}
-

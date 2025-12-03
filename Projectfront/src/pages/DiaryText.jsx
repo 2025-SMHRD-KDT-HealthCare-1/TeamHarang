@@ -1,167 +1,156 @@
-import React, { useState } from "react";
+// src/pages/DiaryText.jsx
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import styles from "./DiaryText.module.css";
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../store/useAuthStore";
 
-const Diarycontent = () => {
-  const [selectedDate, setSelectedDate] = useState(
-    new Date().toISOString().slice(0, 10)
-  );
+export default function DiaryText() {
+  const navigate = useNavigate();
+  const { user } = useAuthStore();
+  const user_id = user?.user_id;
 
-  const [values, setValues] = useState({
-    depression: 0,
-    anxiety: 0,
-    stress: 0,
-    content: "",
-  });
+  const todayStr = new Date().toISOString().split("T")[0];
 
-  const user_id = localStorage.getItem("user_id");
-  const token = localStorage.getItem("accessToken"); 
+  const [date, setDate] = useState(todayStr);
+  const [depression, setDepression] = useState(0);
+  const [anxiety, setAnxiety] = useState(0);
+  const [stress, setStress] = useState(0);
+  const [content, setContent] = useState("");
 
-  // 저장
-  const handleSave = () => {
-    axios
-      .post(
-        "http://localhost:3001/diary/AddDiary",
-        {
-          user_id,
-          date: selectedDate,
-          content: values.content,
-          stress: values.stress,
-          anxiety: values.anxiety,
-          depression: values.depression,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then(() => alert("일기 저장 완료!"))
-      .catch((err) => console.log("저장 오류:", err));
-  };
+  // ============================
+  // 특정 날짜 일기 조회
+  // ============================
+  const loadDiary = async () => {
+    if (!user_id) return;
 
-  // 수정
-  const handleUpdate = () => {
-    axios
-      .put(
-        "http://localhost:3001/diary/Diary",
-        {
-          user_id,
-          date: selectedDate,
-          content: values.content,
-          stress: values.stress,
-          anxiety: values.anxiety,
-          depression: values.depression,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then(() => alert("수정 완료!"))
-      .catch((err) => console.log("수정 오류:", err));
-  };
+    try {
+      const res = await axios.post("http://localhost:3001/diary/GetDiaryDate", {
+        user_id,
+        date,
+      });
 
-  // 삭제
-  const handleDelete = () => {
-  if (!window.confirm("정말 삭제할까요?")) return;
-
-  axios.post(
-    "http://localhost:3001/diary/DeleteDiary",
-    {
-      user_id,
-      date: selectedDate,
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,  // 🔥 토큰 필수
-      },
+      if (res.data.diaries && res.data.diaries.length > 0) {
+        const d = res.data.diaries[0];
+        setContent(d.content);
+        setStress(d.strees);
+        setAnxiety(d.anxiety);
+        setDepression(d.depression);
+      } else {
+        setContent("");
+        setStress(0);
+        setAnxiety(0);
+        setDepression(0);
+      }
+    } catch (err) {
+      console.log("일기 조회 실패");
     }
-  )
-  .then(() => {
-    alert("삭제 완료!");
-    setValues({ depression: 0, anxiety: 0, stress: 0, content: "" });
-  })
-  .catch((err) => console.log("삭제 오류:", err));
-};
+  };
+
+  useEffect(() => {
+    loadDiary();
+  }, [date]);
+
+  // ============================
+  // 저장하기
+  // ============================
+  const handleSave = async () => {
+    if (!user_id) return alert("로그인 필요합니다.");
+
+    try {
+      await axios.post("http://localhost:3001/diary/AddDiary", {
+        user_id,
+        date,
+        content,
+        strees: stress,
+        anxiety,
+        depression,
+      });
+
+      alert("일기 저장 완료!");
+    } catch (err) {
+      console.log("저장 실패", err);
+      alert("저장 실패!");
+    }
+  };
+
+  // ============================
+  // 기록 보기 이동
+  // ============================
+  const goHistory = () => {
+    navigate("/diary/history");
+  };
 
   return (
     <div className={styles.wrapper}>
-      <h2 className={styles.title}>감정 일기</h2>
+      <h1 className={styles.title}>감정 일기</h1>
 
+      {/* 날짜 선택 */}
       <input
         type="date"
-        value={selectedDate}
-        onChange={(e) => setSelectedDate(e.target.value)}
-        className={styles.dateInput}
+        value={date}
+        onChange={(e) => setDate(e.target.value)}
+        className={styles.datePicker}
       />
 
+      {/* 슬라이더 */}
       <div className={styles.sliderRow}>
         <div className={styles.sliderBox}>
-          <p>우울 {values.depression}/10</p>
+          <label>우울 {depression}/10</label>
           <input
             type="range"
             min="0"
             max="10"
-            value={values.depression}
-            onChange={(e) =>
-              setValues({ ...values, depression: Number(e.target.value) })
-            }
+            value={depression}
+            onChange={(e) => setDepression(Number(e.target.value))}
+            className={styles.slider}
           />
         </div>
 
         <div className={styles.sliderBox}>
-          <p>불안 {values.anxiety}/10</p>
+          <label>불안 {anxiety}/10</label>
           <input
             type="range"
             min="0"
             max="10"
-            value={values.anxiety}
-            onChange={(e) =>
-              setValues({ ...values, anxiety: Number(e.target.value) })
-            }
+            value={anxiety}
+            onChange={(e) => setAnxiety(Number(e.target.value))}
+            className={styles.slider}
           />
         </div>
 
         <div className={styles.sliderBox}>
-          <p>스트레스 {values.stress}/10</p>
+          <label>스트레스 {stress}/10</label>
           <input
             type="range"
             min="0"
             max="10"
-            value={values.stress}
-            onChange={(e) =>
-              setValues({ ...values, stress: Number(e.target.value) })
-            }
+            value={stress}
+            onChange={(e) => setStress(Number(e.target.value))}
+            className={styles.slider}
           />
         </div>
       </div>
 
+      {/* 내용 */}
+      <h3 className={styles.subTitle}>오늘의 일지 작성</h3>
       <textarea
-        className={styles.textarea}
-        rows="12"
         placeholder="오늘 하루는 어땠나요?"
-        value={values.content}
-        onChange={(e) => setValues({ ...values, content: e.target.value })}
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+        className={styles.textBox}
       />
 
+      {/* 버튼 */}
       <div className={styles.btnRow}>
-        <button className={styles.button} onClick={handleSave}>
-          저장
+        <button className={styles.saveBtn} onClick={handleSave}>
+          일기 저장
         </button>
-        <button className={styles.button} onClick={handleUpdate}>
-          수정
-        </button>
-        <button
-          className={`${styles.button} ${styles.deleteBtn}`}
-          onClick={handleDelete}
-        >
-          삭제
+
+        <button className={styles.historyBtn} onClick={goHistory}>
+          기록 보기
         </button>
       </div>
     </div>
   );
-};
-
-export default Diarycontent;
+}

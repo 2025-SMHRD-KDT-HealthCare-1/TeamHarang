@@ -11,17 +11,19 @@ import {
 
 const SurveyRecord = () => {
   const uid = localStorage.getItem("user_id");
-
-  // 전체 설문 기록 리스트
   const [records, setRecords] = useState([]);
 
-  // 가장 최신 기록
   const latest = records[0] || null;
 
   useEffect(() => {
+    if (!uid) return;
+
     axios
       .get(`http://localhost:3001/survey/result/${uid}`)
-      .then((res) => setRecords(res.data))
+      .then((res) => {
+        console.log("🔥 설문 조회 결과:", res.data);
+        setRecords(res.data);
+      })
       .catch((err) => console.error(err));
   }, [uid]);
 
@@ -37,7 +39,7 @@ const SurveyRecord = () => {
         <div className={styles.chartBox}>
           {latest ? (
             <ResponsiveContainer width="100%" height={260}>
-              <BarChart data={[{ name: latest.survey_type, score: latest.score }]}>
+              <BarChart data={[{ name: latest.survey_type, score: latest.total_score }]}>
                 <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
@@ -52,24 +54,24 @@ const SurveyRecord = () => {
         {/* --------- 3개 카드 --------- */}
         <div className={styles.cardRow}>
           <div className={styles.card}>
-            <span>우울</span>
-            <p>{latest?.phq ?? "-"}</p>
+            <span>정서(Emotional)</span>
+            <p>{latest?.emotional_point ?? "-"}</p>
           </div>
 
           <div className={styles.card}>
-            <span>불안</span>
-            <p>{latest?.gad ?? "-"}</p>
+            <span>신체(Physical)</span>
+            <p>{latest?.physical_point ?? "-"}</p>
           </div>
 
           <div className={styles.card}>
-            <span>스트레스</span>
-            <p>{latest?.pss ?? "-"}</p>
+            <span>총점</span>
+            <p>{latest?.total_score ?? "-"}</p>
           </div>
         </div>
       </div>
 
       {/* ======================= */}
-      {/* 2) 설문 기록 리스트       */}
+      {/* 2) 설문 기록 리스트 */}
       {/* ======================= */}
       <div className={styles.section}>
         <h2>체크 기록</h2>
@@ -79,33 +81,29 @@ const SurveyRecord = () => {
         ) : (
           <div className={styles.listBox}>
             {records.map((item) => (
-              <div key={item.id} className={styles.recordItem}>
+              <div key={item.result_id} className={styles.recordItem}>
                 <div className={styles.left}>
+
                   <div className={styles.date}>
-                    {new Date(item.created_at).toLocaleDateString()}
+                    {new Date(item.survey_date).toLocaleDateString()}
                   </div>
 
                   <span className={styles.type}>{item.survey_type}</span>
 
-                  <span className={styles.score}>{item.score}점</span>
+                  <span className={styles.score}>{item.total_score}점</span>
                 </div>
 
-                <span
-                  className={`${styles.level} ${
-                    item.level === "매우 높음"
-                      ? styles.levelDanger
-                      : item.level === "높음"
-                      ? styles.levelHigh
-                      : styles.levelNormal
-                  }`}
-                >
-                  {item.level}
+                <span className={styles.level}>
+                  {item.emotional_point + item.physical_point >= 20
+                    ? "높음"
+                    : "보통"}
                 </span>
               </div>
             ))}
           </div>
         )}
       </div>
+
     </div>
   );
 };

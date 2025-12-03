@@ -12,8 +12,6 @@ import ChatBot from "./pages/ChatBot";
 import DiaryHistory from "./pages/DiaryHistory";
 import DiaryText from "./pages/DiaryText";
 
-/* Emotion */
-import EmotionStats from "./pages/EmotionStats";
 
 /* Survey */
 import SurveyGAD from "./pages/SurveyGAD";
@@ -23,8 +21,6 @@ import SurveyResult from "./pages/SurveyResult";
 import SurveyStart from "./pages/SurveyStart";
 import SurveyRecord from "./pages/SurveyRecord";
 
-/* Relax / Stress */
-import StressManage from "./pages/StressManage";
 
 /* Todo */
 import TodoList from "./pages/TodoList";
@@ -52,11 +48,6 @@ function App() {
             <Route path="text" element={<DiaryText />} />
           </Route>
 
-          {/* Emotion Group */}
-          <Route path="emotion">
-            <Route path="stats" element={<EmotionStats />} />
-          </Route>
-
           {/* Survey Group */}
           <Route path="survey">
             <Route path="start" element={<SurveyStart />} />
@@ -65,13 +56,7 @@ function App() {
             <Route path="pss" element={<SurveyPSS />} />
             <Route path="result" element={<SurveyResult />} />
             <Route path="record" element={<SurveyRecord />} />
-          </Route>
-
-          {/* Stress */}
-
-          <Route path="stress">
-            <Route path="manage" element={<StressManage />} />
-          </Route>
+          </Route>  
 
           {/* Todo Group */}
           <Route path="todo">
