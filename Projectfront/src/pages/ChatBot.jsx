@@ -6,38 +6,38 @@ const ChatBot = () => {
   const [history, setHistory] = useState([]);
 
   const send = async () => {
-    if (!input.trim()) return;
+  const token = localStorage.getItem("accessToken");  // ⭐ 최신 토큰 읽기
 
-    // 화면 출력용 사용자 메시지 저장
-    const newMessages = [...messages, { role: "user", content: input }];
-    setMessages(newMessages);
+  if (!input.trim()) return;
+  console.log("TOKEN:", token);
 
-    try {
-      const res = await fetch("http://localhost:3001/chatbot/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message: input,
-          history,
-        }),
-      });
+  const newMessages = [...messages, { role: "user", content: input }];
+  setMessages(newMessages);
 
-      const data = await res.json();
-      if (!data.reply) throw new Error("응답 없음");
+  try {
+    const res = await fetch("http://localhost:3001/chatbot/chat", {
+      method: "POST",
+      credentials: "include",
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        user_message: input,
+      }),
+    });
 
-      setMessages([
-        ...newMessages,
-        { role: "assistant", content: data.reply },
-      ]);
+    const data = await res.json();
+    if (!data.reply) throw new Error("응답 없음");
 
-      setHistory(data.history); // 히스토리 업데이트
-      setInput("");
+    setMessages([...newMessages, { role: "assistant", content: data.reply }]);
+    setInput("");
 
-    } catch (err) {
-      console.error(err);
-      alert("서버 오류가 발생했습니다.");
-    }
-  };
+  } catch (err) {
+    console.error(err);
+    alert("서버 오류가 발생했습니다.");
+  }
+};
 
   return (
     <div style={{ padding: 30 }}>
