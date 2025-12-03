@@ -21,7 +21,7 @@ const SurveyRecord = () => {
     axios
       .get(`http://localhost:3001/survey/result/${uid}`)
       .then((res) => {
-        console.log("🔥 설문 조회 결과:", res.data);
+        console.log(" 설문 조회 결과:", res.data);
         setRecords(res.data);
       })
       .catch((err) => console.error(err));
