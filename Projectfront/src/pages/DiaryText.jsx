@@ -2,98 +2,124 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import styles from "./DiaryText.module.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore";
 
 export default function DiaryText() {
   const navigate = useNavigate();
-  const { user } = useAuthStore();
+  const location = useLocation();
+  const { user, accessToken } = useAuthStore();
   const user_id = user?.user_id;
+
+  // 수정 모드인지 확인 (URL: /diary/text?date=2024-12-03)
+  const query = new URLSearchParams(location.search);
+  const editDate = query.get("date");
 
   const todayStr = new Date().toISOString().split("T")[0];
 
-  const [date, setDate] = useState(todayStr);
+  const [date, setDate] = useState(editDate || todayStr);
   const [depression, setDepression] = useState(0);
   const [anxiety, setAnxiety] = useState(0);
   const [stress, setStress] = useState(0);
   const [content, setContent] = useState("");
 
+  const isEditMode = Boolean(editDate);
+
   // ============================
-  // 특정 날짜 일기 조회
+  // 특정 날짜 조회 (수정 모드일 때 자동 실행)
   // ============================
   const loadDiary = async () => {
-    if (!user_id) return;
+    if (!user_id || !accessToken) return;
 
     try {
-      const res = await axios.post("http://localhost:3001/diary/GetDiaryDate", {
-        user_id,
-        date,
-      });
+      const res = await axios.post(
+        "http://localhost:3001/diary/GetDiaryDate",
+        { user_id, date },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
 
-      if (res.data.diaries && res.data.diaries.length > 0) {
+      if (res.data.diaries?.length > 0) {
         const d = res.data.diaries[0];
         setContent(d.content);
         setStress(d.strees);
         setAnxiety(d.anxiety);
         setDepression(d.depression);
       } else {
-        setContent("");
-        setStress(0);
-        setAnxiety(0);
-        setDepression(0);
+        if (isEditMode) alert("기록이 존재하지 않습니다.");
       }
     } catch (err) {
-      console.log("일기 조회 실패");
+      console.log("일기 조회 실패", err);
     }
   };
 
   useEffect(() => {
-    loadDiary();
+    if (isEditMode) loadDiary();
   }, [date]);
 
   // ============================
-  // 저장하기
+  // 저장 / 수정 처리
   // ============================
   const handleSave = async () => {
-    if (!user_id) return alert("로그인 필요합니다.");
+    if (!user_id || !accessToken)
+      return alert("로그인이 필요합니다.");
+
+    const diaryData = {
+      user_id,
+      date,
+      content,
+      strees: stress,
+      anxiety,
+      depression,
+    };
 
     try {
-      await axios.post("http://localhost:3001/diary/AddDiary", {
-        user_id,
-        date,
-        content,
-        strees: stress,
-        anxiety,
-        depression,
-      });
+      if (isEditMode) {
+        // ---------- 수정 ----------
+        await axios.put(
+          "http://localhost:3001/diary/Diary",
+          diaryData,
+          {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          }
+        );
+        alert("일기 수정 완료!");
+      } else {
+        // ---------- 신규 작성 ----------
+        await axios.post(
+          "http://localhost:3001/diary/AddDiary",
+          diaryData,
+          {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          }
+        );
+        alert("일기 저장 완료!");
+      }
 
-      alert("일기 저장 완료!");
+      navigate("/diary/history");
     } catch (err) {
       console.log("저장 실패", err);
       alert("저장 실패!");
     }
   };
 
-  // ============================
-  // 기록 보기 이동
-  // ============================
-  const goHistory = () => {
-    navigate("/diary/history");
-  };
-
   return (
     <div className={styles.wrapper}>
-      <h1 className={styles.title}>감정 일기</h1>
+      <h1 className={styles.title}>
+        {isEditMode ? "일기 수정" : "감정 일기 작성"}
+      </h1>
 
-      {/* 날짜 선택 */}
       <input
         type="date"
         value={date}
+        disabled={isEditMode} // 수정 모드에서는 날짜 변경 불가
         onChange={(e) => setDate(e.target.value)}
         className={styles.datePicker}
       />
 
-      {/* 슬라이더 */}
       <div className={styles.sliderRow}>
         <div className={styles.sliderBox}>
           <label>우울 {depression}/10</label>
@@ -132,8 +158,8 @@ export default function DiaryText() {
         </div>
       </div>
 
-      {/* 내용 */}
-      <h3 className={styles.subTitle}>오늘의 일지 작성</h3>
+      <h3 className={styles.subTitle}>오늘의 일지</h3>
+
       <textarea
         placeholder="오늘 하루는 어땠나요?"
         value={content}
@@ -141,13 +167,15 @@ export default function DiaryText() {
         className={styles.textBox}
       />
 
-      {/* 버튼 */}
       <div className={styles.btnRow}>
         <button className={styles.saveBtn} onClick={handleSave}>
-          일기 저장
+          {isEditMode ? "수정 완료" : "일기 저장"}
         </button>
 
-        <button className={styles.historyBtn} onClick={goHistory}>
+        <button
+          className={styles.historyBtn}
+          onClick={() => navigate("/diary/history")}
+        >
           기록 보기
         </button>
       </div>

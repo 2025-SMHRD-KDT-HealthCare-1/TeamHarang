@@ -6,8 +6,6 @@ let dairy = [
     { did: 1, content: "크리스마스" }
 ]
 
-
-
 /* ------------------------------
     1) 일기 추가
 --------------------------------*/
@@ -41,68 +39,42 @@ router.post('/AddDiary', (req, res) => {
 });
 
 
-    // 2) 월별 일기 날짜 조회
-
-router.post('/MonthDiary', (req, res) => {
+/* ------------------------------
+    2) 월별 날짜 조회  ★★★ 추가된 부분 ★★★
+--------------------------------*/
+router.post("/MonthDiary", (req, res) => {
     const { uid, year, month } = req.body;
 
     if (!uid || !year || !month) {
         return res.status(400).json({ message: "uid, year, month 누락" });
     }
 
-    const monthStr = month.toString().padStart(2, '0');
-    const yearMonth = `${year}-${monthStr}`;
-
     const sql = `
-        SELECT DISTINCT date
+        SELECT date
         FROM diary
         WHERE user_id = ?
-          AND DATE_FORMAT(date, "%Y-%m") = ?
+          AND YEAR(date) = ?
+          AND MONTH(date) = ?
         ORDER BY date ASC
     `;
 
-    conn.query(sql, [uid, yearMonth], (err, result) => {
+    conn.query(sql, [uid, year, month], (err, result) => {
         if (err) {
-            console.log(err);
+            console.log("MonthDiary Error:", err);
             return res.status(500).json({ message: "월별 일기 조회 실패" });
         }
 
-        const dates = result.map(row => row.date);
-
         return res.json({
-            message: "월별 작성 일기 날짜 조회 성공",
-            year,
-            month,
-            dates
+            message: "월별 일기 조회 성공",
+            dates: result.map(r => r.date)
         });
     });
 });
 
 
-    // 3) 특정 날짜 조회
-
-router.get("/DayDiary/:user_id/:date", (req, res) => {
-    const { user_id, date } = req.params;
-
-    const sql = `
-        SELECT *
-        FROM diary
-        WHERE user_id = ? AND date = ?
-        LIMIT 1
-    `;
-
-    conn.query(sql, [user_id, date], (err, result) => {
-        if (err) return res.status(500).json({ message: "일기 조회 실패" });
-
-        if (result.length === 0) return res.json(null);
-
-        return res.json(result[0]);
-    });
-});
-
-
-    // 4) 일기 수정
-
+/* ------------------------------
+    4) 일기 수정
+--------------------------------*/
 router.put("/Diary", (req, res) => {
     const { user_id, date, content, strees, anxiety, depression } = req.body;
 
@@ -128,8 +100,9 @@ router.put("/Diary", (req, res) => {
 });
 
 
-    // 5) 특정 날짜 조회 (POST 버전)
-
+/* ------------------------------
+    5) 특정 날짜 조회 (POST)
+--------------------------------*/
 router.post('/GetDiaryDate', (req, res) => {
     const { user_id, date } = req.body;
 
@@ -170,9 +143,10 @@ router.post('/GetDiaryDate', (req, res) => {
     });
 });
 
- 
-    // 6) 일기 삭제 (날짜 기반)
 
+/* ------------------------------
+    6) 일기 삭제
+--------------------------------*/
 router.post('/DeleteDiary', (req, res) => {
     const { user_id, date } = req.body;
 
