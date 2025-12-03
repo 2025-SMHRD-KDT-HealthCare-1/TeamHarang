@@ -11,11 +11,12 @@ export default function DiaryText() {
   const { user, accessToken } = useAuthStore();
   const user_id = user?.user_id;
 
-  // 수정 모드인지 확인 (URL: /diary/text?date=2024-12-03)
+  // 수정모드 확인 (?date=YYYY-MM-DD)
   const query = new URLSearchParams(location.search);
   const editDate = query.get("date");
 
-  const todayStr = new Date().toISOString().split("T")[0];
+  // 한국 날짜 그대로 YYYY-MM-DD
+  const todayStr = new Date().toLocaleDateString("sv-SE");
 
   const [date, setDate] = useState(editDate || todayStr);
   const [depression, setDepression] = useState(0);
@@ -25,8 +26,9 @@ export default function DiaryText() {
 
   const isEditMode = Boolean(editDate);
 
+
   // ============================
-  // 특정 날짜 조회 (수정 모드일 때 자동 실행)
+  // 조회 (수정일 때만)
   // ============================
   const loadDiary = async () => {
     if (!user_id || !accessToken) return;
@@ -36,32 +38,34 @@ export default function DiaryText() {
         "http://localhost:3001/diary/GetDiaryDate",
         { user_id, date },
         {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
+          headers: { Authorization: `Bearer ${accessToken}` },
         }
       );
 
       if (res.data.diaries?.length > 0) {
         const d = res.data.diaries[0];
-        setContent(d.content);
-        setStress(d.strees);
-        setAnxiety(d.anxiety);
-        setDepression(d.depression);
+
+        // undefined 방지
+        setContent(d.content ?? "");
+        setStress(d.stress ?? 0);
+        setAnxiety(d.anxiety ?? 0);
+        setDepression(d.depression ?? 0);
       } else {
-        if (isEditMode) alert("기록이 존재하지 않습니다.");
+        alert("해당 날짜의 기록이 없습니다.");
       }
     } catch (err) {
       console.log("일기 조회 실패", err);
     }
   };
 
+
   useEffect(() => {
     if (isEditMode) loadDiary();
-  }, [date]);
+  }, []); // 최초 1회만 실행
+
 
   // ============================
-  // 저장 / 수정 처리
+  // 저장 / 수정
   // ============================
   const handleSave = async () => {
     if (!user_id || !accessToken)
@@ -71,14 +75,14 @@ export default function DiaryText() {
       user_id,
       date,
       content,
-      strees: stress,
+      stress,
       anxiety,
       depression,
     };
 
     try {
       if (isEditMode) {
-        // ---------- 수정 ----------
+        // 수정 모드
         await axios.put(
           "http://localhost:3001/diary/Diary",
           diaryData,
@@ -88,7 +92,7 @@ export default function DiaryText() {
         );
         alert("일기 수정 완료!");
       } else {
-        // ---------- 신규 작성 ----------
+        // 신규 작성
         await axios.post(
           "http://localhost:3001/diary/AddDiary",
           diaryData,
@@ -106,6 +110,7 @@ export default function DiaryText() {
     }
   };
 
+
   return (
     <div className={styles.wrapper}>
       <h1 className={styles.title}>
@@ -115,7 +120,7 @@ export default function DiaryText() {
       <input
         type="date"
         value={date}
-        disabled={isEditMode} // 수정 모드에서는 날짜 변경 불가
+        disabled={isEditMode} 
         onChange={(e) => setDate(e.target.value)}
         className={styles.datePicker}
       />

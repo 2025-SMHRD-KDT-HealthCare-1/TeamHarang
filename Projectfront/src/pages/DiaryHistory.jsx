@@ -44,7 +44,7 @@ export default function DiaryHistory() {
       );
 
       const dates = res.data?.dates || [];
-      setDates(dates.map((d) => d.split("T")[0]));
+      setDates(dates.map((d) => new Date(d).toLocaleDateString("sv-SE")));
       setDay("");
       setDetail(null);
     } catch (err) {
