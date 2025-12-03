@@ -42,7 +42,11 @@ export default function DiaryHistory() {
       );
 
       const dates = res.data?.dates || [];
-      setDates(dates.map((d) => new Date(d).toLocaleDateString("sv-SE")));
+
+      // 날짜 문자열(d)을 Date로 변환할 때 UTC 기준으로 파싱되어 하루 밀리는 현상 방지
+      // toLocaleDateString("sv-SE")는 타임존은 그대로 두고
+      // 포맷만 YYYY-MM-DD로 바꿔주므로 날짜 오류가 발생 X
+      setDates(dates.map((d) => new Date(d).toLocaleDateString("sv-SE")));  // 변경
       setDay("");
       setDetail(null);
     } catch (err) {

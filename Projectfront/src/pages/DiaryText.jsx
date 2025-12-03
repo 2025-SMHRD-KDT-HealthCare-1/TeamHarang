@@ -10,6 +10,10 @@ export default function DiaryText() {
   const { user, accessToken } = useAuthStore();  //  토큰 가져오기
   const user_id = user?.user_id;
 
+  // 오늘 날짜를 한국 기준(현재 브라우저 타임존) 그대로 YYYY-MM-DD 형태로 생성
+  // toISOString()은 UTC 기준이라 날짜가 하루 밀리는 문제가 있음
+  // "sv-SE"는 전 세계적으로 YYYY-MM-DD 포맷을 안전하게 생성할 때 사용하는 표준 locale
+  // → 타임존은 변경 X -> 포맷만 YYYY-MM-DD로 바꿔줘서 날짜 밀림이 발생 X
   const todayStr = new Date().toLocaleDateString("sv-SE")
 
   const [date, setDate] = useState(todayStr);
