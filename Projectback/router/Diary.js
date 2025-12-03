@@ -3,140 +3,201 @@ const router = express.Router()
 const conn = require("../config/database")
 
 let dairy = [
-    { did : 1, content : "크리스마스"}
+    { did: 1, content: "크리스마스" }
 ]
 
-// 일기에 내용 추가하기
-router.post('/AddDiary', (req,res) => {
-    const { uid, date, content, strees, anxiety, depression } = req.body
-    if(!uid || !date || !content){
-        return res.status(400).json({message : "uid, date, content 필수 입력"})
+
+
+/* ------------------------------
+    1) 일기 추가
+--------------------------------*/
+router.post('/AddDiary', (req, res) => {
+    const { user_id, date, content, strees, anxiety, depression } = req.body;
+
+    if (!user_id || !date || !content) {
+        return res.status(400).json({ message: "user_id, date, content 필수 입력" });
     }
 
     const sql = `
-        insert into diary (user_id, date, content, strees, anxiety, depression)
-        values(?, ?, ?, ?, ?, ?)
-    `
+        INSERT INTO diary (user_id, date, content, strees, anxiety, depression)
+        VALUES (?, ?, ?, ?, ?, ?)
+    `;
 
-    conn.query(sql, [uid, date,content, strees || null, anxiety || null, depression || null, (err,result)=>{
-        if(err){
-            return res.status(500).json({message : "일기 저장 실패"})
-        }
-
-        return res.json({
-            message : "일기 저장 성공",
-            diary_id : result.insertId
-        })
-    }])
-})
-// 월 일기 작성여부 조회
-router.post('/MonthDiary', (req, res)=>{
-    const { uid, year, month } = req.body
-
-    if(!uid || !year || !month){
-        return res.status(400).json({message : "uid or 날짜 누락"})
-    }
-
-    const monthStr = month.toString().padStart(2, '0') // 한자리 월 일때 두자리로 맞춤
-    
-    // yyyy-mm으로 검색
-    const yearMonth = `${year}-${monthStr}`
-
-    const sql = `
-        select distinct date
-        from diary
-        where user_id = ? 
-            and date_format(date, %Y-%m) = ?
-        order by date ASC`
-
-        conn.query(sql, [uid, yearMonth], (err, result)=>{
-            if(err){
-                return res.status(500).json({message : "월별 일기 조회 실패"})
+    conn.query(
+        sql,
+        [user_id, date, content, strees || 0, anxiety || 0, depression || 0],
+        (err, result) => {
+            if (err) {
+                console.log(err);
+                return res.status(500).json({ message: "일기 저장 실패" });
             }
-
-            // 날짜만 배열로 추출
-            const dates = result.map(row => row.date)
 
             return res.json({
-                message : "월별 작성 일기 날짜 조회 성공",
-                year,
-                month,
-                dates
-            })
-        })
-    })
+                message: "일기 저장 성공",
+                diary_id: result.insertId
+            });
+        }
+    );
+});
 
-// 특정 날짜 다이어리 조회
-router.post('/GetDiaryDate', (req, res)=>{
-    const { uid, date } = req.body
 
-    if(!uid){
-        return res.status(400).json({message : "uid 누락"})
+    // 2) 월별 일기 날짜 조회
+
+router.post('/MonthDiary', (req, res) => {
+    const { uid, year, month } = req.body;
+
+    if (!uid || !year || !month) {
+        return res.status(400).json({ message: "uid, year, month 누락" });
     }
 
-    // date가 없으면 오늘 날짜로 자동설정
-    let targetDate = date
-    if(!targetDate){
-        const today = new Date()
-        targetDate = today.toISOString().split('T')[0] //yyyy-mm-dd
-    }
+    const monthStr = month.toString().padStart(2, '0');
+    const yearMonth = `${year}-${monthStr}`;
 
     const sql = `
-        select diary_id, user_id, date, content, strees, anxiety, depression
-        from diary
-        where user_id =? and date =?
-        order by diary_id asc
-        `
+        SELECT DISTINCT date
+        FROM diary
+        WHERE user_id = ?
+          AND DATE_FORMAT(date, "%Y-%m") = ?
+        ORDER BY date ASC
+    `;
 
-        conn.query(sql, [uid, targetDate], (err, result)=>{
-            if(err){
-                return res.status(500).json({message : "일기 조회 실패"})
-            }
-
-            // 일기가 없는 경우
-            if(result.length === 0){
-                return res.json({
-                message : "특정 날짜 일기 조회 성공",
-                date : targetDate,
-                info : "작성안함"
-            })
+    conn.query(sql, [uid, yearMonth], (err, result) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).json({ message: "월별 일기 조회 실패" });
         }
 
-        // 일기가 있을 경우
+        const dates = result.map(row => row.date);
+
         return res.json({
-            message : "특정 날짜 일기 조회 성공",
-            date : targetDate,
-            diaries : result
-        })
-    })
-})
+            message: "월별 작성 일기 날짜 조회 성공",
+            year,
+            month,
+            dates
+        });
+    });
+});
 
-// 특정 다이어리 삭제
-router.post('DeletDiary', (req, res)=>{
-    const { uid, did } = req.body
 
-    if(!uid || !did){
-        return res.status(400).json({message : "uid or did 누락"})
+    // 3) 특정 날짜 조회
+
+router.get("/DayDiary/:user_id/:date", (req, res) => {
+    const { user_id, date } = req.params;
+
+    const sql = `
+        SELECT *
+        FROM diary
+        WHERE user_id = ? AND date = ?
+        LIMIT 1
+    `;
+
+    conn.query(sql, [user_id, date], (err, result) => {
+        if (err) return res.status(500).json({ message: "일기 조회 실패" });
+
+        if (result.length === 0) return res.json(null);
+
+        return res.json(result[0]);
+    });
+});
+
+
+    // 4) 일기 수정
+
+router.put("/Diary", (req, res) => {
+    const { user_id, date, content, strees, anxiety, depression } = req.body;
+
+    if (!user_id || !date) {
+        return res.status(400).json({ message: "user_id, date 누락" });
     }
 
     const sql = `
-        delete from diary
-        where diary_id = ? and user_id = ?
-    `
+        UPDATE diary
+        SET content=?, strees=?, anxiety=?, depression=?
+        WHERE user_id=? AND date=?
+    `;
 
-    conn.query(sql, [did, uid], (err, result)=>{
-        if(err){
-            return res.status(500).json({message : "일기 삭제 실패"})
+    conn.query(
+        sql,
+        [content, strees, anxiety, depression, user_id, date],
+        (err, result) => {
+            if (err) return res.status(500).json({ message: "일기 수정 실패" });
+
+            return res.json({ message: "수정 성공" });
+        }
+    );
+});
+
+
+    // 5) 특정 날짜 조회 (POST 버전)
+
+router.post('/GetDiaryDate', (req, res) => {
+    const { user_id, date } = req.body;
+
+    if (!user_id) {
+        return res.status(400).json({ message: "user_id 누락" });
+    }
+
+    let targetDate = date;
+    if (!targetDate) {
+        const today = new Date();
+        targetDate = today.toISOString().split("T")[0];
+    }
+
+    const sql = `
+        SELECT diary_id, user_id, date, content, strees, anxiety, depression
+        FROM diary
+        WHERE user_id = ? AND date = ?
+    `;
+
+    conn.query(sql, [user_id, targetDate], (err, result) => {
+        if (err) {
+            return res.status(500).json({ message: "일기 조회 실패" });
         }
 
-        if(result.affectedRows === 0){
-            return res.status(404).json({
-                message : "삭제 할 일기가 없음"
-            })
+        if (result.length === 0) {
+            return res.json({
+                message: "특정 날짜 일기 조회 성공",
+                date: targetDate,
+                info: "작성안함"
+            });
         }
-        
-        return res.json({message : "일기 삭제 성공"})
-    })
-})
+
+        return res.json({
+            message: "특정 날짜 일기 조회 성공",
+            date: targetDate,
+            diaries: result
+        });
+    });
+});
+
+ 
+    // 6) 일기 삭제 (날짜 기반)
+
+router.post('/DeleteDiary', (req, res) => {
+    const { user_id, date } = req.body;
+
+    if (!user_id || !date) {
+        return res.status(400).json({ message: "user_id 또는 date 누락" });
+    }
+
+    const sql = `
+        DELETE FROM diary
+        WHERE user_id = ? AND date = ?
+    `;
+
+    conn.query(sql, [user_id, date], (err, result) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).json({ message: "일기 삭제 실패" });
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: "삭제할 일기가 없음" });
+        }
+
+        return res.json({ message: "일기 삭제 성공" });
+    });
+});
+
 
 module.exports = router;
