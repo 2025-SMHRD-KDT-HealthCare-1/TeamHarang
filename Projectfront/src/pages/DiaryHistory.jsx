@@ -5,39 +5,45 @@ import styles from "./DiaryHistory.module.css";
 import { useAuthStore } from "../store/useAuthStore";
 
 export default function DiaryHistory() {
-  const { user } = useAuthStore();
+  const { user, accessToken } = useAuthStore();   // ★ 토큰 포함
   const user_id = user?.user_id;
 
   const today = new Date();
 
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth() + 1);
-  const [day, setDay] = useState(""); // 드롭다운 선택한 '일'
+  const [day, setDay] = useState("");
 
-  const [dates, setDates] = useState([]); // 해당 월의 작성 날짜 목록
-  const [detail, setDetail] = useState(null); // 선택 날짜 상세 내용
+  const [dates, setDates] = useState([]);
+  const [detail, setDetail] = useState(null);
 
-  // 날짜 YYYY-MM-DD로 변환
   const makeDateString = (y, m, d) =>
     `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
 
   // ============================================
-  //  MonthDiary : 연/월 선택 시 → 해당 월 날짜 리스트
+  //  MonthDiary : 연/월 → 작성 날짜 조회
   // ============================================
   const loadMonth = async () => {
-    if (!user_id) return;
+    if (!user_id || !accessToken) return;
 
     try {
-      const res = await axios.post("http://localhost:3001/diary/MonthDiary", {
-        uid: user_id,
-        year,
-        month,
-      });
+      const res = await axios.post(
+        "http://localhost:3001/diary/MonthDiary",
+        {
+          uid: user_id,
+          year,
+          month,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,   // ★ 토큰 포함
+          },
+        }
+      );
 
       const dates = res.data?.dates || [];
-
-      setDates(dates.map((d) => d.split("T")[0])); // YYYY-MM-DD 형태로 저장
-      setDay(""); // 월 바꾸면 일 초기화
+      setDates(dates.map((d) => new Date(d).toLocaleDateString("sv-SE")));
+      setDay("");
       setDetail(null);
     } catch (err) {
       console.log("월별 일기 조회 실패", err);
@@ -49,18 +55,26 @@ export default function DiaryHistory() {
   }, [year, month]);
 
   // ============================================
-  //  선택된 일(day) → 상세 조회
+  //  일(day) 선택 → 특정 날짜 상세 조회
   // ============================================
   const loadDetail = async () => {
-    if (!day || !user_id) return;
+    if (!day || !user_id || !accessToken) return;
 
     const dateStr = makeDateString(year, month, day);
 
     try {
-      const res = await axios.post("http://localhost:3001/diary/GetDiaryDate", {
-        user_id,
-        date: dateStr,
-      });
+      const res = await axios.post(
+        "http://localhost:3001/diary/GetDiaryDate",
+        {
+          user_id,
+          date: dateStr,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,   // ★ 토큰 포함
+          },
+        }
+      );
 
       if (res.data.diaries?.length > 0) setDetail(res.data.diaries[0]);
       else setDetail(null);
@@ -73,16 +87,13 @@ export default function DiaryHistory() {
     loadDetail();
   }, [day]);
 
-  // ============================================
-  //  해당 월에서 작성된 날짜만 "일 드롭다운"으로 표시
-  // ============================================
-  const dayList = dates.map((d) => Number(d.split("-")[2])); // ['2024-12-03'] → 3
+  const dayList = dates.map((d) => Number(d.split("-")[2]));
 
   return (
     <div className={styles.wrapper}>
       <h1 className={styles.title}>감정 일기 기록</h1>
 
-      {/* ---------------- 연/월/일 드롭다운 ---------------- */}
+      {/* 연/월/일 선택 */}
       <div className={styles.selectRow}>
         {/* 연 */}
         <select
@@ -127,7 +138,7 @@ export default function DiaryHistory() {
         </select>
       </div>
 
-      {/* ---------------- 상세 보기 ---------------- */}
+      {/* 상세보기 */}
       {day && (
         <div className={styles.detailBox}>
           <h2 className={styles.detailTitle}>

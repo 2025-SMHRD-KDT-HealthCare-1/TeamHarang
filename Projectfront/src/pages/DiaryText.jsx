@@ -7,10 +7,10 @@ import { useAuthStore } from "../store/useAuthStore";
 
 export default function DiaryText() {
   const navigate = useNavigate();
-  const { user } = useAuthStore();
+  const { user, accessToken } = useAuthStore();  //  토큰 가져오기
   const user_id = user?.user_id;
 
-  const todayStr = new Date().toISOString().split("T")[0];
+  const todayStr = new Date().toLocaleDateString("sv-SE")
 
   const [date, setDate] = useState(todayStr);
   const [depression, setDepression] = useState(0);
@@ -22,15 +22,20 @@ export default function DiaryText() {
   // 특정 날짜 일기 조회
   // ============================
   const loadDiary = async () => {
-    if (!user_id) return;
+    if (!user_id || !accessToken) return;
 
     try {
-      const res = await axios.post("http://localhost:3001/diary/GetDiaryDate", {
-        user_id,
-        date,
-      });
+      const res = await axios.post(
+        "http://localhost:3001/diary/GetDiaryDate",
+        { user_id, date },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,   //  토큰 포함
+          },
+        }
+      );
 
-      if (res.data.diaries && res.data.diaries.length > 0) {
+      if (res.data.diaries?.length > 0) {
         const d = res.data.diaries[0];
         setContent(d.content);
         setStress(d.strees);
@@ -43,7 +48,7 @@ export default function DiaryText() {
         setDepression(0);
       }
     } catch (err) {
-      console.log("일기 조회 실패");
+      console.log("일기 조회 실패", err);
     }
   };
 
@@ -55,17 +60,26 @@ export default function DiaryText() {
   // 저장하기
   // ============================
   const handleSave = async () => {
-    if (!user_id) return alert("로그인 필요합니다.");
+    if (!user_id || !accessToken)
+      return alert("로그인이 필요합니다.");
 
     try {
-      await axios.post("http://localhost:3001/diary/AddDiary", {
-        user_id,
-        date,
-        content,
-        strees: stress,
-        anxiety,
-        depression,
-      });
+      await axios.post(
+        "http://localhost:3001/diary/AddDiary",
+        {
+          user_id,
+          date,
+          content,
+          strees: stress,
+          anxiety,
+          depression,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,  // 토큰 포함
+          },
+        }
+      );
 
       alert("일기 저장 완료!");
     } catch (err) {
@@ -74,18 +88,12 @@ export default function DiaryText() {
     }
   };
 
-  // ============================
-  // 기록 보기 이동
-  // ============================
-  const goHistory = () => {
-    navigate("/diary/history");
-  };
+  const goHistory = () => navigate("/diary/history");
 
   return (
     <div className={styles.wrapper}>
       <h1 className={styles.title}>감정 일기</h1>
 
-      {/* 날짜 선택 */}
       <input
         type="date"
         value={date}
@@ -93,7 +101,6 @@ export default function DiaryText() {
         className={styles.datePicker}
       />
 
-      {/* 슬라이더 */}
       <div className={styles.sliderRow}>
         <div className={styles.sliderBox}>
           <label>우울 {depression}/10</label>
@@ -132,8 +139,8 @@ export default function DiaryText() {
         </div>
       </div>
 
-      {/* 내용 */}
       <h3 className={styles.subTitle}>오늘의 일지 작성</h3>
+
       <textarea
         placeholder="오늘 하루는 어땠나요?"
         value={content}
@@ -141,7 +148,6 @@ export default function DiaryText() {
         className={styles.textBox}
       />
 
-      {/* 버튼 */}
       <div className={styles.btnRow}>
         <button className={styles.saveBtn} onClick={handleSave}>
           일기 저장
