@@ -21,7 +21,7 @@ export default function DiaryText() {
   const [date, setDate] = useState(editDate || todayStr);
   const [depression, setDepression] = useState(0);
   const [anxiety, setAnxiety] = useState(0);
-  const [stress, setStress] = useState(0);
+  const [strees, setStrees] = useState(0);
   const [content, setContent] = useState("");
 
   const isEditMode = Boolean(editDate);
@@ -47,7 +47,7 @@ export default function DiaryText() {
 
         // undefined 방지
         setContent(d.content ?? "");
-        setStress(d.stress ?? 0);
+        setStrees(d.strees ?? 0);
         setAnxiety(d.anxiety ?? 0);
         setDepression(d.depression ?? 0);
       } else {
@@ -75,7 +75,7 @@ export default function DiaryText() {
       user_id,
       date,
       content,
-      stress,
+      strees,
       anxiety,
       depression,
     };
@@ -151,13 +151,13 @@ export default function DiaryText() {
         </div>
 
         <div className={styles.sliderBox}>
-          <label>스트레스 {stress}/10</label>
+          <label>스트레스 {strees}/10</label>
           <input
             type="range"
             min="0"
             max="10"
-            value={stress}
-            onChange={(e) => setStress(Number(e.target.value))}
+            value={strees}
+            onChange={(e) => setStrees(Number(e.target.value))}
             className={styles.slider}
           />
         </div>
