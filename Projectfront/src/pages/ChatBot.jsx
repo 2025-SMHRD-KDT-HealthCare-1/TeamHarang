@@ -6,7 +6,7 @@ const ChatBot = () => {
   const [messages, setMessages] = useState([]);
 
   const send = async () => {
-    const token = localStorage.getItem("accessToken"); // 최신 토큰 가져오기
+    const token = localStorage.getItem("accessToken"); 
 
     if (!input.trim()) return;
 
