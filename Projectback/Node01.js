@@ -13,8 +13,6 @@ const APIRouter = require("./router/API"); // chat 관련
 
 const app = express();
 
-app.use(cors())
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
