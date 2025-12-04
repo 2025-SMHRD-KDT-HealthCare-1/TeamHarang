@@ -12,6 +12,8 @@ const DiaryRouter = require("./router/Diary");
 
 const app = express();
 
+app.use(cors())
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
