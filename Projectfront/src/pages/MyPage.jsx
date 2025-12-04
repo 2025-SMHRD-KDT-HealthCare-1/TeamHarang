@@ -5,17 +5,22 @@ import axios from "axios";
 const MyPage = () => {
   const [showModal, setShowModal] = useState(false);
 
-  // 회원탈퇴 처리 (임시)
+  // 회원탈퇴 처리 (토큰 추가)
   const handleDelete = async () => {
     try {
-      // TODO: 백엔드 API 완성되면 경로 맞춰야 함
       const account_id = localStorage.getItem("account_id");
       const user_pw = prompt("비밀번호를 입력하세요");
+      const token = localStorage.getItem("accessToken");   //  토큰 
 
       await axios.delete("http://localhost:3001/user/withdraw", {
-        data: { account_id, user_pw }
+        headers: {
+          Authorization: `Bearer ${token}`,               //  토큰 
+        },
+        data: { account_id, user_pw }                     // DELETE body
       });
+
       alert("회원 탈퇴가 완료되었습니다.");
+      localStorage.clear(); // 로그인 정보 전부 삭제
       window.location.href = "/";
     } catch (err) {
       console.error(err);
