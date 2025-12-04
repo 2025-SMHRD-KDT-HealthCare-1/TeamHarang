@@ -13,7 +13,7 @@ const CheckResult = () => {
       try {
         const res = await axios.post(
           "http://localhost:3001/survey/recent",
-          { user_id: user_id },
+          { user_id },
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -32,7 +32,7 @@ const CheckResult = () => {
     fetchRecent();
   }, []);
 
-  // 설문 코드 → 화면 표시용 이름 매핑
+  // 설문 코드 → 화면 표시명 변환
   const formatName = (type) => {
     switch (type.toUpperCase()) {
       case "GAD":
@@ -46,12 +46,6 @@ const CheckResult = () => {
     }
   };
 
-  // 날짜 포맷 변환: YYYY-MM-DD
-  const formatDate = (dateStr) => {
-    if (!dateStr) return "";
-    return new Date(dateStr).toISOString().slice(0, 10);
-  };
-
   return (
     <div className={styles["check-result-box"]}>
       <h3 className={styles["check-title"]}>최근 체크 결과</h3>
@@ -61,18 +55,15 @@ const CheckResult = () => {
       ) : (
         results.map((item, idx) => (
           <div className={styles["check-item"]} key={idx}>
-
-            {/* 왼쪽: 설문명 + 검사일 */}
+            
+            {/* 설문명 표시 */}
             <div className={styles["check-left"]}>
               <span className={styles["check-type"]}>
                 {formatName(item.survey_type)}
               </span>
-              <span className={styles["check-date"]}>
-                검사일: {formatDate(item.survey_date)}
-              </span>
             </div>
 
-            {/* 오른쪽: 점수 */}
+            {/* 점수 */}
             <span className={styles["check-score"]}>
               {item.total_score}점
             </span>

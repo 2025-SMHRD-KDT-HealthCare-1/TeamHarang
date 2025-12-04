@@ -75,7 +75,7 @@ export default function DiaryText() {
       user_id,
       date,
       content,
-      stress,
+      strees: stress,
       anxiety,
       depression,
     };

@@ -1,9 +1,9 @@
+// src/pages/TodoList.jsx
 import React, { useRef, useEffect, useState } from "react";
 import axios from "axios";
 import styles from "./TodoList.module.css";
 
-const TodoList = () => {
-  // refs & useState 동일
+export default function TodoList() {
   const yesterdayPercent = useRef(0);
   const yesterdayDone = useRef(0);
   const yesterdayTotal = useRef(0);
@@ -17,11 +17,18 @@ const TodoList = () => {
   const monthTotal = useRef(0);
 
   const [, setRefresh] = useState(0);
-  const userId = "testUser01";
+
+  const userId = localStorage.getItem("user_id");
+  const token = localStorage.getItem("accessToken");
 
   useEffect(() => {
+    if (!userId || !token) return;
+
     axios
-      .get("/api/progress/all", { params: { userId } })
+      .get("http://localhost:3001/api/progress/all", {
+        params: { userId },
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then((res) => {
         const data = res.data;
 
@@ -38,108 +45,49 @@ const TodoList = () => {
         monthTotal.current = data.monthTotal;
 
         setRefresh((prev) => prev + 1);
-      });
-  }, []);
+      })
+      .catch((err) => console.error("달성도 조회 실패:", err));
+  }, [userId, token]);
 
   return (
-    <div className={styles["progress-wrapper"]}>
+    <div className={styles.wrapper}>
 
-      {/* 어제 */}
-      <div className={`${styles.card} ${styles["yesterday-card"]}`}>
-        <h2 className={styles["card-title"]}>어제 달성도</h2>
-        <p className={styles["card-sub"]}>어제 하루 동안의 실천 현황</p>
+      {/* LEFT AREA */}
+      <div className={styles.left}>
+        <div className={styles.calendarBox}>Calendar</div>
 
-        <div className={styles["percent-text"]}>{yesterdayPercent.current}%</div>
-
-        <div className={styles["detail-count"]}>
-          {yesterdayDone.current} / {yesterdayTotal.current} 완료
-        </div>
-
-        <div className={styles["progress-bar"]}>
-          <div
-            className={styles["progress-fill"]}
-            style={{ width: `${yesterdayPercent.current}%` }}
-          ></div>
-        </div>
-
-        <div className={styles["yesterday-grid"]}>
-          <div className={styles["y-item"]}>✔ 글씨 수정</div>
-          <div className={styles["y-item"]}>✔ 글씨 수정</div>
-          <div className={styles["y-item"]}>✔ 글씨 수정</div>
-          <div className={styles["y-item"]}>✔ 글씨 수정</div>
-          <div className={styles["y-item"]}>✔ 글씨 수정</div>
-          <div className={styles["y-item"]}>✔ 글씨 수정</div>
-          <div className={styles["y-item"]}>✔ 글씨 수정</div>
-          <div className={styles["y-item"]}>✔ 글씨 수정</div>
+        <div className={styles.todoBox}>
+          <h3>그날의 투두리스트</h3>
+          <p>할 일 목록 들어갈 예정</p>
         </div>
       </div>
 
-      {/* 이번 주 + 이번 달 */}
-      <div className={styles["row-container"]}>
+      {/* RIGHT AREA */}
+      <div className={styles.right}>
 
-        {/* 이번 주 */}
-        <div className={`${styles.card} ${styles["week-card"]}`}>
-          <h2 className={styles["card-title"]}>이번 주 달성도</h2>
-
-          <div className={styles["percent-text"]}>{weekPercent.current}%</div>
-
-          <div className={styles["detail-count"]}>
-            {weekDone.current} / {weekTotal.current} 완료
+        {/* 상단 2개 카드 */}
+        <div className={styles.topRow}>
+          <div className={styles.smallCard}>
+            <h3>오늘 할일 추가</h3>
+            <p>여기에 입력폼들</p>
           </div>
 
-          <div className={styles["progress-bar"]}>
-            <div
-              className={styles["progress-fill"]}
-              style={{ width: `${weekPercent.current}%` }}
-            ></div>
+          <div className={styles.smallCard}>
+            <h3>내일 할일 추가</h3>
+            <p>내일 할일 추가 폼 예정</p>
           </div>
-
-          <div className={styles["week-box-row"]}>
-            <div className={styles["week-box"]}>글씨 수정</div>
-            <div className={styles["week-box"]}>글씨 수정</div>
-            <div className={styles["week-box"]}>글씨 수정</div>
-            <div className={styles["week-box"]}>글씨 수정</div>
-            <div className={styles["week-box"]}>글씨 수정</div>
-            <div className={styles["week-box"]}>글씨 수정</div>
-            <div className={styles["week-box"]}>글씨 수정</div>
-          </div>
-
-          <p className={styles["week-desc"]}>글씨 수정</p>
         </div>
 
-        {/* 이번 달 */}
-        <div className={`${styles.card} ${styles["month-card"]}`}>
-          <h2 className={styles["card-title"]}>이번 달 달성도</h2>
+        {/* 하단 달성도 */}
+        <div className={styles.bottomLarge}>
+          <h3>이번 주 / 이번 달 달성도</h3>
 
-          <div className={styles["percent-text"]}>{monthPercent.current}%</div>
-
-          <div className={styles["detail-count"]}>
-            {monthDone.current} / {monthTotal.current} 완료
-          </div>
-
-          <div className={styles["progress-bar"]}>
-            <div
-              className={styles["progress-fill"]}
-              style={{ width: `${monthPercent.current}%` }}
-            ></div>
-          </div>
-
-          <div className={styles["month-progress-list"]}>
-            {/* 예시 데이터 */}
-            <div className={styles["week-progress-box"]}>
-              <div className={styles["week-progress-title"]}>글씨 수정</div>
-              <div className={`${styles["progress-bar"]} ${styles["small-bar"]}`}>
-                <div className={styles["progress-fill"]} style={{ width: "50%" }}></div>
-              </div>
-            </div>
-          </div>
-
+          <p>어제: {yesterdayPercent.current}%</p>
+          <p>이번 주: {weekPercent.current}%</p>
+          <p>이번 달: {monthPercent.current}%</p>
         </div>
-
       </div>
 
     </div>
   );
-};
-
-export default TodoList;
+}

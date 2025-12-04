@@ -42,7 +42,7 @@ export default function SurveyForm({ type, questions }) {
 
     const body = {
       ...data,
-      user_id: user_id, // ★ 서버는 반드시 이 값 필요함
+      user_id: user_id, // 서버는 반드시 이 값 필요함
     };
 
     let url = "";

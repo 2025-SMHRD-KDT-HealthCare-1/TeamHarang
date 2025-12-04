@@ -5,45 +5,60 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import styles from "./SurveyRecord.module.css";
+import { useAuthStore } from "../store/useAuthStore";
+
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
 } from "recharts";
 
 const SurveyRecord = () => {
-  const uid = localStorage.getItem("user_id");
+  const { accessToken } = useAuthStore();       // 토큰 가져오기
+  const uid = localStorage.getItem("user_id");  // 사용자 ID
   const [records, setRecords] = useState([]);
 
   const latest = records[0] || null;
 
   useEffect(() => {
-    if (!uid) return;
+    if (!uid || !accessToken) return;
 
     axios
-      .get(`http://localhost:3001/survey/result/${uid}`)
+      .get(`http://localhost:3001/survey/result/${uid}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,  // 인증 토큰 
+        },
+      })
       .then((res) => {
         console.log(" 설문 조회 결과:", res.data);
         setRecords(res.data);
       })
       .catch((err) => console.error(err));
-  }, [uid]);
+  }, [uid, accessToken]);
 
   return (
     <div className={styles.wrapper}>
 
+
       {/* ======================= */}
       {/* 1) 최신 상태 분석 그래프 */}
       {/* ======================= */}
+
       <div className={styles.section}>
         <h2>현재 상태 분석</h2>
 
         <div className={styles.chartBox}>
           {latest ? (
             <ResponsiveContainer width="100%" height={260}>
-              <BarChart data={[{ name: latest.survey_type, score: latest.total_score }]}>
+              <BarChart
+                data={[{ name: latest.survey_type, score: latest.total_score }]}
+              >
                 <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
-                <Bar dataKey="score" fill="#9b75ff" radius={[4, 4, 0, 0]} />
+                <Bar
+                  dataKey="score"
+                  fill="#9b75ff"
+                  radius={[4, 4, 0, 0]}
+                />
               </BarChart>
             </ResponsiveContainer>
           ) : (
@@ -51,7 +66,7 @@ const SurveyRecord = () => {
           )}
         </div>
 
-        {/* --------- 3개 카드 --------- */}
+        {/* --------- 분석 카드 3개 --------- */}
         <div className={styles.cardRow}>
           <div className={styles.card}>
             <span>정서(Emotional)</span>
@@ -70,9 +85,12 @@ const SurveyRecord = () => {
         </div>
       </div>
 
+
+
       {/* ======================= */}
-      {/* 2) 설문 기록 리스트 */}
+      {/* 2) 설문 기록 리스트       */}
       {/* ======================= */}
+
       <div className={styles.section}>
         <h2>체크 기록</h2>
 
@@ -81,9 +99,11 @@ const SurveyRecord = () => {
         ) : (
           <div className={styles.listBox}>
             {records.map((item) => (
-              <div key={item.result_id} className={styles.recordItem}>
+              <div
+                key={item.result_id}
+                className={styles.recordItem}
+              >
                 <div className={styles.left}>
-
                   <div className={styles.date}>
                     {new Date(item.survey_date).toLocaleDateString()}
                   </div>
@@ -103,6 +123,8 @@ const SurveyRecord = () => {
           </div>
         )}
       </div>
+
+
 
     </div>
   );

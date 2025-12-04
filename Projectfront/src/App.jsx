@@ -1,17 +1,15 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout/Layout";
+import PrivateRoute from "./components/PrivateRoute";
 
 import StartPage from "./pages/StartPage";
 import Home from "./pages/Home";
 import MyPage from "./pages/MyPage";
-
-/* 그룹 페이지들 */
 import ChatBot from "./pages/ChatBot";
 
 /* Diary */
 import DiaryHistory from "./pages/DiaryHistory";
 import DiaryText from "./pages/DiaryText";
-
 
 /* Survey */
 import SurveyGAD from "./pages/SurveyGAD";
@@ -21,7 +19,6 @@ import SurveyResult from "./pages/SurveyResult";
 import SurveyStart from "./pages/SurveyStart";
 import SurveyRecord from "./pages/SurveyRecord";
 
-
 /* Todo */
 import TodoList from "./pages/TodoList";
 
@@ -30,47 +27,57 @@ import ImprovementGuide from "./pages/ImprovementGuide";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
+   <BrowserRouter>
+     <Routes>
 
-        {/* 공통 Layout */}
-        <Route element={<Layout />}>
+    {/* 공개 페이지 */}
+    <Route element={<Layout />}>
+      <Route index element={<StartPage />} />
+    </Route>
 
-          {/* 기본 */}
-          <Route index element={<StartPage />} />
-          <Route path="home" element={<Home />} />
-          <Route path="mypage" element={<MyPage />} />
-          <Route path="chatbot" element={<ChatBot />} />
+    {/* 보호 페이지 */}
+    <Route
+      element={
+        <PrivateRoute>
+          <Layout />
+        </PrivateRoute>
+      }
+    >
 
-          {/* Diary Group */}
-          <Route path="diary">
-            <Route path="history" element={<DiaryHistory />} />
-            <Route path="text" element={<DiaryText />} />
-          </Route>
+      <Route path="home" element={<Home />} />
+      <Route path="mypage" element={<MyPage />} />
+      <Route path="chatbot" element={<ChatBot />} />
 
-          {/* Survey Group */}
-          <Route path="survey">
-            <Route path="start" element={<SurveyStart />} />
-            <Route path="gad" element={<SurveyGAD />} />
-            <Route path="phq" element={<SurveyPHQ />} />
-            <Route path="pss" element={<SurveyPSS />} />
-            <Route path="result" element={<SurveyResult />} />
-            <Route path="record" element={<SurveyRecord />} />
-          </Route>  
+      {/* Diary */}
+      <Route path="diary">
+        <Route path="history" element={<DiaryHistory />} />
+        <Route path="text" element={<DiaryText />} />
+      </Route>
 
-          {/* Todo Group */}
-          <Route path="todo">
-            <Route path="list" element={<TodoList />} />
-          </Route>
+      {/* Survey */}
+      <Route path="survey">
+        <Route path="start" element={<SurveyStart />} />
+        <Route path="gad" element={<SurveyGAD />} />
+        <Route path="phq" element={<SurveyPHQ />} />
+        <Route path="pss" element={<SurveyPSS />} />
+        <Route path="result" element={<SurveyResult />} />
+        <Route path="record" element={<SurveyRecord />} />
+      </Route>
 
-          {/* Improvement */}
-          <Route path="improvement">
-            <Route path="guide" element={<ImprovementGuide />} />
-          </Route>
+      {/* Todo */}
+      <Route path="todo">
+        <Route path="list" element={<TodoList />} />
+      </Route>
 
-        </Route>
-      </Routes>
-    </BrowserRouter>
+      {/* Improvement */}
+      <Route path="improvement">
+        <Route path="guide" element={<ImprovementGuide />} />
+      </Route>
+
+    </Route>
+  </Routes>
+</BrowserRouter>
+
   );
 }
 

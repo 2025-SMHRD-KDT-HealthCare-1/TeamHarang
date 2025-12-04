@@ -150,7 +150,7 @@ export default function DiaryHistory() {
               <div className={styles.scoreRow}>
                 <p>우울: {detail.depression}</p>
                 <p>불안: {detail.anxiety}</p>
-                <p>스트레스: {detail.stress}</p>
+                <p>스트레스: {detail.strees}</p>
               </div>
 
               <p className={styles.content}>{detail.content}</p>

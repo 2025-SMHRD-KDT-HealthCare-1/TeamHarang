@@ -29,6 +29,9 @@ const SurveyResult = () => {
 
   const [guides, setGuides] = useState([]);
 
+  // 로그인 토큰 
+  const token = localStorage.getItem("accessToken");
+
   // -------------------------------------------------------------
   // 1. 잘못된 접근 방지 (직접 URL로 접근하는 경우)
   // -------------------------------------------------------------
@@ -91,6 +94,9 @@ const SurveyResult = () => {
           totalScore,
           emotionalScore,
           physicalScore,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`, // 토큰 
         },
       })
       .then((res) => {
