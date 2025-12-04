@@ -149,11 +149,11 @@ async function upsertUserRag(user_id, ragData) {
 /** 최근 7일 일기 조회 */
 async function selectRecent7DaysDiary(user_id) {
   const sql = `
-    SELECT diary_date, diary_text
-    FROM user_diary
+    SELECT date, content
+    FROM diary
     WHERE user_id = ?
-      AND diary_date BETWEEN DATE_SUB(CURDATE(), INTERVAL 6 DAY) AND CURDATE()
-    ORDER BY diary_date ASC
+      AND date BETWEEN DATE_SUB(CURDATE(), INTERVAL 6 DAY) AND CURDATE()
+    ORDER BY date ASC
   `;
   const [rows] = await conn.promise().query(sql, [user_id]);
   return rows;
@@ -220,7 +220,7 @@ router.post("/start",verifyAccessToken,async (req, res) => {
       } else {
         // GPT로 RAG1 생성
         const diaryText = diaries
-          .map(d => `날짜: ${d.diary_date}\n내용: ${d.diary_text}`)
+          .map(d => `날짜: ${d.date}\n내용: ${d.content}`)
           .join("\n\n");
 
         const messages = [

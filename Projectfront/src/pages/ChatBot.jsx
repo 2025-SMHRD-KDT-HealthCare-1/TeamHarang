@@ -16,7 +16,7 @@ const ChatBot = () => {
     setMessages(newMessages);
 
     try {
-      const res = await fetch("http://localhost:3001/api/chat", {
+      const res = await fetch("http://localhost:3001/chatbot/chat", {
         method: "POST",
         credentials: "include",
         headers: {

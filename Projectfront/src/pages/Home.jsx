@@ -15,7 +15,7 @@ const Home = () => {
   const handleStartChat = async () => {
     try {
       await axios.post(
-        "http://localhost:3001/api/start",
+        "http://localhost:3001/chatbot/start",
         {},
         {
           headers: {
