@@ -123,7 +123,7 @@ export default function DiaryHistory() {
 
         <select
           value={day}
-          onChange={(e) => setDay(Number(e.target.value))}
+          onChange={(e) => setDay(e.target.value)}
           className={styles.selectBox}
         >
           <option value="">일 선택</option>
@@ -152,7 +152,7 @@ export default function DiaryHistory() {
                 <span className={styles.anxiety}>
                   불안: {detail.anxiety}
                 </span>
-                <span className={styles.strees}>
+                <span className={styles.stress}>
                   스트레스: {detail.strees}
                 </span>
               </div>

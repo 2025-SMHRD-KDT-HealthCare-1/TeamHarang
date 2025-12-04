@@ -15,7 +15,7 @@ const Home = () => {
   const handleStartChat = async () => {
     try {
       await axios.post(
-        "http://localhost:3001/chatbot/start",
+        "http://localhost:3001/api/start",
         {},
         {
           headers: {
@@ -111,7 +111,7 @@ const Home = () => {
 
       </div>
 
-      {/* ⭐ AI 버튼 — start 호출 포함 */}
+      {/* AI 버튼 — start 호출 포함 */}
       <button className={styles.aiButton} onClick={handleStartChat}>
         🤖
       </button>

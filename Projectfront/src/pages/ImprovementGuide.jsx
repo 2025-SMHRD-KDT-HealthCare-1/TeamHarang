@@ -25,7 +25,7 @@ const ImprovementGuide = () => {
           },
         }
       );
-
+      
       setGuides(res.data.guides || []);
     } catch (err) {
       console.error("개선 가이드 로드 오류:", err);
