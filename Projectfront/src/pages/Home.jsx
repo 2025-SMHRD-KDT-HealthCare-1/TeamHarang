@@ -1,12 +1,35 @@
 // src/pages/Home.jsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import TodayTodo from "../components/TodayTodo";
 import CheckResult from "../components/CheckResult";
 import styles from "./Home.module.css";
+import { useAuthStore } from "../store/useAuthStore";
 
 const Home = () => {
   const navigate = useNavigate();
+  const { accessToken } = useAuthStore();
+
+  //  AI 버튼 누를 때 start 호출 후 챗봇으로 이동
+  const handleStartChat = async () => {
+    try {
+      await axios.post(
+        "http://localhost:3001/chatbot/start",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      navigate("/chatbot");
+    } catch (err) {
+      console.error("start 호출 오류:", err);
+      alert("챗봇 준비 중 오류가 발생했습니다.");
+    }
+  };
 
   return (
     <div className={styles.homeContainer}>
@@ -88,8 +111,8 @@ const Home = () => {
 
       </div>
 
-      {/* AI 버튼 */}
-      <button className={styles.aiButton} onClick={() => navigate("/chatbot")}>
+      {/* ⭐ AI 버튼 — start 호출 포함 */}
+      <button className={styles.aiButton} onClick={handleStartChat}>
         🤖
       </button>
 

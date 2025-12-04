@@ -21,11 +21,10 @@ export default function DiaryText() {
   const [date, setDate] = useState(editDate || todayStr);
   const [depression, setDepression] = useState(0);
   const [anxiety, setAnxiety] = useState(0);
-  const [stress, setStress] = useState(0);
+  const [strees, setStrees] = useState(0);   
   const [content, setContent] = useState("");
 
   const isEditMode = Boolean(editDate);
-
 
   // ============================
   // 조회 (수정일 때만)
@@ -47,7 +46,7 @@ export default function DiaryText() {
 
         // undefined 방지
         setContent(d.content ?? "");
-        setStress(d.stress ?? 0);
+        setStrees(d.strees ?? 0);        
         setAnxiety(d.anxiety ?? 0);
         setDepression(d.depression ?? 0);
       } else {
@@ -58,11 +57,9 @@ export default function DiaryText() {
     }
   };
 
-
   useEffect(() => {
     if (isEditMode) loadDiary();
-  }, []); // 최초 1회만 실행
-
+  }, []);
 
   // ============================
   // 저장 / 수정
@@ -75,14 +72,13 @@ export default function DiaryText() {
       user_id,
       date,
       content,
-      stress,
+      strees,           
       anxiety,
       depression,
     };
 
     try {
       if (isEditMode) {
-        // 수정 모드
         await axios.put(
           "http://localhost:3001/diary/Diary",
           diaryData,
@@ -92,7 +88,6 @@ export default function DiaryText() {
         );
         alert("일기 수정 완료!");
       } else {
-        // 신규 작성
         await axios.post(
           "http://localhost:3001/diary/AddDiary",
           diaryData,
@@ -110,7 +105,6 @@ export default function DiaryText() {
     }
   };
 
-
   return (
     <div className={styles.wrapper}>
       <h1 className={styles.title}>
@@ -120,7 +114,7 @@ export default function DiaryText() {
       <input
         type="date"
         value={date}
-        disabled={isEditMode} 
+        disabled={isEditMode}
         onChange={(e) => setDate(e.target.value)}
         className={styles.datePicker}
       />
@@ -151,13 +145,13 @@ export default function DiaryText() {
         </div>
 
         <div className={styles.sliderBox}>
-          <label>스트레스 {stress}/10</label>
+          <label>스트레스 {strees}/10</label> 
           <input
             type="range"
             min="0"
             max="10"
-            value={stress}
-            onChange={(e) => setStress(Number(e.target.value))}
+            value={strees}                 
+            onChange={(e) => setStrees(Number(e.target.value))}
             className={styles.slider}
           />
         </div>

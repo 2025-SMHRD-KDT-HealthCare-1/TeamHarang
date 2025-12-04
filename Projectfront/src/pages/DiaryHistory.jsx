@@ -95,7 +95,6 @@ export default function DiaryHistory() {
 
       {/* 연/월/일 선택 */}
       <div className={styles.selectRow}>
-        {/* 연 */}
         <select
           value={year}
           onChange={(e) => setYear(Number(e.target.value))}
@@ -110,7 +109,6 @@ export default function DiaryHistory() {
           )}
         </select>
 
-        {/* 월 */}
         <select
           value={month}
           onChange={(e) => setMonth(Number(e.target.value))}
@@ -123,7 +121,6 @@ export default function DiaryHistory() {
           ))}
         </select>
 
-        {/* 일 */}
         <select
           value={day}
           onChange={(e) => setDay(Number(e.target.value))}
@@ -147,16 +144,23 @@ export default function DiaryHistory() {
 
           {detail ? (
             <>
+              {/* 감정 3종 가로 배치 + 색상 */}
               <div className={styles.scoreRow}>
-                <p>우울: {detail.depression}</p>
-                <p>불안: {detail.anxiety}</p>
-                <p>스트레스: {detail.strees}</p>
+                <span className={styles.depression}>
+                  우울: {detail.depression}
+                </span>
+                <span className={styles.anxiety}>
+                  불안: {detail.anxiety}
+                </span>
+                <span className={styles.strees}>
+                  스트레스: {detail.strees}
+                </span>
               </div>
 
               <p className={styles.content}>{detail.content}</p>
 
+              {/* 수정 / 삭제 버튼 */}
               <div className={styles.btnRow}>
-                {/* 수정 버튼 */}
                 <button
                   className={styles.editBtn}
                   onClick={() =>
@@ -168,7 +172,6 @@ export default function DiaryHistory() {
                   수정
                 </button>
 
-                {/* 삭제 버튼 */}
                 <button
                   className={styles.deleteBtn}
                   onClick={async () => {
@@ -189,7 +192,7 @@ export default function DiaryHistory() {
                       );
 
                       alert("삭제 완료!");
-                      loadMonth(); // 삭제 후 목록 갱신
+                      loadMonth();
                       setDetail(null);
                       setDay("");
                     } catch (err) {
