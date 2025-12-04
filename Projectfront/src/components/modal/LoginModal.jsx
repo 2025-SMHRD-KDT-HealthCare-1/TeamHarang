@@ -47,9 +47,13 @@ const LoginModal = ({ onClose, onOpenJoin }) => {
         localStorage.setItem("uid", user.user_id);
         
 
-        alert("로그인 성공!");
-        onClose();
-        navigate("/home");
+        // ⭐⭐⭐ 수정된 부분 (alert/onClose/navigate) ONLY ⭐⭐⭐
+        setTimeout(() => {
+          alert("로그인 성공!");
+          onClose();
+          navigate("/home");
+        }, 50);
+
       } else {
         setError(res.data.message || "아이디 또는 비밀번호가 잘못되었습니다.");
       }

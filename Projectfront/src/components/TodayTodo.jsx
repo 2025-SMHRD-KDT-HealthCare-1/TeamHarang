@@ -6,7 +6,7 @@ const TodayTodo = () => {
   const [todos, setTodos] = useState([]);
   const [text, setText] = useState("");
 
-  // 🔥 localStorage에서 user_id, 토큰 직접 가져오기
+  //  localStorage에서 user_id, 토큰 직접 가져오기
   const userId = Number(localStorage.getItem("user_id"));
   const token = localStorage.getItem("accessToken");
 
