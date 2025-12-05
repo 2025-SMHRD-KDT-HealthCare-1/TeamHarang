@@ -184,5 +184,33 @@ router.post("/recent", (req, res) => {
         });
     });
 });
+// ==============================
+// 전체 검사 기록 조회 (SurveyRecord.jsx에서 사용)
+// ==============================
+router.get("/result/:uid", (req, res) => {
+    const user_id = req.params.uid;
 
+    const sql = `
+        SELECT 
+            result_id,
+            user_id,
+            survey_type,
+            total_score,
+            emotional_point,
+            physical_point,
+            survey_date
+        FROM SURVEYRESULT
+        WHERE user_id = ?
+        ORDER BY survey_date DESC, result_id DESC
+    `;
+
+    conn.query(sql, [user_id], (err, results) => {
+        if (err) {
+            console.error("DB Select Error:", err);
+            return res.status(500).json({ result: "fail", message: "DB 조회 실패" });
+        }
+
+        return res.json(results);
+    });
+});
 module.exports = router;

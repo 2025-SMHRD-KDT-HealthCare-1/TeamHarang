@@ -16,15 +16,8 @@ createRoot(document.getElementById("root")).render(
   // document.getElementById("root") -> public/index.html 파일 안에 있는 <div id="root"></div>를 가져옴
   // react가 이 div 안에 랜더링
   // createRoot(...).render(...) -> 여기(root)에 리액트 앱(APP)를 랜더링하라
-  <React.StrictMode>
-  {/* 개발 모드에서만 동작
-    - 실수나 이상한 코드가 있는지 두 번 렌더링 해서 감지함
-    - 버그 찾기용 안전 장치
-    - 실제 배포(build)는 영향 없음 */}
 
-    <App />
-    {/* 
-      - 앱의 시작점
-      - 라우팅, 화면 전환, 모든 페이지는 App 아래에서 작동 */}
-  </React.StrictMode>
+  // ★ StrictMode 제거 (Recharts hook 오류 해결)
+  // 개발 모드에서만 두 번 렌더링하여 오류를 유발할 수 있음
+  <App />
 );
