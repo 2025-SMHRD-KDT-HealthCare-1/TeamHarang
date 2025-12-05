@@ -5,16 +5,32 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import styles from "./SurveyResult.module.css";
 
+//  로그인 정보 가져오기
+import { useAuthStore } from "../store/useAuthStore";
+
 // 맞춤 개선 가이드를 렌더링하는 UI 컴포넌트
-import ImprovementGuide from "../pages/ImprovementGuide";
+// import ImprovementGuide from "../components/Survey/ImprovementGuide";
 
 const SurveyResult = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const token = localStorage.getItem("accessToken");
 
+  //  로그인 여부 확인
+  const { user, accessToken } = useAuthStore();
+  const isLoggedIn = user && accessToken;
+
+  //  보호페이지 이동 차단 함수
+  const goProtected = (path) => {
+    if (!isLoggedIn) {
+      alert("로그인이 필요합니다.");
+      return; // navigate 실행 X → PrivateRoute까지 가지 않음
+    }
+    navigate(path);
+  };
+
   /**
-   * 프론트에서 설문 제출 후 SurveyForm.jsx에서 navigate할 때 전달된 값들
+   * 설문 제출 후 SurveyForm.jsx에서 navigate할 때 전달된 값들
    */
   const { type, totalScore, emotionalScore, physicalScore } =
     location.state || {};
@@ -22,7 +38,7 @@ const SurveyResult = () => {
   const [guides, setGuides] = useState([]);
 
   // -------------------------------------------------------------
-  // 1. 잘못된 접근 방지 (직접 URL로 접근하는 경우)
+  // 1. 잘못된 접근 방지
   // -------------------------------------------------------------
   if (!type) {
     return (
@@ -39,7 +55,7 @@ const SurveyResult = () => {
   }
 
   // -------------------------------------------------------------
-  // 추천 리스트 (정적 배열, 매 렌더링마다 동일)
+  // 정적 추천 리스트
   // -------------------------------------------------------------
   const PHQ_LIST = [
     "하루 루틴(기상·식사·취침) 시간 정하기",
@@ -88,11 +104,9 @@ const SurveyResult = () => {
     if (type === "PSS") list = PSS_LIST;
 
     const random3 = [...list].sort(() => 0.5 - Math.random()).slice(0, 3);
-
     setGuides(random3);
   }, [type]);
 
-  
   const addToTodo = (content) => {
     const uid = Number(localStorage.getItem("user_id"));
     if (!uid || !token) return;
@@ -130,34 +144,49 @@ const SurveyResult = () => {
         <p style={{ opacity: 0.75 }}>신체 점수: {physicalScore}</p>
       </div>
 
-      {/* ----------------- 추천 가이드 ----------------- */}
-      <div className={styles.categoryContainer}>
-        <h2 style={{ margin: 0 }}>개선방안</h2>
-        <p style={{ opacity: 0.8, marginBottom: "20px" }}>
-          투드리스트에 원하는 가이드를 넣어보세요
-        </p>
+      {/* ----------------- 개선방안 (정회원만 표시) ----------------- */}
+      {isLoggedIn && (
+        <div className={styles.categoryContainer}>
+          <h2 style={{ margin: 0 }}>개선방안</h2>
+          <p style={{ opacity: 0.8, marginBottom: "20px" }}>
+            투드리스트에 원하는 가이드를 넣어보세요
+          </p>
 
-        {guides.map((item, idx) => (
-          <div key={idx} className={styles.guideItem}>
-            <span>{item}</span>
-            <button className={styles.addBtn} onClick={() => addToTodo(item)}>
-              + 추가하기
-            </button>
-          </div>
-        ))}
-      </div>
+          {guides.map((item, idx) => (
+            <div key={idx} className={styles.guideItem}>
+              <span>{item}</span>
+              <button
+                className={styles.addBtn}
+                onClick={() => addToTodo(item)}
+              >
+                + 추가하기
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* ----------------- 이동 버튼 ----------------- */}
       <div className={styles.btnWrap}>
-        <button className={styles.subBtn} onClick={() => navigate("/survey/start")}>
+        <button
+          className={styles.subBtn}
+          onClick={() => navigate("/survey/start")}
+        >
           다른 검사 하기
         </button>
 
-        <button className={styles.subBtn} onClick={() => navigate("/survey/record")}>
+        {/* 보호페이지 이동 → 비회원 차단 */}
+        <button
+          className={styles.subBtn}
+          onClick={() => goProtected("/survey/record")}
+        >
           기록 보기
         </button>
 
-        <button className={styles.mainBtn} onClick={() => navigate("/home")}>
+        <button
+          className={styles.mainBtn}
+          onClick={() => goProtected("/home")}
+        >
           홈으로 이동
         </button>
       </div>

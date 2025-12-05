@@ -2,14 +2,25 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./SurveyStart.module.css";
+import { useAuthStore } from "../store/useAuthStore";
 
 export default function SurveyStart() {
   const navigate = useNavigate();
+  const { user, accessToken } = useAuthStore();
+  const isLoggedIn = user && accessToken;
+
+  // 보호페이지 이동 처리 (SurveyResult랑 동일한 방식)
+  const goProtected = (path) => {
+    if (!isLoggedIn) {
+      alert("로그인이 필요합니다.");
+      return; // PrivateRoute에 걸리지 않도록 navigate 금지
+    }
+    navigate(path);
+  };
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.inner}>
-
         <h1 className={styles.title}>정신건강 체크 선택</h1>
         <p className={styles.subtitle}>당신에게 필요한 체크를 선택해주세요</p>
 
@@ -63,7 +74,8 @@ export default function SurveyStart() {
           />
         </div>
 
-        <button className={styles.homeBtn} onClick={() => navigate("/home")}>
+        {/*   goProtected 적용 */}
+        <button className={styles.homeBtn} onClick={() => goProtected("/home")}>
           홈으로 돌아가기
         </button>
       </div>

@@ -27,8 +27,7 @@ import SurveyRecord from "./pages/SurveyRecord";
 /* Todo */
 import TodoList from "./pages/TodoList";
 
-/* Guide */
-import ImprovementGuide from "./pages/ImprovementGuide";
+
 
 function App() {
   return (
@@ -83,10 +82,7 @@ function App() {
             <Route path="list" element={<TodoList />} />
           </Route>
 
-          {/* Improvement */}
-          <Route path="improvement">
-            <Route path="guide" element={<ImprovementGuide />} />
-          </Route>
+
         </Route>
 
       </Routes>

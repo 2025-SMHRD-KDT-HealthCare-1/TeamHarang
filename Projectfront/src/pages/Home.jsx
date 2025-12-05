@@ -24,7 +24,7 @@ const Home = () => {
         }
       );
 
-      navigate("/chatbot");
+      navigate("/chatbot"); 
     } catch (err) {
       console.error("start 호출 오류:", err);
       alert("챗봇 준비 중 오류가 발생했습니다.");
