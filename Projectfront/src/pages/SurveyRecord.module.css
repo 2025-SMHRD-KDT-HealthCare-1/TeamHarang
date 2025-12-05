@@ -110,3 +110,40 @@
   background: #ffd4d4;
   color: #d92d2d;
 }
+
+/* ============================
+    알약형 탭 스타일
+============================ */
+
+.tabContainer {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.tab {
+  padding: 10px 20px;
+  border-radius: 999px;
+  border: 1px solid #ddd;
+  background: #f7f7f7;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.tab:hover {
+  background: #eee;
+}
+
+.activeTab {
+  background: #9b75ff;
+  color: #fff;
+  border-color: #9b75ff;
+}
+.subInfo {
+  font-size: 13px;
+  color: #777;
+  margin-left: 14px;
+}
+
+
