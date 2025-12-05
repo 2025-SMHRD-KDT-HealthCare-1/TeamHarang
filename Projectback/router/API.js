@@ -72,19 +72,35 @@ const systemPrompt_rag = `
 // System Prompt: 상담 대화용
 // -------------------------
 const systemPrompt_chat = `
-당신은 MindCare의 전문 심리상담사입니다.
-항상 따뜻하고 공감적으로, 판단하지 않는 톤으로 응답하세요.
 
-말투 예시:
-- "그럴 수 있어요."
-- "많이 힘드셨겠어요."
-- "말해줘서 고마워요."
-- "천천히 이야기해도 괜찮아요."
+당신은 MindCare의 전문 심리상담사이지만, 지나치게 상담사 같은 말투는 피하고
+일상적인 자연스러운 대화체로 응답합니다.
 
-금지:
-- 의학적 진단 단정
-- 위험하거나 법적/의학적 조언
-- 명령조 어투
+[대화 톤]
+- 부드럽고 편안한 말투를 사용합니다.
+- 사용자에게 부담을 주는 표현(“말해주세요, 나눠주세요, 듣고 싶어요” 등)은 금지합니다.
+- 대신 “혹시 괜찮다면”처럼 선택지를 제공하는 부드러운 표현만 허용합니다.
+- "~한 것 같습니다"처럼 공식적·격식 있는 표현은 가급적 피합니다.
+- "~했구나", "~했나 봐", "~그랬어?" 같은 자연스러운 회화체를 사용합니다.
+
+[다양성 규칙]
+- 동일한 표현이나 문장을 연속해서 사용하지 않습니다.
+- 직전 응답의 어미, 표현 방식, 문장 구조를 반복하지 않습니다.
+- 비슷한 의미라도 다른 표현으로 자연스럽게 변형합니다.
+
+[반응 방식]
+- 사용자가 감정을 표현하면 간단히 받아주고, 필요한 경우 부드럽게 질문합니다.
+- 과도한 추측이나 상담 유도는 금지합니다.
+- 사용자가 장난, 말장난, 가벼운 이야기, 욕 등을 해도 담백하게 받아주고 과도하게 확장하지 않습니다.
+- 반대로, 진지한 이야기를 하면 좀 더 따뜻하게 반응합니다.
+
+[금지]
+- 의학적 단정
+- 법적/위험 조언
+- 과도한 친밀함
+- 대화를 강제로 이어가려는 표현
+
+
 `;
 
 // ==========================================================
@@ -262,8 +278,32 @@ router.post("/start",verifyAccessToken,async (req, res) => {
       { role: "system", content: systemPrompt_chat },
     ];
 
-    if (rag1.trim()) greetingMessages.push({ role: "assistant", content: `RAG1:\n${rag1}` });
-    if (rag2.trim()) greetingMessages.push({ role: "assistant", content: `RAG2:\n${rag2}` });
+    if (rag1.trim()) {
+  messages.push({
+    role: "assistant",
+    content: `【장기 심리 분석 정보 (LONG-TERM DIARY SUMMARY)】  
+    다음 내용은 '이전 대화 기록이 아니라', 사용자가 최근 작성한 '일기(감정 기록)'을 기반으로  
+    GPT가 분석·요약한 심리 상태 정리본입니다.
+
+    이 정보는 상담 품질을 높이기 위한 참고용이며,  
+    대화의 연속성과 사용자의 감정 흐름을 이해하는 데 매우 중요합니다.
+
+    반드시 다음 일기 기반 분석 정보를 참고하여 응답을 구성하세요:
+
+${rag1}`
+  });
+}
+
+    if (rag2.trim()) {
+  messages.push({
+    role: "assistant",
+    content: `【최근 대화 기록(HISTORY)】 
+    아래는 당신이 지금 응답을 생성하기 위해 반드시 참고해야 하는 이전 대화 내용입니다.
+    이 내용은 중요한 맥락 정보를 포함하고 있으므로 절대 무시하지 마세요.
+
+    ${rag2}`
+  });
+}
 
     greetingMessages.push({
       role: "user",
@@ -346,8 +386,32 @@ router.post("/chat",verifyAccessToken, async (req, res) => {
       { role: "system", content: systemPrompt_chat },
     ];
 
-    if (rag1.trim()) messages.push({ role: "assistant", content: `RAG1:\n${rag1}` });
-    if (rag2.trim()) messages.push({ role: "assistant", content: `RAG2:\n${rag2}` });
+    if (rag1.trim()) {
+  messages.push({
+    role: "assistant",
+    content: `【장기 심리 분석 정보 (LONG-TERM DIARY SUMMARY)】  
+    다음 내용은 '이전 대화 기록이 아니라', 사용자가 최근 작성한 '일기(감정 기록)'을 기반으로  
+    GPT가 분석·요약한 심리 상태 정리본입니다.
+
+    이 정보는 상담 품질을 높이기 위한 참고용이며,  
+    대화의 연속성과 사용자의 감정 흐름을 이해하는 데 매우 중요합니다.
+
+    반드시 다음 일기 기반 분석 정보를 참고하여 응답을 구성하세요:
+
+${rag1}`
+  });
+}
+
+    if (rag2.trim()) {
+  messages.push({
+    role: "assistant",
+    content: `【최근 대화 기록(HISTORY)】 
+    아래는 당신이 지금 응답을 생성하기 위해 반드시 참고해야 하는 이전 대화 내용입니다.
+    이 내용은 중요한 맥락 정보를 포함하고 있으므로 절대 무시하지 마세요.
+
+    ${rag2}`
+  });
+}
 
     messages.push({ role: "user", content: user_message });
 
