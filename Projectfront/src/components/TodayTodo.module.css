@@ -1,0 +1,80 @@
+/* src/components/TodayTodo.module.css */
+
+.container {
+  font-size: 14px;
+  width: 100%;
+}
+
+/* 입력 영역 */
+.inputRow {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.input {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: white;
+}
+
+.addBtn {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  background: #d35400;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 13px;
+  white-space: nowrap; /* 줄바꿈 방지 */
+}
+
+/* 빈 리스트 문구 */
+.empty {
+  color: #666;
+  margin-top: 6px;
+}
+
+/* 리스트 */
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid #f3cda4;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  cursor: pointer;
+}
+
+.text {
+  color: #333;
+}
+
+.textDone {
+  color: #999;
+  text-decoration: line-through;
+}
+
+.deleteBtn {
+  border: none;
+  background: transparent;
+  color: #c0392b;
+  cursor: pointer;
+  font-size: 12px;
+}

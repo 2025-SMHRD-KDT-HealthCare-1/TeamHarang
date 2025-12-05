@@ -1,0 +1,52 @@
+/* src/Survey/SurveyForm.module.css */
+
+.wrapper {
+  padding: 20px;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.title {
+  margin-bottom: 10px;
+}
+
+.questionBox {
+  margin-bottom: 24px;
+  padding: 12px;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.questionText {
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.label {
+  display: block;
+  margin-bottom: 6px;
+  cursor: pointer;
+}
+
+.radio {
+  margin-right: 8px;
+}
+
+.error {
+  color: red;
+  font-size: 12px;
+}
+
+.submitBtn {
+  width: 100%;
+  padding: 14px 0;
+  margin-top: 10px;
+  background: #4e7cff;
+  color: white;
+  font-weight: 600;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}

@@ -1,0 +1,105 @@
+/* src/pages/SurveyStart.module.css */
+
+.wrapper {
+  width: 100%;
+  min-height: 100vh;
+  background: #f6f8ff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.inner {
+  width: 100%;
+  max-width: 1400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 제목 */
+.title {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  opacity: 0.7;
+  margin-bottom: 40px;
+  font-size: 18px;
+  text-align: center;
+}
+
+/* 카드 묶음 */
+.cardRow {
+  display: flex;
+  gap: 35px;
+  justify-content: center;
+  align-items: stretch;
+}
+
+/* 카드 */
+.card {
+  width: 380px;
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-direction: column;
+}
+
+.cardIcon {
+  font-size: 40px;
+  margin-bottom: 15px;
+}
+
+.cardTitle {
+  margin-bottom: 15px;
+}
+
+/* 리스트 */
+.descList {
+  padding-left: 18px;
+  line-height: 1.6;
+  flex-grow: 1;
+}
+
+.descItem {
+  font-size: 15px;
+  opacity: 0.8;
+  margin-bottom: 5px;
+}
+
+/* 주의사항 박스 */
+.noticeBox {
+  margin-top: 20px;
+  background: #fff7d5;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+/* 버튼 */
+.startBtn {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px 0;
+  color: white;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.homeBtn {
+  margin-top: 40px;
+  padding: 10px 24px;
+  background: #333;
+  color: white;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+}

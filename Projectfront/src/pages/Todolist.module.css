@@ -1,0 +1,66 @@
+/* src/pages/TodoList.module.css */
+
+.wrapper {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ============================
+   LEFT AREA
+============================ */
+.left {
+  width: 300px; /* 고정 크기 */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Calendar */
+.calendarBox {
+  height: 260px;
+  border: 2px solid #000;
+  padding: 15px;
+  font-weight: 600;
+}
+
+/* 그날의 투두리스트 */
+.todoBox {
+  height: 360px;
+  border: 2px solid #000;
+  padding: 15px;
+}
+
+/* ============================
+   RIGHT AREA
+============================ */
+
+.right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* 상단 2개 카드 */
+.topRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.smallCard {
+  flex: 1;
+  height: 180px;
+  border: 2px solid #000;
+  padding: 15px;
+}
+
+/* 하단 큰 박스 */
+.bottomLarge {
+  border: 2px solid #000;
+  height: 300px;
+  padding: 15px;
+}

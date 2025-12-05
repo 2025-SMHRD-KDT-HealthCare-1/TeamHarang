@@ -1,0 +1,65 @@
+.check-result-box {
+  background: #ffffff;
+  padding: 16px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  margin-bottom: 14px;
+}
+
+/* 박스 제목 */
+.check-title {
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+/* 결과 없음 */
+.check-empty {
+  padding: 16px;
+  background: #f5f7ff;
+  border-radius: 10px;
+  border: 1px solid #e0e6ff;
+  text-align: center;
+  color: #777;
+  font-size: 14px;
+}
+
+/*  결과 카드 (가로 정렬 버전) */
+.check-item {
+  display: flex;
+  justify-content: space-between;  /* 왼쪽/오른쪽 분리 */
+  align-items: center;
+  padding: 14px 16px;
+  border: 1px solid #e4e4f5;
+  border-radius: 10px;
+  background: #fafaff;
+  margin-bottom: 10px;
+}
+
+/*  왼쪽 영역: 설문명 + 검사일 */
+.check-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* 설문명 */
+.check-type {
+  font-weight: 600;
+  font-size: 15px;
+  color: #5a5a8a;
+}
+
+/* 검사일 */
+.check-date {
+  font-size: 12px;
+  color: #777;
+}
+
+/*  오른쪽 점수 */
+.check-score {
+  font-weight: 700;
+  font-size: 18px;
+  color: #3a3a6d;
+}
