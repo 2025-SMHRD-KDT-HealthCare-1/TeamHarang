@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import Slide1 from "../components/start/Slide1";
 import Slide2 from "../components/start/Slide2";
@@ -17,15 +17,16 @@ const StartPage = () => {
   const [showJoin, setShowJoin] = useState(false);
 
   const location = useLocation();
+  const navigate = useNavigate();   // 추가됨
 
-  //  alert가 여러 번 뜨는 것을 막기 위한 ref
+  // alert 중복 방지
   const alertShown = useRef(false);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
 
     if (params.get("needLogin") === "true" && !alertShown.current) {
-      alertShown.current = true;   // 다음부터 실행 X
+      alertShown.current = true;
       alert("로그인이 필요합니다.");
     }
   }, [location.search]);
@@ -34,9 +35,11 @@ const StartPage = () => {
     <div className={styles.wrapper}>
       <div className={styles.container}>
 
+        
         <Slide1
           onLogin={() => setShowLogin(true)}
           onJoin={() => setShowJoin(true)}
+          onGuest={() => navigate("/survey/start")}   //  비회원 → 설문 선택
         />
 
         <Slide2 />
@@ -44,6 +47,7 @@ const StartPage = () => {
         <Slide4 />
         <Slide5 />
 
+        {/* 로그인 모달 */}
         {showLogin && (
           <LoginModal
             onClose={() => setShowLogin(false)}
@@ -54,6 +58,7 @@ const StartPage = () => {
           />
         )}
 
+        {/* 회원가입 모달 */}
         {showJoin && (
           <JoinModal
             onClose={() => setShowJoin(false)}

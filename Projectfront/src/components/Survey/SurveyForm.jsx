@@ -25,24 +25,17 @@ export default function SurveyForm({ type, questions }) {
 
   const optionCount = { PHQ: 4, GAD: 4, PSS: 5 };
 
-  // ========================
-  //  여기서 user_id 반드시 저장해야 함!!
-  // ========================
-  const token = localStorage.getItem("accessToken");
-  const user_id = localStorage.getItem("user_id"); 
+  //  회원 / 비회원 모두 처리
+  const token = localStorage.getItem("accessToken") || null;
+  const user_id = localStorage.getItem("user_id") || null;
 
-  // 제출
+  // ========================
+  //  제출 함수
+  // ========================
   const onSubmit = async (data) => {
-
-    if (!token || !user_id) {
-      alert("로그인이 필요합니다.");
-      navigate("/");
-      return;
-    }
-
     const body = {
       ...data,
-      user_id: user_id, // 서버는 반드시 이 값 필요함
+      user_id: user_id || null,  //  비회원이면 null 전달
     };
 
     let url = "";
@@ -52,15 +45,20 @@ export default function SurveyForm({ type, questions }) {
 
     try {
       const response = await axios.post(url, body, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: token
+          ? { Authorization: `Bearer ${token}` } //  로그인한 경우만 Authorization 헤더 포함
+          : {},                                  //  비회원은 빈 헤더로 요청
       });
+
+      // 서버 응답 데이터 구조
+      const { totalScore, emotionalScore, physicalScore } = response.data;
 
       navigate("/survey/result", {
         state: {
           type,
-          totalScore: response.data.totalScore,
-          emotionalScore: response.data.emotionalScore,
-          physicalScore: response.data.physicalScore,
+          totalScore,
+          emotionalScore,
+          physicalScore,
         },
       });
     } catch (err) {
@@ -79,13 +77,16 @@ export default function SurveyForm({ type, questions }) {
 
       <form onSubmit={handleSubmit(onSubmit)}>
         {questions.map((q, index) => (
-          <div key={index} style={{
-            marginBottom: "24px",
-            padding: "12px",
-            borderRadius: "10px",
-            background: "#fff",
-            boxShadow: "0 4px 10px rgba(0,0,0,0.05)",
-          }}>
+          <div
+            key={index}
+            style={{
+              marginBottom: "24px",
+              padding: "12px",
+              borderRadius: "10px",
+              background: "#fff",
+              boxShadow: "0 4px 10px rgba(0,0,0,0.05)",
+            }}
+          >
             <p style={{ marginBottom: "12px", fontWeight: 600 }}>
               {index + 1}. {q}
             </p>
@@ -103,9 +104,7 @@ export default function SurveyForm({ type, questions }) {
             ))}
 
             {errors[`q${index}`] && (
-              <p style={{ color: "red", fontSize: "12px" }}>
-                항목을 선택해주세요.
-              </p>
+              <p style={{ color: "red", fontSize: "12px" }}>항목을 선택해주세요.</p>
             )}
           </div>
         ))}
