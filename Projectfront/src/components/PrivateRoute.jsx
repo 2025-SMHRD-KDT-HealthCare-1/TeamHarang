@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore";
 
 const PrivateRoute = ({ children }) => {
@@ -10,12 +11,12 @@ const PrivateRoute = ({ children }) => {
   useEffect(() => {
     if (!isLoggedIn && !alertShown) {
       alert("로그인이 필요합니다.");
-      setAlertShown(true);   //  알람은 한번만
+      setAlertShown(true);
     }
   }, [isLoggedIn, alertShown]);
 
   if (!isLoggedIn) {
-    return null;  // children 렌더링 막기 (보호)
+    return <Navigate to="/login" replace />;   // ✔ Hook 순서 보존 + 리다이렉트 방식
   }
 
   return children;
