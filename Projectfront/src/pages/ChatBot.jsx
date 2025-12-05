@@ -6,7 +6,7 @@ const ChatBot = () => {
   const [messages, setMessages] = useState([]);
 
   const send = async () => {
-    const token = localStorage.getItem("accessToken"); 
+    const token = localStorage.getItem("accessToken");
 
     if (!input.trim()) return;
 
@@ -43,7 +43,7 @@ const ChatBot = () => {
   return (
     <div className={styles.pageWrapper}>
       <div className={styles.inner}>
-        
+
         <div className={styles.title}>
           <span></span> MindCare 상담봇
         </div>
@@ -58,11 +58,23 @@ const ChatBot = () => {
         </div>
 
         <div className={styles.inputRow}>
-          <input
+          <textarea
             className={styles.input}
             placeholder="하고 싶은 이야기를 들려주세요..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
+            rows={1}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                if (e.shiftKey) {
+                  // 줄바꿈 허용
+                  return;
+                }
+                // 엔터 전송
+                e.preventDefault();
+                send();
+              }
+            }}
           />
           <button className={styles.button} onClick={send}>
             보내기
