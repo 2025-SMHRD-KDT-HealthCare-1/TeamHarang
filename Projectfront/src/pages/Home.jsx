@@ -86,7 +86,20 @@ const Home = () => {
 
         {/* 체크 결과 */}
         <div className={`${styles.box} ${styles.boxPurple}`}>
-          <h2 className={styles.titlePurple}>체크 결과 분석</h2>
+
+        
+          <div className={styles.headerRow}>
+            <h2 className={styles.titlePurple}>체크 결과 분석</h2>
+
+            <button
+              className={styles.recordBtn}
+              onClick={() => navigate("/survey/record")}
+            >
+              설문 결과 보기
+            </button>
+          </div>
+   
+
           <p className={styles.desc}>전체 체크 이력을 확인할 수 있어요.</p>
 
           <CheckResult />
