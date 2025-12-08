@@ -10,7 +10,7 @@ const PrivateRoute = ({ children }) => {
 
   useEffect(() => {
     if (!isLoggedIn && !alertShown) {
-      alert("로그인이 필요합니다.");
+      alert("로그아웃 되었습니다");
       setAlertShown(true);
     }
   }, [isLoggedIn, alertShown]);
