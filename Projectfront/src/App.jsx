@@ -27,6 +27,9 @@ import SurveyRecord from "./pages/SurveyRecord";
 /* Todo */
 import TodoList from "./pages/TodoList";
 
+/* HTP Drawing */
+import HTPDrawing from "./pages/HTPDrawing";
+
 function App() {
   return (
     <BrowserRouter>
@@ -70,6 +73,12 @@ function App() {
             <Route path="todo">
               <Route path="list" element={<TodoList />} />
             </Route>
+
+            <Route path="htp">
+              <Route path="drawing" element={<HTPDrawing />} />
+            </Route>
+
+
           </Route>
         </Route>
 
