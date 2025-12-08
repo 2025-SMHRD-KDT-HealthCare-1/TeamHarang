@@ -53,10 +53,10 @@ const SurveyResult = () => {
       { text: "신뢰하는 사람에게 5분 대화하기", url: null },
       { text: "걱정 시간 10분 정해두고 걱정하기", url: null },
       { text: "걱정거리 노트에 적어 보관하기", url: null },
-      { text: "10분 스트레칭 또는 운동하기", url: "https://youtu.be/j6ICKnpn054?si=w9jRHNZuMs-enjWq" },
+      { text: "10분 스트레칭 또는 운동하기(스트레칭 가이드 영상있어요)", url: "https://youtu.be/j6ICKnpn054?si=w9jRHNZuMs-enjWq" },
       { text: "건강한 식사 챙겨 먹기", url: null },
-      { text: "7시간 수면 목표 잡기(수면에 도움되는 가이드 영상)", url: "https://youtube.com/shorts/vo8YR_eKRqQ?si=-z0FKDDuyqAPdwlM" },
-      { text: "복식 호흡 10회 연습하기(호흡법 영상있음)", url: "https://youtu.be/WRQif7AjNyE?si=NDAWdMWfzq5zSmpf" },
+      { text: "7시간 수면 목표 잡기(수면도움 유튜브 영상있어요)", url: "https://youtube.com/shorts/vo8YR_eKRqQ?si=-z0FKDDuyqAPdwlM" },
+      { text: "복식 호흡 10회 연습하기(호흡법 유튜브 영상있어요)", url: "https://youtu.be/WRQif7AjNyE?si=NDAWdMWfzq5zSmpf" },
       { text: "지금 할 수 있는 행동 1가지 실행하기", url: null },
     ],
 
@@ -67,7 +67,7 @@ const SurveyResult = () => {
       { text: "작은 행동 하나 먼저 실행하기", url: null },
 
       {
-        text: "5분 명상 또는 호흡하기()",
+        text: "5분 명상 또는 호흡하기(호흡도움 유튜브 영상있어요)",
         url: "https://youtu.be/WRQif7AjNyE?si=NDAWdMWfzq5zSmpf",
       },
 

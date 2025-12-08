@@ -10,7 +10,7 @@ const SurveyRouter = require("./router/Survey");
 const TodoRouter = require("./router/Todo");
 const DiaryRouter = require("./router/Diary");
 const APIRouter = require("./router/API"); // chat 관련
-
+const ProgressRouter = require("./router/Progress");
 const app = express();
 
 app.use(express.json());
@@ -28,6 +28,7 @@ app.use("/user", userRouter);
 app.use("/survey", verifyAccessToken, SurveyRouter);
 app.use("/todo", verifyAccessToken, TodoRouter);
 app.use("/diary", verifyAccessToken, DiaryRouter);
+app.use("/api/progress", ProgressRouter);
 
 // 챗관련 토큰 검사
 app.use("/chatbot",APIRouter);
