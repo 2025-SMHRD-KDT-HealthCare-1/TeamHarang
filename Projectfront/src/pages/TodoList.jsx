@@ -21,16 +21,8 @@ export default function TodoList() {
   const token = localStorage.getItem("accessToken");
   const headers = { Authorization: `Bearer ${token}` };
 
-  /* ===============================
-      🔥 한국 yyyy-mm-dd 변환
-  =============================== */
-  const toKoreanDate = (dateObj) => {
-    return dateObj.toLocaleDateString("sv-SE"); // yyyy-mm-dd
-  };
+  const toKoreanDate = (dateObj) => dateObj.toLocaleDateString("sv-SE");
 
-  /* ===============================
-      특정 날짜 Todo 조회
-  =============================== */
   const loadTodos = (date) => {
     const dateStr = toKoreanDate(date);
 
@@ -45,12 +37,23 @@ export default function TodoList() {
   };
 
   useEffect(() => {
+    if (!userId) return;
+
+    const dateStr = selectedDate.toISOString().split("T")[0];
+
+    axios
+      .post("http://localhost:3001/api/todo/GetTodos", {
+        uid: userId,
+        date: dateStr,
+      })
+      .then((res) => setTodos(res.data.todos || []))
+      .catch((err) => console.error("투두 조회 실패:", err));
+  }, [selectedDate, userId]);
+
+  useEffect(() => {
     if (userId) loadTodos(selectedDate);
   }, [selectedDate]);
 
-  /* ===============================
-      🔥 달성도 불러오기
-  =============================== */
   const loadProgress = () => {
     axios
       .get("http://localhost:3001/api/progress/all", {
@@ -71,9 +74,6 @@ export default function TodoList() {
     loadProgress();
   }, [userId, token]);
 
-  /* ===============================
-      오늘 Todo 추가
-  =============================== */
   const addTodayTodo = () => {
     if (!todayInput.trim()) return;
 
@@ -82,28 +82,18 @@ export default function TodoList() {
     axios
       .post(
         "http://localhost:3001/todo/AddTodo",
-        {
-          uid: userId,
-          content: todayInput,
-          date: dateStr,
-        },
+        { uid: userId, content: todayInput, date: dateStr },
         { headers }
       )
       .then(() => {
         setTodayInput("");
 
-        // 오늘 선택돼있으면 바로 반영
         if (isTodaySelected()) loadTodos(selectedDate);
-
-        // 🔥 달성도 반영
         loadProgress();
       })
       .catch((err) => console.error("오늘 할 일 추가 실패:", err));
   };
 
-  /* ===============================
-      내일 Todo 추가
-  =============================== */
   const addTomorrowTodo = () => {
     if (!tomorrowInput.trim()) return;
 
@@ -114,27 +104,18 @@ export default function TodoList() {
     axios
       .post(
         "http://localhost:3001/todo/AddTodo",
-        {
-          uid: userId,
-          content: tomorrowInput,
-          date: dateStr,
-        },
+        { uid: userId, content: tomorrowInput, date: dateStr },
         { headers }
       )
       .then(() => {
         setTomorrowInput("");
 
         if (isTomorrowSelected()) loadTodos(selectedDate);
-
-        // 🔥 달성도 반영
         loadProgress();
       })
       .catch((err) => console.error("내일 할 일 추가 실패:", err));
   };
 
-  /* ===============================
-      완료 토글
-  =============================== */
   const toggleTodo = (tid) => {
     axios
       .post(
@@ -144,16 +125,11 @@ export default function TodoList() {
       )
       .then(() => {
         loadTodos(selectedDate);
-
-        // 🔥 달성도 반영
         loadProgress();
       })
       .catch((err) => console.error("토글 실패:", err));
   };
 
-  /* ===============================
-      삭제
-  =============================== */
   const deleteTodo = (tid) => {
     axios
       .post(
@@ -163,16 +139,11 @@ export default function TodoList() {
       )
       .then(() => {
         loadTodos(selectedDate);
-
-        // 🔥 달성도 반영
         loadProgress();
       })
       .catch((err) => console.error("삭제 실패:", err));
   };
 
-  /* ===============================
-      오늘 / 내일 판별
-  =============================== */
   const isTodaySelected = () =>
     toKoreanDate(selectedDate) === toKoreanDate(new Date());
 
@@ -186,11 +157,11 @@ export default function TodoList() {
     <div className={styles.wrapper}>
       {/* LEFT */}
       <div className={styles.left}>
-        <div className={styles.calendarBox}>
+        <div className={`${styles.calendarBox} ${styles.card}`}>
           <Calendar value={selectedDate} onChange={setSelectedDate} />
         </div>
 
-        <div className={styles.todoBox}>
+        <div className={`${styles.todoBox} ${styles.card}`}>
           <h3>그날의 투두리스트</h3>
 
           {todos.length === 0 ? (
@@ -198,15 +169,14 @@ export default function TodoList() {
           ) : (
             <ul>
               {todos.map((todo) => (
-                <li key={todo.id}>
+                <li key={todo.id} className={styles.todoItem}>
                   <input
                     type="checkbox"
                     checked={todo.is_done === 1}
                     onChange={() => toggleTodo(todo.id)}
-                    style={{ marginRight: "8px" }}
                   />
-
                   <span
+                    className={styles.todoText}
                     style={{
                       textDecoration: todo.is_done ? "line-through" : "none",
                       opacity: todo.is_done ? 0.6 : 1,
@@ -214,8 +184,12 @@ export default function TodoList() {
                   >
                     {todo.content}
                   </span>
-
-                  <button onClick={() => deleteTodo(todo.id)}>삭제</button>
+                  <button
+                    className={styles.deleteBtn}
+                    onClick={() => deleteTodo(todo.id)}
+                  >
+                    삭제
+                  </button>
                 </li>
               ))}
             </ul>
@@ -226,30 +200,38 @@ export default function TodoList() {
       {/* RIGHT */}
       <div className={styles.right}>
         <div className={styles.topRow}>
-          <div className={styles.smallCard}>
+          <div className={`${styles.smallCard} ${styles.card}`}>
             <h3>오늘 할일 추가</h3>
-            <input
-              type="text"
-              value={todayInput}
-              onChange={(e) => setTodayInput(e.target.value)}
-              placeholder="오늘 할 일"
-            />
-            <button onClick={addTodayTodo}>추가</button>
+            <div className={styles.inputRow}>
+              <input
+                type="text"
+                value={todayInput}
+                onChange={(e) => setTodayInput(e.target.value)}
+                placeholder="오늘 할 일"
+              />
+              <button className={styles.addBtn} onClick={addTodayTodo}>
+                추가
+              </button>
+            </div>
           </div>
 
-          <div className={styles.smallCard}>
+          <div className={`${styles.smallCard} ${styles.card}`}>
             <h3>내일 할일 추가</h3>
-            <input
-              type="text"
-              value={tomorrowInput}
-              onChange={(e) => setTomorrowInput(e.target.value)}
-              placeholder="내일 할 일"
-            />
-            <button onClick={addTomorrowTodo}>추가</button>
+            <div className={styles.inputRow}>
+              <input
+                type="text"
+                value={tomorrowInput}
+                onChange={(e) => setTomorrowInput(e.target.value)}
+                placeholder="내일 할 일"
+              />
+              <button className={styles.addBtn} onClick={addTomorrowTodo}>
+                추가
+              </button>
+            </div>
           </div>
         </div>
 
-        <div className={styles.bottomLarge}>
+        <div className={`${styles.bottomLarge} ${styles.card}`}>
           <h3>이번 주 / 이번 달 달성도</h3>
           <p>어제: {yesterdayPercent.current}%</p>
           <p>이번 주: {weekPercent.current}%</p>
