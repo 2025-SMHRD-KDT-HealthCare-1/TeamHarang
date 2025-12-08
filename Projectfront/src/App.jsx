@@ -52,7 +52,7 @@ function App() {
         <Route
           element={
             <PrivateRoute>
-              <Outlet />   {/* 🔥 문제 해결 핵심: Layout 대신 Outlet */}
+              <Outlet />   {/* 문제 해결 핵심: Layout 대신 Outlet */}
             </PrivateRoute>
           }
         >
