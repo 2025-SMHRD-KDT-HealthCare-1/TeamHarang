@@ -24,12 +24,10 @@ const router = express.Router();
 const conn = require("../config/database");
 const OpenAI = require("openai");
 
-
 // -------------------------
 // JWT 토큰 관련
 // -------------------------
 const { generateTokens, verifyAccessToken, verifyRefreshToken } = require('./Token');
-
 
 // -------------------------
 // OpenAI 설정
@@ -100,14 +98,11 @@ const systemPrompt_chat = `
 - 과도한 친밀함
 - 대화를 강제로 이어가려는 표현
 
-
 `;
 
 // ==========================================================
 //  유틸 함수
 // ==========================================================
-
-// YYYY-MM-DD 반환
 function todayStr() {
   return new Date().toISOString().slice(0, 10);
 }
@@ -115,8 +110,6 @@ function todayStr() {
 // ==========================================================
 //  DB Helper Functions
 // ==========================================================
-
-/** user_rag 최신 1행 조회 */
 async function selectUserRag(user_id) {
   const sql = `
     SELECT RAGID, user_id, rag_date, rag_data
@@ -128,7 +121,6 @@ async function selectUserRag(user_id) {
   return rows.length ? rows[0] : null;
 }
 
-/** 오늘자 rag 존재 여부 확인 */
 async function hasUserRagForToday(user_id) {
   const sql = `
     SELECT RAGID FROM user_rag
@@ -139,7 +131,6 @@ async function hasUserRagForToday(user_id) {
   return rows.length > 0;
 }
 
-/** user_rag insert 또는 update */
 async function upsertUserRag(user_id, ragData) {
   const checkSql = `SELECT RAGID FROM user_rag WHERE user_id = ? LIMIT 1`;
   const [rows] = await conn.promise().query(checkSql, [user_id]);
@@ -162,7 +153,6 @@ async function upsertUserRag(user_id, ragData) {
   }
 }
 
-/** 최근 7일 일기 조회 */
 async function selectRecent7DaysDiary(user_id) {
   const sql = `
     SELECT date, content
@@ -175,7 +165,6 @@ async function selectRecent7DaysDiary(user_id) {
   return rows;
 }
 
-/** 어제+오늘의 chat logs 조회(RAG2 raw) */
 async function selectChatLogYesterdayToday(user_id) {
   const sql = `
     SELECT chat_id, user_id, chat_type, chat_text, chat_time
@@ -188,13 +177,16 @@ async function selectChatLogYesterdayToday(user_id) {
   return rows;
 }
 
-/** chat 저장 */
 async function insertChatLog(user_id, chat_type, chat_text) {
   const sql = `
     INSERT INTO chat_log (user_id, chat_type, chat_text, chat_time)
     VALUES (?, ?, ?, NOW())
   `;
-  const [result] = await conn.promise().query(sql, [user_id, chat_type, chat_text]);
+  const [result] = await conn.promise().query(sql, [
+    user_id,
+    chat_type,
+    chat_text,
+  ]);
   return result.insertId;
 }
 
@@ -210,11 +202,13 @@ async function callOpenAIWithMessages(messages, options = {}) {
 // ==========================================================
 //                    ★ /api/start ★
 // ==========================================================
-router.post("/start",verifyAccessToken,async (req, res) => {
+router.post("/start", verifyAccessToken, async (req, res) => {
   try {
-    const user_id = req.user.user_id; // JWT 토큰에서 user_id 가져오기
+    const user_id = req.user.user_id;
     if (!user_id)
-      return res.status(400).json({ result: "fail", message: "user_id is required" });
+      return res
+        .status(400)
+        .json({ result: "fail", message: "user_id is required" });
 
     // 1) 오늘 RAG 생성 여부 확인
     const todayExists = await hasUserRagForToday(user_id);
@@ -222,19 +216,16 @@ router.post("/start",verifyAccessToken,async (req, res) => {
     let ragAction = "none";
 
     if (todayExists) {
-      // 오늘자 RAG가 이미 있다 → 그대로 사용
       const existing = await selectUserRag(user_id);
       rag1 = existing ? existing.rag_data : "";
       ragAction = "today_exists";
     } else {
-      // 오늘자 RAG가 없다 → 최근 7일 일기 검사
       const diaries = await selectRecent7DaysDiary(user_id);
 
       if (!diaries || diaries.length === 0) {
         rag1 = "";
         ragAction = "no_diary";
       } else {
-        // GPT로 RAG1 생성
         const diaryText = diaries
           .map(d => `날짜: ${d.date}\n내용: ${d.content}`)
           .join("\n\n");
@@ -256,7 +247,6 @@ router.post("/start",verifyAccessToken,async (req, res) => {
 
         rag1 = ragRes.choices[0].message.content.trim();
 
-        // DB에 upsert
         const upsertRes = await upsertUserRag(user_id, rag1);
         ragAction = upsertRes.action;
       }
@@ -273,39 +263,26 @@ router.post("/start",verifyAccessToken,async (req, res) => {
           .join("\n")
       : "";
 
-    // 3) greeting 생성
-    const greetingMessages = [
-      { role: "system", content: systemPrompt_chat },
-    ];
+    // 3) greeting 메시지 구성
+    const messages = [{ role: "system", content: systemPrompt_chat }];
 
     if (rag1.trim()) {
-  messages.push({
-    role: "assistant",
-    content: `【장기 심리 분석 정보 (LONG-TERM DIARY SUMMARY)】  
-    다음 내용은 '이전 대화 기록이 아니라', 사용자가 최근 작성한 '일기(감정 기록)'을 기반으로  
-    GPT가 분석·요약한 심리 상태 정리본입니다.
-
-    이 정보는 상담 품질을 높이기 위한 참고용이며,  
-    대화의 연속성과 사용자의 감정 흐름을 이해하는 데 매우 중요합니다.
-
-    반드시 다음 일기 기반 분석 정보를 참고하여 응답을 구성하세요:
-
-${rag1}`
-  });
-}
+      messages.push({
+        role: "assistant",
+        content: `【장기 심리 분석 정보 (LONG-TERM DIARY SUMMARY)】
+${rag1}`,
+      });
+    }
 
     if (rag2.trim()) {
-  messages.push({
-    role: "assistant",
-    content: `【최근 대화 기록(HISTORY)】 
-    아래는 당신이 지금 응답을 생성하기 위해 반드시 참고해야 하는 이전 대화 내용입니다.
-    이 내용은 중요한 맥락 정보를 포함하고 있으므로 절대 무시하지 마세요.
+      messages.push({
+        role: "assistant",
+        content: `【최근 대화 기록(HISTORY)】
+${rag2}`,
+      });
+    }
 
-    ${rag2}`
-  });
-}
-
-    greetingMessages.push({
+    messages.push({
       role: "user",
       content: "위 정보를 참고하여 오늘의 첫 인사말(한두 문장)을 생성해주세요.",
     });
@@ -313,13 +290,12 @@ ${rag1}`
     const greetRes = await client.chat.completions.create({
       model: MODEL_NAME,
       temperature: 0.7,
-      messages: greetingMessages,
+      messages,
       max_tokens: 200,
     });
 
     const greeting = greetRes.choices[0].message.content.trim();
 
-    // 4) greeting 저장 (AI)
     await insertChatLog(user_id, "ai", greeting);
 
     return res.json({
@@ -342,23 +318,13 @@ ${rag1}`
 // ==========================================================
 //                    ★ /api/chat ★
 // ==========================================================
-
-/**
- * /api/chat
- *
- * 절차:
- *  1) 현재 RAG1 불러오기
- *  2) RAG2(raw) 생성 (어제+오늘)
- *     ⚠ 사용자 방금 메시지는 DB에 들어가지 않았으므로 RAG2에 포함되지 않음
- *  3) GPT (RAG1+RAG2+사용자 메시지) 호출
- *  4) GPT 호출 후 user_message → ai_reply 순으로 DB 저장
- *  5) 결과 반환
- */
-router.post("/chat",verifyAccessToken, async (req, res) => {
+router.post("/chat", verifyAccessToken, async (req, res) => {
   try {
-     console.log("AUTH:", req.headers.authorization);
-    const user_id = req.user.user_id; // JWT 토큰에서 user_id 가져오기
+    console.log("AUTH:", req.headers.authorization);
+
+    const user_id = req.user.user_id;
     const { user_message } = req.body;
+
     if (!user_id || !user_message) {
       return res.status(400).json({
         result: "fail",
@@ -382,37 +348,25 @@ router.post("/chat",verifyAccessToken, async (req, res) => {
       : "";
 
     // 3) GPT 메시지 구성
-    const messages = [
-      { role: "system", content: systemPrompt_chat },
-    ];
+    const messages = [{ role: "system", content: systemPrompt_chat }];
 
     if (rag1.trim()) {
-  messages.push({
-    role: "assistant",
-    content: `【장기 심리 분석 정보 (LONG-TERM DIARY SUMMARY)】  
-    다음 내용은 '이전 대화 기록이 아니라', 사용자가 최근 작성한 '일기(감정 기록)'을 기반으로  
-    GPT가 분석·요약한 심리 상태 정리본입니다.
-
-    이 정보는 상담 품질을 높이기 위한 참고용이며,  
-    대화의 연속성과 사용자의 감정 흐름을 이해하는 데 매우 중요합니다.
-
-    반드시 다음 일기 기반 분석 정보를 참고하여 응답을 구성하세요:
-
-${rag1}`
-  });
-}
+      messages.push({
+        role: "assistant",
+        content: `【장기 심리 분석 정보 (LONG-TERM DIARY SUMMARY)】
+${rag1}`,
+      });
+    }
 
     if (rag2.trim()) {
-  messages.push({
-    role: "assistant",
-    content: `【최근 대화 기록(HISTORY)】 
-    아래는 당신이 지금 응답을 생성하기 위해 반드시 참고해야 하는 이전 대화 내용입니다.
-    이 내용은 중요한 맥락 정보를 포함하고 있으므로 절대 무시하지 마세요.
+      messages.push({
+        role: "assistant",
+        content: `【최근 대화 기록(HISTORY)】
+${rag2}`,
+      });
+    }
 
-    ${rag2}`
-  });
-}
-
+    // 사용자 메시지
     messages.push({ role: "user", content: user_message });
 
     const gptRes = await client.chat.completions.create({
@@ -424,7 +378,7 @@ ${rag1}`
 
     const aiReply = gptRes.choices[0].message.content.trim();
 
-    // 4) DB 저장 (GPT 이후)
+    // 4) DB 저장
     await insertChatLog(user_id, "user", user_message);
     await insertChatLog(user_id, "ai", aiReply);
 

@@ -10,13 +10,13 @@ const PrivateRoute = ({ children }) => {
 
   useEffect(() => {
     if (!isLoggedIn && !alertShown) {
-      alert("로그인이 필요합니다.");
+      alert("로그아웃 되었습니다");
       setAlertShown(true);
     }
   }, [isLoggedIn, alertShown]);
 
   if (!isLoggedIn) {
-    return <Navigate to="/login" replace />;   // ✔ Hook 순서 보존 + 리다이렉트 방식
+    return <Navigate to="/" replace />;   // ✔ Hook 순서 보존 + 리다이렉트 방식
   }
 
   return children;
