@@ -1,0 +1,24 @@
+.box {
+  width: 170px;
+  padding: 20px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  text-align: center;
+}
+
+.icon {
+  width: 60px;
+  margin-bottom: 14px;
+}
+
+.title {
+  color: #1c2a4f;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.desc {
+  color: #3f4f7a;
+  font-size: 14px;
+}

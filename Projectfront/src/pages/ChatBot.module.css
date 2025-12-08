@@ -1,0 +1,67 @@
+.pageWrapper {
+  width: 100%;
+  padding: 60px 0;
+}
+
+.inner {
+  width: 90%;         
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 25px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chatBox {
+  width: 100%;
+  height: 600px;       
+  border: 1px solid #dcdcdc;
+  border-radius: 10px;
+  background: white;
+  padding: 20px;
+  overflow-y: auto;
+  font-size: 16px;
+}
+
+.message {
+  margin: 14px 0;
+  color: #333;
+  line-height: 1.5;
+}
+
+.inputRow {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.input {
+  flex: 1;
+  padding: 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+}
+
+.button {
+  padding: 0 24px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+/* ====================================== */
+/*  메시지 줄바꿈 적용 (Shift+Enter)     */
+/* ====================================== */
+.message div {
+  white-space: pre-wrap;
+}
