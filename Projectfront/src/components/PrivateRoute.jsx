@@ -16,7 +16,7 @@ const PrivateRoute = ({ children }) => {
   }, [isLoggedIn, alertShown]);
 
   if (!isLoggedIn) {
-    return <Navigate to="/login" replace />;   // ✔ Hook 순서 보존 + 리다이렉트 방식
+    return <Navigate to="/" replace />;   // ✔ Hook 순서 보존 + 리다이렉트 방식
   }
 
   return children;
