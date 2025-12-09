@@ -57,7 +57,11 @@ function App() {
         <Route
           element={
             <PrivateRoute>
+<<<<<<< HEAD
               <Outlet />
+=======
+              <Outlet />   {/* 문제 해결 핵심: Layout 대신 Outlet */}
+>>>>>>> 19bb1a4b1034af925fffaad49d4b141e06861e61
             </PrivateRoute>
           }
         >
