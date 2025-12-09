@@ -17,13 +17,13 @@ const Slide2 = () => {
           <ServiceBox 
             icon="/images/slide2/survey.svg" 
             title="검사하러 가기" 
-            desc="정신건강 수준 평가" 
+            desc="나의 상태 알아보기" 
           />
 
           <ServiceBox 
-            icon="/icon2.png" 
-            title="" 
-            desc="" 
+            icon="/images/slide2/htp.svg" 
+            title="HTP 검사" 
+            desc="그림으로 보는 나의 마음" 
           />
 
           <ServiceBox 

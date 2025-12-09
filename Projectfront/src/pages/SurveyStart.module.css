@@ -1,5 +1,8 @@
-/* src/pages/SurveyStart.module.css */
+/* ========================================================= */
+/*  SurveyStart.module.css - 공간 분리 방식(최종본)          */
+/* ========================================================= */
 
+/* 전체 레이아웃 */
 .wrapper {
   width: 100%;
   min-height: 100vh;
@@ -31,23 +34,30 @@
   text-align: center;
 }
 
-/* 카드 묶음 */
+/* -------------------- 카드 묶음 (그룹 + 그룹) -------------------- */
 .cardRow {
   display: flex;
-  gap: 35px;
   justify-content: center;
-  align-items: stretch;
+  align-items: flex-start;
+  gap: 120px;            /* ⭐ 그룹 간 간격 — 핵심 포인트 */
 }
 
-/* 카드 */
+/* 그룹 (3개 카드 / HTP 카드) */
+.group {
+  display: flex;
+  gap: 30px;
+}
+
+/* ------------------------- 카드 ------------------------- */
 .card {
-  width: 380px;
+  width: 320px;
   background: white;
   border-radius: 16px;
   padding: 30px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .cardIcon {
@@ -102,4 +112,22 @@
   border-radius: 10px;
   border: none;
   cursor: pointer;
+}
+
+/* ------------------------- HTP 전용 ------------------------- */
+.cardHtp {
+  border: 2px solid #ffb347;  /* 눈금 제거 */
+  background: #fff9f0;        /* 은은한 HTP 강조 배경 */
+}
+
+.htpBadge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #ffecd1;
+  color: #ff8a00;
+  font-weight: 600;
 }

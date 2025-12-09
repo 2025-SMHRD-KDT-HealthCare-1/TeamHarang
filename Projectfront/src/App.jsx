@@ -12,6 +12,9 @@ import SurveyPSS from "./pages/SurveyPSS";
 import SurveyResult from "./pages/SurveyResult";
 import SurveyStart from "./pages/SurveyStart";
 
+/* HTP */
+import HTPDrawing from "./pages/HTPDrawing";
+
 /* Private Pages */
 import Home from "./pages/Home";
 import MyPage from "./pages/MyPage";
@@ -26,9 +29,6 @@ import SurveyRecord from "./pages/SurveyRecord";
 
 /* Todo */
 import TodoList from "./pages/TodoList";
-
-/* HTP Drawing */
-import HTPDrawing from "./pages/HTPDrawing";
 
 function App() {
   return (
@@ -46,13 +46,18 @@ function App() {
             <Route path="pss" element={<SurveyPSS />} />
             <Route path="result" element={<SurveyResult />} />
           </Route>
+
+          {/* HTP 페이지 */}
+          <Route path="htp">
+            <Route path="drawing" element={<HTPDrawing />} />
+          </Route>
         </Route>
 
         {/* 보호 페이지 */}
         <Route
           element={
             <PrivateRoute>
-              <Outlet />   {/* 🔥 문제 해결 핵심: Layout 대신 Outlet */}
+              <Outlet />
             </PrivateRoute>
           }
         >
@@ -73,12 +78,6 @@ function App() {
             <Route path="todo">
               <Route path="list" element={<TodoList />} />
             </Route>
-
-            <Route path="htp">
-              <Route path="drawing" element={<HTPDrawing />} />
-            </Route>
-
-
           </Route>
         </Route>
 

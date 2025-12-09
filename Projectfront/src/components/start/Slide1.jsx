@@ -13,13 +13,10 @@ const Slide1 = ({ onLogin, onJoin, onGuest }) => {   //  onGuest 추가
         </div>
 
         <h1 className={styles.title}>
-          의학 기반<br />당신만을 위한 방법
+          나를 이해하는 <br />마음 관리의 시작
         </h1>
 
-        <p className={styles.subtitle}>
-          과학적으로 설계된 평가와 맞춤형 솔루션으로  
-          나에게 꼭 맞는 마음 관리 시작하기
-        </p>
+        
 
         <div className={styles.btnRow}>
           <button className={styles.btn} onClick={onLogin}>로그인</button>

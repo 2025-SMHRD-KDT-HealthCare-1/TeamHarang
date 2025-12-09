@@ -39,7 +39,7 @@ const Home = () => {
 
         {/* 스트레스 체크 */}
         <div className={`${styles.box} ${styles.boxBlue}`}>
-          <h2 className={styles.titleBlue}>스트레스 체크</h2>
+          <h2 className={styles.titleBlue}>나의 상태 체크</h2>
           <p className={styles.desc}>
             검증된 설문을 통해 우울, 불안, 스트레스 수준을 측정해보세요.
           </p>
@@ -48,6 +48,7 @@ const Home = () => {
             <li>각 7~10개 문항, 5분 소요</li>
             <li>즉시 결과 확인 가능</li>
             <li>맞춤형 개선방안 제공</li>
+            <li>HTP 그림 검사</li>
           </ul>
 
           <button
