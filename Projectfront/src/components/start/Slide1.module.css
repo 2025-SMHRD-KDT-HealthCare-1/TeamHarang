@@ -13,7 +13,7 @@
       rgba(70, 90, 255, 0.45),
       rgba(150, 120, 255, 0.45)
     ),
-    url("/images/slide1/slide1-bg.jpg");
+    url("/images/slide1/bg.jpg");
 
   background-size: cover;
   background-position: center;

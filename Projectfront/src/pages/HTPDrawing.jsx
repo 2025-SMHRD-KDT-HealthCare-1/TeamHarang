@@ -214,7 +214,7 @@ export default function HTPDrawing() {
   return (
     <div style={{ padding: "24px", maxWidth: "960px", margin: "0 auto" }}>
       <h2 style={{ fontSize: "24px", marginBottom: "16px" }}>
-        HTP 그림 검사 - 객체 탐지
+        HTP 그림 테스트 
       </h2>
 
       {/* 유형 선택 버튼 */}
