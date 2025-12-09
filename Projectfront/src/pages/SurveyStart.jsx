@@ -92,6 +92,7 @@ export default function SurveyStart() {
                 "특징을 기반으로 간단 분석 제공",
                 "약 3~5분 소요",
                 "참고용으로만 활용해주세요",
+                "출처 : AI Hub AI 기반 미술심리 진단 데이터"
               ]}
               notice="본 검사는 자가 이해 목적이며 전문적 진단을 대신하지 않습니다."
               btnColor="#ffb347"
